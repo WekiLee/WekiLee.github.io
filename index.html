@@ -1040,24 +1040,18 @@
                 </div>
 
                 <div class="flex flex-col md:flex-row items-center justify-center gap-6 fade-in">
-                    <!-- 统计图：初始 src 用透明占位图，真实 src 由 JS 动态设置 -->
+                    <!-- 统计图：初始隐藏，真实 src 由 JS 动态设置 -->
                     <img id="gh-stats-img"
-                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                         alt="WekiLee 的 GitHub 统计：代码提交、Star 数与贡献热力图"
-                        class="stats-img"
-                        loading="lazy"
                         width="400" height="160"
-                        style="min-height:120px;" />
-                    <div class="stats-img-fallback" id="gh-stats-fallback">GitHub 统计图加载中...</div>
+                        style="display:none;min-height:120px;" />
+                    <div class="stats-img-fallback" id="gh-stats-fallback" style="max-width:400px;width:100%;" data-loading-text="GitHub 统计图加载中...">GitHub 统计图加载中...</div>
 
                     <img id="gh-langs-img"
-                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                         alt="WekiLee 最常用的编程语言分布"
-                        class="stats-img"
-                        loading="lazy"
                         width="320" height="160"
-                        style="min-height:120px;" />
-                    <div class="stats-img-fallback" id="gh-langs-fallback">语言统计图加载中...</div>
+                        style="display:none;min-height:120px;" />
+                    <div class="stats-img-fallback" id="gh-langs-fallback" style="max-width:320px;width:100%;" data-loading-text="语言统计图加载中...">语言统计图加载中...</div>
                 </div>
             </div>
         </section>
@@ -1165,9 +1159,6 @@
             if (toggleM) toggleM.setAttribute('aria-label', isDark ? '切换到亮色模式' : '切换到暗色模式');
 
             // 更新浏览器 chrome 主题色（移动端地址栏颜色）
-            var metaThemeLight = document.querySelector('meta[media="(prefers-color-scheme: light)"]');
-            var metaThemeDark  = document.querySelector('meta[media="(prefers-color-scheme: dark)"]');
-            // 对手动切换，我们更新不带 media 查询的 meta 来覆盖
             var metaGeneric = document.querySelector('meta[name="theme-color"]:not([media])');
             if (!metaGeneric) {
                 metaGeneric = document.createElement('meta');
@@ -1175,12 +1166,6 @@
                 document.head.appendChild(metaGeneric);
             }
             metaGeneric.content = isDark ? '#000000' : '#ffffff';
-            // 也禁用/启用带 media 的 meta
-            if (metaThemeLight) metaThemeLight.removeAttribute('content');
-            if (metaThemeDark)  metaThemeDark.removeAttribute('content');
-
-            // 更新 GitHub Stats 图片主题
-            updateGitHubStatsImages();
         }
         setThemeUI(saved);
 
@@ -1190,6 +1175,8 @@
             html.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
             setThemeUI(next);
+            // 主题切换时重新加载统计图（使用新配色参数）
+            updateGitHubStatsImages();
         }
 
         document.getElementById('themeToggle').addEventListener('click', toggleTheme);
@@ -1248,26 +1235,44 @@
          *  3. GitHub Stats 图片（根据主题动态切换颜色）
          * ================================================================ */
         /**
-         * 处理统计图片加载结果：成功则显示图片隐藏 fallback，失败则保持 fallback
+         * 为统计图片设置 src 并处理加载结果
+         * 先绑事件再设 src，避免缓存命中时 onload 同步触发而丢失
          */
-        function handleStatsImgLoad(img, fallback) {
-            return function() {
+        function loadStatsImg(img, fallback, url) {
+            if (!img || !url) return;
+
+            // 重置为加载中状态
+            img.style.display = 'none';
+            if (fallback) {
+                fallback.textContent = fallback.getAttribute('data-loading-text') || '统计图加载中...';
+                fallback.classList.remove('hidden');
+            }
+
+            // 先绑定事件，再设置 src（避免竞态条件）
+            img.onload = function() {
                 img.style.display = '';
                 if (fallback) fallback.classList.add('hidden');
             };
-        }
-        function handleStatsImgError(img, fallback) {
-            return function() {
+            img.onerror = function() {
                 img.style.display = 'none';
-                if (fallback) fallback.classList.remove('hidden');
+                if (fallback) {
+                    fallback.textContent = '⚠️ 统计图加载失败，请稍后刷新';
+                    fallback.classList.remove('hidden');
+                }
             };
+
+            img.src = url;
+
+            // 处理缓存命中：图片在绑事件前已加载完成的情况
+            if (img.complete && img.naturalWidth > 0) {
+                img.style.display = '';
+                if (fallback) fallback.classList.add('hidden');
+            }
         }
 
         function updateGitHubStatsImages() {
             var isDark = html.getAttribute('data-theme') === 'dark';
             var textColor = isDark ? '86868b' : '6e6e73';
-            var iconColor = '0071e3';
-            var ringColor = '0071e3';
 
             var statsImg = document.getElementById('gh-stats-img');
             var langsImg = document.getElementById('gh-langs-img');
@@ -1275,23 +1280,21 @@
             var langsFallback = document.getElementById('gh-langs-fallback');
 
             if (statsImg) {
-                statsImg.src = 'https://github-readme-stats.vercel.app/api?username=WekiLee' +
+                var statsUrl = 'https://github-readme-stats.vercel.app/api?username=WekiLee' +
                     '&show_icons=true&hide_title=true&count_private=true&include_all_commits=true' +
                     '&theme=transparent&hide_border=true' +
                     '&text_color=' + textColor +
-                    '&icon_color=' + iconColor +
-                    '&ring_color=' + ringColor;
-                statsImg.onload = handleStatsImgLoad(statsImg, statsFallback);
-                statsImg.onerror = handleStatsImgError(statsImg, statsFallback);
+                    '&icon_color=0071e3' +
+                    '&ring_color=0071e3';
+                loadStatsImg(statsImg, statsFallback, statsUrl);
             }
             if (langsImg) {
-                langsImg.src = 'https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee' +
+                var langsUrl = 'https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee' +
                     '&layout=compact&hide_title=true' +
                     '&theme=transparent&hide_border=true' +
                     '&text_color=' + textColor +
-                    '&ring_color=' + ringColor;
-                langsImg.onload = handleStatsImgLoad(langsImg, langsFallback);
-                langsImg.onerror = handleStatsImgError(langsImg, langsFallback);
+                    '&ring_color=0071e3';
+                loadStatsImg(langsImg, langsFallback, langsUrl);
             }
         }
 
