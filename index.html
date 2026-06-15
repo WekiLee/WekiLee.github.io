@@ -1,589 +1,1255 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Weki Lee — AI 与开源开发者。专注 AI 教育（EduMind）和智能图像处理（ImageTransformer）工具开发。">
-    <meta name="keywords" content="Weki Lee, AI, Open Source, EduMind, ImageTransformer, 开发者, GitHub">
-    <meta name="author" content="Weki Lee">
-    <meta name="theme-color" content="#0b1120">
-    <meta property="og:title" content="Weki Lee · AI &amp; Open Source Developer">
-    <meta property="og:description" content="用代码构建智能工具 · 热爱分享 · 持续创造">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://wekilee.github.io">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Weki Lee — AI & Open Source Developer · 用代码构建智能工具 · EduMind / ImageTransformer" />
+    <meta name="keywords" content="Weki Lee, AI, Open Source, EduMind, ImageTransformer, 开发者, GitHub" />
+    <meta name="author" content="Weki Lee" />
+    <meta property="og:title" content="Weki Lee · AI &amp; Open Source Developer" />
+    <meta property="og:description" content="用代码构建智能工具 · 热爱分享 · 持续创造" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://wekilee.github.io" />
     <title>Weki Lee · AI &amp; Open Source Developer</title>
 
-    <!-- 图标：使用内联 SVG favicon（URL 编码 # 为 %23） -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- 字体预加载 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Preconnect 外部资源域名，减少 DNS / TCP 握手延迟 -->
+    <link rel="preconnect" href="https://github-readme-stats.vercel.app" crossorigin />
+    <link rel="preconnect" href="https://api.github.com" crossorigin />
 
     <style>
-        /* ============================================================
-           CSS 变量 — 亮/暗双主题色彩体系
-           ============================================================ */
+        /* ===================================================================
+         *  CSS Custom Properties — 设计 Token 集中管理
+         *  亮色模式定义在 :root，暗色模式覆盖在 [data-theme="dark"]
+         * =================================================================== */
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
+            /* ── 背景 ── */
+            --bg-primary: #ffffff;
+            --bg-alt: #f5f5f7;
             --bg-card: #ffffff;
-            --bg-card-hover: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border: #e2e8f0;
-            --accent: #6366f1;
-            --accent-light: #eef2ff;
-            --accent-glow: rgba(99, 102, 241, 0.15);
-            --tag-bg: #eef2ff;
-            --tag-text: #4338ca;
-            --hero-gradient: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
-            --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.08);
+
+            /* ── 边框 ── */
+            --border-primary: #e8e8ed;
+            --border-secondary: #d2d2d7;
+            --border-card-hover: #d2d2d7;
+
+            /* ── 文字 ── */
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --text-tertiary: #aeaeb2;
+            --text-card-desc: #515154;
+            --text-tag: #515154;
+
+            /* ── 品牌色 ── */
+            --color-brand: #0071e3;
+            --color-brand-hover: #0077ed;
+            --color-brand-bg: #e8f0fe;
+
+            /* ── 按钮 ── */
+            --btn-secondary-bg: #e8e8ed;
+            --btn-secondary-hover: #d2d2d7;
+            --btn-secondary-text: #1d1d1f;
+
+            /* ── 导航栏 ── */
+            --nav-bg: rgba(255,255,255,0.80);
+            --nav-border: rgba(0,0,0,0.08);
+            --nav-link-opacity: 0.56;
+
+            /* ── 阴影 ── */
+            --shadow-card-hover: 0 2px 12px rgba(0,0,0,0.04);
+
+            /* ── 头像光环 ── */
+            --avatar-ring-color: #f5f5f7;
+            --avatar-border-color: #ffffff;
+
+            /* ── 标签 ── */
+            --tag-bg: #f5f5f7;
+
+            /* ── Footer ── */
+            --footer-border: #e8e8ed;
+            --footer-link: #515154;
+            --footer-link-hover: #1d1d1f;
+            --footer-divider: #d2d2d7;
+
+            /* ── Section label ── */
+            --color-section-label: #6e6e73;
+
+            /* ── Tech Stack ── */
+            --tech-text: #515154;
+            --tech-heading: #6e6e73;
+
+            /* ── 社交品牌色（亮暗一致） ── */
+            --wechat-green: #07c160;
+            --xiaohongshu-red: #fe2c55;
+
+            /* ── 字号（响应式覆盖） ── */
+            --fs-hero: 52px;
+            --fs-section: 44px;
+            --fs-tagline: 24px;
         }
 
+        /* ── 暗色模式 Token 覆盖 ── */
         [data-theme="dark"] {
-            --bg-primary: #0b1120;
-            --bg-secondary: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border: #1e293b;
-            --accent: #818cf8;
-            --accent-light: #1e1b4b;
-            --accent-glow: rgba(129, 140, 248, 0.12);
-            --tag-bg: #1e1b4b;
-            --tag-text: #a5b4fc;
-            --hero-gradient: linear-gradient(135deg, #0f172a 0%, #0b1120 100%);
-            --card-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.4);
+            --bg-primary: #000000;
+            --bg-alt: #1d1d1f;
+            --bg-card: #1d1d1f;
+            --border-primary: #2d2d2f;
+            --border-secondary: #3d3d3f;
+            --border-card-hover: #3d3d3f;
+            --text-primary: #f5f5f7;
+            --text-secondary: #86868b;
+            --text-tertiary: #86868b;
+            --text-card-desc: #aeaeb2;
+            --text-tag: #aeaeb2;
+            --color-brand-bg: #1d3a5c;
+            --btn-secondary-bg: #2d2d2f;
+            --btn-secondary-hover: #3d3d3f;
+            --btn-secondary-text: #f5f5f7;
+            --nav-bg: rgba(0,0,0,0.80);
+            --nav-border: rgba(255,255,255,0.08);
+            --shadow-card-hover: 0 2px 12px rgba(255,255,255,0.03);
+            --avatar-ring-color: #1d1d1f;
+            --avatar-border-color: #000000;
+            --tag-bg: #2d2d2f;
+            --footer-border: #2d2d2f;
+            --footer-link: #aeaeb2;
+            --footer-link-hover: #f5f5f7;
+            --footer-divider: #3d3d3f;
+            --color-section-label: #86868b;
+            --tech-text: #aeaeb2;
+            --tech-heading: #86868b;
         }
 
-        /* ============================================================
-           基础重置与全局样式
-           ============================================================ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+
+        /* ===================================================================
+         *  Reset & Base
+         * =================================================================== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            transition: background 0.3s ease, color 0.3s ease;
-            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+            font-display: swap;
         }
 
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-        /* 容器 */
-        .container-page { max-width: 1024px; margin: 0 auto; padding: 0 1.5rem; }
-
-        /* ============================================================
-           主题切换按钮
-           ============================================================ */
-        .theme-toggle {
-            position: fixed; top: 1.25rem; right: 1.25rem; z-index: 50;
-            width: 44px; height: 44px; border-radius: 12px;
-            border: 1px solid var(--border); background: var(--bg-secondary);
-            color: var(--text-primary); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.25rem; transition: all 0.2s ease;
-            box-shadow: var(--card-shadow); backdrop-filter: blur(8px);
-        }
-        .theme-toggle:hover { transform: scale(1.05); border-color: var(--accent); }
-        .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-        /* ============================================================
-           Hero 区域
-           ============================================================ */
-        .hero-section {
-            min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
-            background: var(--hero-gradient); position: relative; overflow: hidden;
-        }
-        /* 背景光晕效果 */
-        .hero-section::before {
-            content: ''; position: absolute; top: -50%; right: -30%;
-            width: 600px; height: 600px; border-radius: 50%;
-            background: var(--accent-glow); filter: blur(80px); pointer-events: none;
-        }
-        .hero-section::after {
-            content: ''; position: absolute; bottom: -30%; left: -20%;
-            width: 400px; height: 400px; border-radius: 50%;
-            background: var(--accent-glow); filter: blur(60px); pointer-events: none;
+        a {
+            color: inherit;
+            text-decoration: none;
         }
 
-        /* 头像 */
-        .hero-avatar {
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 0 6px var(--bg-secondary), 0 0 0 9px var(--accent);
-            transition: transform 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem; font-weight: 800;
-            background: linear-gradient(135deg, #6366f1, #a78bfa);
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* ── Focus visible（键盘导航可见焦点环） ── */
+        :focus-visible {
+            outline: 2px solid var(--color-brand);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* ── 跳过导航链接（屏幕阅读器用） ── */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 16px;
+            z-index: 200;
+            padding: 8px 16px;
+            background: var(--color-brand);
             color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 980px;
+            transition: top 0.2s;
         }
-        .hero-avatar:hover { transform: scale(1.05); }
-
-        /* 渐变文字 */
-        .gradient-text {
-            background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .skip-link:focus {
+            top: 8px;
         }
 
-        /* ============================================================
-           项目卡片
-           ============================================================ */
-        .project-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-            padding: 1.75rem; box-shadow: var(--card-shadow);
-            transition: all 0.3s ease; position: relative; overflow: hidden;
-        }
-        /* 顶部滑入渐变色条 */
-        .project-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, var(--accent), #a78bfa, var(--accent));
-            transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease;
-        }
-        .project-card:hover::before { transform: scaleX(1); }
-        .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--card-shadow-hover);
-            border-color: var(--accent);
+
+        /* ===================================================================
+         *  自定义工具类（替代 Tailwind CDN，仅包含页面实际使用的类）
+         * =================================================================== */
+        .container-page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 22px;
         }
 
-        /* 项目标签 */
-        .project-tag {
-            display: inline-block; padding: 0.2rem 0.7rem; border-radius: 999px;
-            font-size: 0.75rem; font-weight: 500;
-            background: var(--tag-bg); color: var(--tag-text);
+        /* Grid */
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .gap-4 { gap: 16px; }
+        .gap-5 { gap: 20px; }
+        .gap-6 { gap: 24px; }
+        .gap-8 { gap: 32px; }
+
+        /* Flex */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+
+        /* Spacing */
+        .mt-auto { margin-top: auto; }
+        .mt-6 { margin-top: 24px; }
+        .mb-3 { margin-bottom: 12px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-14 { margin-bottom: 56px; }
+        .space-y-3 > * + * { margin-top: 12px; }
+
+        /* Text */
+        .text-center { text-align: center; }
+        .text-xs { font-size: 12px; }
+        .text-sm { font-size: 14px; }
+
+        /* Sizing */
+        .w-5 { width: 20px; }
+        .h-5 { height: 20px; }
+
+        /* ── 响应式 Grid / Flex ── */
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+            .md\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+            .md\:flex-row { flex-direction: row; }
         }
 
-        /* ============================================================
-           技术标签
-           ============================================================ */
-        .skill-badge {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            padding: 0.45rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 500;
-            background: var(--bg-card); border: 1px solid var(--border);
-            color: var(--text-secondary); transition: all 0.2s ease;
-        }
-        .skill-badge:hover {
-            border-color: var(--accent); color: var(--accent); transform: translateY(-2px);
-        }
 
-        /* ============================================================
-           统计卡片
-           ============================================================ */
-        .stat-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
-            padding: 1.5rem; text-align: center; transition: all 0.3s ease;
-        }
-        .stat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-
-        /* ============================================================
-           社交按钮
-           ============================================================ */
-        .social-btn {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            padding: 0.6rem 1.2rem; border-radius: 10px; font-size: 0.9rem; font-weight: 500;
-            background: var(--bg-secondary); border: 1px solid var(--border);
-            color: var(--text-secondary); transition: all 0.2s ease; text-decoration: none;
-            cursor: pointer;
-        }
-        .social-btn:hover {
-            border-color: var(--accent); color: var(--accent); transform: translateY(-1px);
-        }
-        .social-btn.primary {
-            background: var(--accent); color: white; border-color: var(--accent);
-        }
-        .social-btn.primary:hover { background: transparent; color: var(--accent); }
-        .social-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-        /* ============================================================
-           区块标题
-           ============================================================ */
-        .section-title {
-            font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;
-        }
-        .section-subtitle {
-            font-size: 0.95rem; color: var(--text-muted); text-align: center;
-            margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;
-        }
-        .divider {
-            width: 60px; height: 4px; border-radius: 2px;
-            background: linear-gradient(90deg, var(--accent), #a78bfa); margin: 1rem auto;
-        }
-
-        /* ============================================================
-           滚动渐入动画
-           ============================================================ */
+        /* ===================================================================
+         *  滚动渐入动画
+         * =================================================================== */
         .fade-in {
             opacity: 0;
-            transform: translateY(24px);
+            transform: translateY(20px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
         }
-        /* 子元素依次延迟 */
-        .fade-in-stagger > .fade-in:nth-child(1) { transition-delay: 0s; }
-        .fade-in-stagger > .fade-in:nth-child(2) { transition-delay: 0.1s; }
-        .fade-in-stagger > .fade-in:nth-child(3) { transition-delay: 0.2s; }
-        .fade-in-stagger > .fade-in:nth-child(4) { transition-delay: 0.3s; }
-        .fade-in-stagger > .fade-in:nth-child(5) { transition-delay: 0.4s; }
 
-        /* ============================================================
-           Footer
-           ============================================================ */
-        .footer {
-            border-top: 1px solid var(--border); padding: 2rem 0;
-            text-align: center; color: var(--text-muted); font-size: 0.85rem;
+
+        /* ===================================================================
+         *  Navigation Bar · 毛玻璃固定
+         * =================================================================== */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--nav-border);
         }
 
-        /* ============================================================
-           响应式断点 (< 768px)
-           ============================================================ */
+        .nav-inner {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 22px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-primary);
+            text-decoration: none;
+            opacity: var(--nav-link-opacity);
+            transition: opacity 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        .nav-links a:hover { opacity: 1; }
+
+        .theme-toggle-apple {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+            opacity: var(--nav-link-opacity);
+            padding: 4px 8px;
+            transition: opacity 0.2s;
+        }
+
+        .theme-toggle-apple:hover { opacity: 1; }
+
+        /* ── 汉堡菜单按钮 ── */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 36px;
+            height: 36px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            gap: 5px;
+            padding: 4px;
+            z-index: 110;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        /* 汉堡 → X 动画 */
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ── 移动端下拉菜单 ── */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 48px;
+            left: 0;
+            right: 0;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--nav-border);
+            padding: 16px 22px;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 99;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-menu a {
+            font-size: 15px;
+            color: var(--text-primary);
+            padding: 10px 0;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
+        .mobile-menu .mobile-theme-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-top: 1px solid var(--border-primary);
+            margin-top: 4px;
+        }
+
+        .mobile-menu .mobile-theme-row span {
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+
+        /* ===================================================================
+         *  Hero
+         * =================================================================== */
+        .hero-section {
+            padding: 160px 0 100px;
+            text-align: center;
+            background: var(--bg-primary);
+            transition: background 0.3s;
+        }
+
+        .hero-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0071e3, #40a9ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            color: #fff;
+            margin: 0 auto 28px;
+            border: 3px solid var(--avatar-border-color);
+            box-shadow: 0 0 0 6px var(--avatar-ring-color), 0 0 0 9px var(--color-brand);
+            transition: transform 0.3s ease, box-shadow 0.3s;
+        }
+
+        .hero-avatar:hover { transform: scale(1.04); }
+
+        .hero-section h1 {
+            font-size: var(--fs-hero);
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .hero-section .tagline {
+            font-size: var(--fs-tagline);
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            letter-spacing: 0.004em;
+        }
+
+        .hero-section .subhead {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .btn-apple {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 980px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .btn-apple-primary {
+            background: var(--color-brand);
+            color: #ffffff;
+        }
+
+        .btn-apple-primary:hover {
+            background: var(--color-brand-hover);
+        }
+
+        .btn-apple-secondary {
+            background: var(--btn-secondary-bg);
+            color: var(--btn-secondary-text);
+        }
+
+        .btn-apple-secondary:hover {
+            background: var(--btn-secondary-hover);
+        }
+
+
+        /* ===================================================================
+         *  Section 通用
+         * =================================================================== */
+        .section-block {
+            padding: 100px 0;
+            transition: background 0.3s;
+        }
+
+        .section-block.alt-bg {
+            background: var(--bg-alt);
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--color-section-label);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .section-title-apple {
+            font-size: var(--fs-section);
+            font-weight: 700;
+            letter-spacing: -0.012em;
+            text-align: center;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle-apple {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 56px;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+
+        /* ===================================================================
+         *  Project Card（Apple 风格）
+         * =================================================================== */
+        .project-card-apple {
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 36px;
+            border: 1px solid var(--border-primary);
+            transition: all 0.3s ease;
+        }
+
+        .project-card-apple:hover {
+            border-color: var(--border-card-hover);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .project-card-apple h3 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .project-card-apple .project-badge {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--color-brand);
+            background: var(--color-brand-bg);
+            padding: 3px 10px;
+            border-radius: 980px;
+            display: inline-block;
+            margin-bottom: 12px;
+            letter-spacing: 0.02em;
+        }
+
+        .project-card-apple .project-desc {
+            font-size: 15px;
+            color: var(--text-card-desc);
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .project-card-apple .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .project-card-apple .project-tags span {
+            font-size: 12px;
+            color: var(--text-tag);
+            background: var(--tag-bg);
+            padding: 4px 12px;
+            border-radius: 980px;
+        }
+
+        .project-card-apple .project-features {
+            font-size: 13px;
+            color: var(--text-secondary);
+            list-style: none;
+            padding: 0;
+            margin-bottom: 24px;
+            line-height: 2;
+        }
+
+        .project-card-apple .project-features li::before {
+            content: '— ';
+            color: var(--border-secondary);
+        }
+
+        .btn-project {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-brand);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .btn-project:hover { color: var(--color-brand-hover); }
+
+
+        /* ===================================================================
+         *  Tech Stack
+         * =================================================================== */
+        .tech-category h4 {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--tech-heading);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .tech-category ul {
+            color: var(--tech-text);
+            font-size: 14px;
+            list-style: none;
+            padding: 0;
+        }
+
+        [data-theme="dark"] .tech-category ul {
+            font-weight: 450;
+        }
+
+
+        /* ===================================================================
+         *  Contact Cards
+         * =================================================================== */
+        .contact-card {
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 32px 24px;
+            border: 1px solid var(--border-primary);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            border-color: var(--border-card-hover);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .contact-card .icon-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+
+        .contact-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .contact-card .account-name {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .qr-image {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: all 0.2s;
+        }
+
+
+        /* ===================================================================
+         *  Stats
+         * =================================================================== */
+        .stat-card-apple {
+            text-align: center;
+        }
+
+        .stat-card-apple .num {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            transition: color 0.3s;
+        }
+
+        .stat-card-apple .num.loading {
+            color: var(--text-tertiary);
+            font-size: 28px;
+        }
+
+        .stat-card-apple .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .stats-img-fallback {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            height: 150px;
+            background: var(--bg-card);
+            border: 1px dashed var(--border-primary);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            max-width: 100%;
+        }
+
+
+        /* ===================================================================
+         *  Footer
+         * =================================================================== */
+        .footer-apple {
+            border-top: 1px solid var(--footer-border);
+            padding: 24px 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .footer-apple a {
+            color: var(--footer-link);
+            text-decoration: none;
+        }
+
+        .footer-apple a:hover { color: var(--footer-link-hover); }
+
+        .footer-apple .divider-dot {
+            margin: 0 8px;
+            color: var(--footer-divider);
+        }
+
+
+        /* ===================================================================
+         *  SVG 图标
+         * =================================================================== */
+        .icon-github { width: 16px; height: 16px; fill: currentColor; }
+        .icon-arrow { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+
+        /* ===================================================================
+         *  响应式
+         * =================================================================== */
         @media (max-width: 768px) {
-            .hero-avatar { width: 80px; height: 80px; font-size: 2rem; }
-            .section-title { font-size: 1.4rem; }
-            .container-page { padding: 0 1rem; }
-            .project-card { padding: 1.25rem; }
-            .theme-toggle { top: 0.75rem; right: 0.75rem; width: 38px; height: 38px; font-size: 1rem; }
+            :root {
+                --fs-hero: 36px;
+                --fs-section: 32px;
+                --fs-tagline: 20px;
+            }
+
+            .hero-section { padding: 120px 0 70px; }
+            .section-block { padding: 70px 0; }
+            .project-card-apple { padding: 24px; }
+            .contact-card { padding: 24px 16px; }
+
+            /* 桌面导航隐藏，汉堡菜单显示 */
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .mobile-menu { display: flex; }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --fs-hero: 30px;
+                --fs-section: 26px;
+            }
+
+            .hero-section { padding: 100px 0 50px; }
+            .hero-buttons { gap: 10px; }
+            .btn-apple { padding: 8px 18px; font-size: 13px; }
+
+            .section-subtitle-apple {
+                font-size: 15px;
+                margin-bottom: 36px;
+            }
+
+            .project-card-apple { padding: 20px; }
+            .project-card-apple h3 { font-size: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- ============================================================
-         主题切换按钮
-         ============================================================ -->
-    <button class="theme-toggle" id="themeToggle" aria-label="切换亮暗主题" title="切换主题">
-        <span id="themeIcon" aria-hidden="true">🌙</span>
-    </button>
 
-    <!-- ============================================================
-         HERO · 全屏首屏
-         ============================================================ -->
-    <section class="hero-section" aria-labelledby="hero-heading">
-        <div class="container-page" style="position:relative;z-index:1;">
-            <div class="flex flex-col items-center text-center fade-in-stagger">
-                <!-- 头像 -->
-                <div class="fade-in mb-6">
-                    <div class="hero-avatar" aria-label="Weki Lee 头像">W</div>
+    <!-- ═══ 跳过导航链接（无障碍） ═══ -->
+    <a href="#main-content" class="skip-link">跳到主内容</a>
+
+    <!-- ═══ SVG 图标定义（全局复用） ═══ -->
+    <svg style="display:none;" aria-hidden="true">
+        <symbol id="icon-github" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+        </symbol>
+        <symbol id="icon-arrow" viewBox="0 0 12 12">
+            <path d="M2 6h8M6 2l4 4-4 4"/>
+        </symbol>
+        <symbol id="icon-github-footer" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+        </symbol>
+    </svg>
+
+
+    <!-- ═══ Navigation Bar ═══ -->
+    <header>
+        <nav class="nav-bar" aria-label="主导航">
+            <div class="nav-inner">
+                <a href="#" class="nav-logo" aria-label="返回首页">Weki Lee</a>
+                <div class="nav-links">
+                    <a href="#projects">项目</a>
+                    <a href="#tech">技术栈</a>
+                    <a href="#stats">动态</a>
+                    <a href="#contact">联系</a>
+                    <button class="theme-toggle-apple" id="themeToggle" aria-label="切换到暗色模式">
+                        <span id="themeIcon" aria-hidden="true">🌙</span>
+                    </button>
                 </div>
-                <!-- 名称 -->
-                <h1 id="hero-heading" class="fade-in text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
-                    Weki Lee
-                </h1>
-                <!-- 英文标语 -->
-                <p class="fade-in text-lg md:text-xl font-medium gradient-text mb-2">
-                    AI &amp; Open Source Developer
-                </p>
-                <!-- 中文描述 -->
-                <p class="fade-in text-base md:text-lg" style="color:var(--text-secondary);max-width:540px;margin-bottom:1.5rem;">
+                <!-- 汉堡菜单按钮（仅移动端可见） -->
+                <button class="hamburger" id="hamburgerBtn" aria-label="打开菜单" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <!-- 移动端下拉菜单 -->
+            <div class="mobile-menu" id="mobileMenu" role="menu" aria-label="移动端导航">
+                <a href="#projects" role="menuitem">项目</a>
+                <a href="#tech" role="menuitem">技术栈</a>
+                <a href="#stats" role="menuitem">动态</a>
+                <a href="#contact" role="menuitem">联系</a>
+                <div class="mobile-theme-row">
+                    <span>切换主题</span>
+                    <button class="theme-toggle-apple" id="themeToggleMobile" aria-label="切换到暗色模式">
+                        <span id="themeIconMobile" aria-hidden="true">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- ═══ 主内容区 ═══ -->
+    <main id="main-content">
+
+        <!-- ═══ HERO ═══ -->
+        <section class="hero-section" aria-labelledby="hero-heading">
+            <div class="container-page">
+                <div class="hero-avatar fade-in" aria-hidden="true">W</div>
+                <h1 id="hero-heading" class="fade-in">Weki Lee</h1>
+                <p class="tagline fade-in">AI &amp; Open Source Developer</p>
+                <p class="subhead fade-in">
                     用代码构建智能工具 · 热爱分享 · 持续创造
                 </p>
-                <!-- 分割线 -->
-                <div class="fade-in divider"></div>
-                <!-- 社交按钮 -->
-                <div class="fade-in flex flex-wrap justify-center gap-3 mt-4">
-                    <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" class="social-btn primary">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
-                        </svg>
+                <div class="hero-buttons fade-in">
+                    <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
+                        <svg class="icon-github" aria-hidden="true"><use href="#icon-github"/></svg>
                         GitHub
                     </a>
-                    <a href="mailto:wekilee.dev@gmail.com" class="social-btn">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
+                    <a href="#contact" class="btn-apple btn-apple-secondary">
                         联系我
                     </a>
-                    <a href="#projects" class="social-btn">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0l-4-4m4 4l-4 4"/>
-                        </svg>
-                        项目
+                    <a href="#projects" class="btn-apple btn-apple-secondary">
+                        查看项目
+                        <svg class="icon-arrow" aria-hidden="true"><use href="#icon-arrow"/></svg>
                     </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ============================================================
-         PROJECTS · 核心项目
-         ============================================================ -->
-    <section id="projects" style="padding:5rem 0;background:var(--bg-secondary);transition:background 0.3s ease;" aria-labelledby="projects-heading">
+
+        <!-- ═══ PROJECTS ═══ -->
+        <section id="projects" class="section-block alt-bg" aria-labelledby="projects-heading">
+            <div class="container-page">
+                <p class="section-label">Projects</p>
+                <h2 id="projects-heading" class="section-title-apple fade-in">核心项目</h2>
+                <p class="section-subtitle-apple fade-in">自研开源项目，覆盖 AI 教育与智能图像处理</p>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    <!-- EduMind -->
+                    <article class="project-card-apple flex flex-col fade-in">
+                        <div>
+                            <span class="project-badge">⭐ 主力项目</span>
+                            <h3>🧠 EduMind</h3>
+                            <p class="project-desc">
+                                开源的 AI 驱动个人导师——基于<strong>知识图谱</strong>从零到一帮学习者建立完整知识体系，融合教、练、评、拓一体化学习体验。
+                            </p>
+                            <div class="project-tags">
+                                <span>Python</span><span>FastAPI</span><span>React 18</span>
+                                <span>Neo4j</span><span>Docker</span><span>LLM</span>
+                            </div>
+                            <ul class="project-features">
+                                <li>知识图谱驱动 · 拓扑序学习路径</li>
+                                <li>领域感知教学策略</li>
+                                <li>AI 模型自由切换（Web UI 配置）</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="https://github.com/WekiLee/EduMind" target="_blank" rel="noopener noreferrer" class="btn-project">
+                                <svg class="icon-github" aria-hidden="true"><use href="#icon-github"/></svg>
+                                查看源码
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- ImageTransformer -->
+                    <article class="project-card-apple flex flex-col fade-in">
+                        <div>
+                            <span class="project-badge">实用工具</span>
+                            <h3>🖼️ ImageTransformer</h3>
+                            <p class="project-desc">
+                                AI 智能证件照生成工具。基于 ONNX 人像分割模型，支持<strong>一键换底</strong>、智能裁剪、文件大小控制、多规格排版打印。
+                            </p>
+                            <div class="project-tags">
+                                <span>C#</span><span>.NET 8</span><span>WPF</span><span>ONNX</span><span>AI</span>
+                            </div>
+                            <ul class="project-features">
+                                <li>双引擎 AI 抠图（RMBG-1.4 / u2netp）</li>
+                                <li>8+ 证件照规格 + 自定义</li>
+                                <li>排版打印（5寸 / 6寸 / A4）</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="https://github.com/WekiLee/image.transformer" target="_blank" rel="noopener noreferrer" class="btn-project">
+                                <svg class="icon-github" aria-hidden="true"><use href="#icon-github"/></svg>
+                                查看源码
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══ TECH STACK ═══ -->
+        <section id="tech" class="section-block" aria-labelledby="tech-heading">
+            <div class="container-page">
+                <p class="section-label">Tech Stack</p>
+                <h2 id="tech-heading" class="section-title-apple fade-in">技术栈</h2>
+                <p class="section-subtitle-apple fade-in">项目中主要使用的技术与工具</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="tech-category fade-in">
+                        <h4>后端</h4>
+                        <ul class="space-y-3">
+                            <li>Python</li><li>FastAPI</li><li>SQLAlchemy</li>
+                            <li>Neo4j</li><li>Redis</li><li>Docker</li>
+                        </ul>
+                    </div>
+                    <div class="tech-category fade-in">
+                        <h4>前端</h4>
+                        <ul class="space-y-3">
+                            <li>React 18</li><li>TypeScript</li>
+                            <li>Tailwind CSS</li><li>Zustand</li>
+                        </ul>
+                    </div>
+                    <div class="tech-category fade-in">
+                        <h4>桌面 &amp; AI</h4>
+                        <ul class="space-y-3">
+                            <li>C#</li><li>.NET 8</li><li>WPF</li>
+                            <li>ONNX</li><li>LlamaIndex</li><li>LiteLLM</li>
+                        </ul>
+                    </div>
+                    <div class="tech-category fade-in">
+                        <h4>DevOps</h4>
+                        <ul class="space-y-3">
+                            <li>Makefile</li><li>GitHub Actions</li>
+                            <li>PostgreSQL</li><li>Markdown</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══ GITHUB STATS ═══ -->
+        <section id="stats" class="section-block alt-bg" aria-labelledby="stats-heading">
+            <div class="container-page">
+                <p class="section-label">GitHub</p>
+                <h2 id="stats-heading" class="section-title-apple fade-in">开源动态</h2>
+                <p class="section-subtitle-apple fade-in">开源贡献与项目活跃度</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
+                    <div class="stat-card-apple fade-in">
+                        <div class="num loading" id="stat-stars">--</div>
+                        <div class="label">Stars</div>
+                    </div>
+                    <div class="stat-card-apple fade-in">
+                        <div class="num loading" id="stat-repos">--</div>
+                        <div class="label">Repositories</div>
+                    </div>
+                    <div class="stat-card-apple fade-in">
+                        <div class="num loading" id="stat-projects">--</div>
+                        <div class="label">自研项目</div>
+                    </div>
+                    <div class="stat-card-apple fade-in">
+                        <div class="num">🎯</div>
+                        <div class="label">Focusing</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 fade-in">
+                    <img id="gh-stats-img"
+                        src=""
+                        alt="WekiLee 的 GitHub 统计：代码提交、Star 数与贡献热力图"
+                        class="stats-img"
+                        loading="lazy"
+                        width="400" height="160"
+                        style="min-height:120px;"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                    <div class="stats-img-fallback">GitHub 统计图加载中...</div>
+
+                    <img id="gh-langs-img"
+                        src=""
+                        alt="WekiLee 最常用的编程语言分布"
+                        class="stats-img"
+                        loading="lazy"
+                        width="320" height="160"
+                        style="min-height:120px;"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                    <div class="stats-img-fallback">语言统计图加载中...</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══ CONTACT ═══ -->
+        <section id="contact" class="section-block" aria-labelledby="contact-heading">
+            <div class="container-page">
+                <p class="section-label">Contact</p>
+                <h2 id="contact-heading" class="section-title-apple fade-in">联系我</h2>
+                <p class="section-subtitle-apple fade-in">欢迎关注交流，获取最新项目动态与技术分享</p>
+
+                <div class="grid md:grid-cols-3 gap-5">
+
+                    <!-- 微信公众号 -->
+                    <div class="contact-card fade-in">
+                        <div class="icon-wrap" style="background:var(--wechat-green); color:#fff;">💬</div>
+                        <h4>微信公众号</h4>
+                        <p class="account-name">@WekiLee</p>
+                        <img
+                            src="res/1_gongzhonghao.jpg"
+                            alt="微信公众号二维码"
+                            class="qr-image"
+                            loading="lazy"
+                            width="120" height="120" />
+                    </div>
+
+                    <!-- 个人微信 -->
+                    <div class="contact-card fade-in">
+                        <div class="icon-wrap" style="background:var(--wechat-green); color:#fff;">✉️</div>
+                        <h4>个人微信</h4>
+                        <p class="account-name">WekiLee</p>
+                        <img
+                            src="res/2_gerenweixin.png"
+                            alt="个人微信二维码"
+                            class="qr-image"
+                            loading="lazy"
+                            width="120" height="120" />
+                    </div>
+
+                    <!-- 小红书 -->
+                    <div class="contact-card fade-in">
+                        <div class="icon-wrap" style="background:var(--xiaohongshu-red); color:#fff;">📕</div>
+                        <h4>小红书</h4>
+                        <p class="account-name">@WekiLee</p>
+                        <img
+                            src="res/3-xiaohongshu.png"
+                            alt="小红书二维码"
+                            class="qr-image"
+                            loading="lazy"
+                            width="120" height="120" />
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer-apple">
         <div class="container-page">
-            <h2 id="projects-heading" class="section-title fade-in">🚀 核心项目</h2>
-            <p class="section-subtitle fade-in">自研开源项目，覆盖 AI 教育与智能图像处理</p>
-            <div class="grid md:grid-cols-2 gap-6 fade-in-stagger">
-
-                <!-- EduMind 卡片 -->
-                <article class="project-card fade-in flex flex-col">
-                    <div class="flex items-start justify-between mb-4">
-                        <h3 class="text-xl font-bold" style="color:var(--text-primary);">🧠 EduMind</h3>
-                        <span class="project-tag">⭐ 主力项目</span>
-                    </div>
-                    <p class="text-sm mb-4" style="color:var(--text-secondary);line-height:1.7;">
-                        开源的 AI 驱动个人导师——基于<strong>知识图谱</strong>从零到一帮学习者建立完整知识体系，融合教、练、评、拓一体化学习体验。支持 DeepSeek / Ollama / OpenAI 自由切换。
-                    </p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="project-tag">Python</span>
-                        <span class="project-tag">FastAPI</span>
-                        <span class="project-tag">React 18</span>
-                        <span class="project-tag">Neo4j</span>
-                        <span class="project-tag">Docker</span>
-                        <span class="project-tag">LLM</span>
-                    </div>
-                    <ul class="text-xs space-y-1.5 mb-5" style="color:var(--text-muted);" aria-label="功能亮点">
-                        <li>✦ 知识图谱驱动 · 拓扑序学习路径</li>
-                        <li>✦ 领域感知教学策略</li>
-                        <li>✦ AI 模型自由切换（Web UI 配置）</li>
-                    </ul>
-                    <div class="mt-auto flex gap-3">
-                        <a href="https://github.com/WekiLee/EduMind" target="_blank" rel="noopener noreferrer" class="social-btn primary text-sm flex-1 justify-center">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
-                            </svg>
-                            查看源码
-                        </a>
-                    </div>
-                </article>
-
-                <!-- ImageTransformer 卡片 -->
-                <article class="project-card fade-in flex flex-col">
-                    <div class="flex items-start justify-between mb-4">
-                        <h3 class="text-xl font-bold" style="color:var(--text-primary);">🖼️ ImageTransformer</h3>
-                        <span class="project-tag">实用工具</span>
-                    </div>
-                    <p class="text-sm mb-4" style="color:var(--text-secondary);line-height:1.7;">
-                        AI 智能证件照生成工具。基于 ONNX 人像分割模型，支持<strong>一键换底</strong>、智能裁剪、文件大小控制、多规格排版打印。单文件发布，双击即用。
-                    </p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="project-tag">C#</span>
-                        <span class="project-tag">.NET 8</span>
-                        <span class="project-tag">WPF</span>
-                        <span class="project-tag">ONNX</span>
-                        <span class="project-tag">AI</span>
-                    </div>
-                    <ul class="text-xs space-y-1.5 mb-5" style="color:var(--text-muted);" aria-label="功能亮点">
-                        <li>✦ 双引擎 AI 抠图（RMBG-1.4 / u2netp）</li>
-                        <li>✦ 8+ 证件照规格 + 自定义</li>
-                        <li>✦ 排版打印（5寸 / 6寸 / A4）</li>
-                    </ul>
-                    <div class="mt-auto flex gap-3">
-                        <a href="https://github.com/WekiLee/image.transformer" target="_blank" rel="noopener noreferrer" class="social-btn primary text-sm flex-1 justify-center">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
-                            </svg>
-                            查看源码
-                        </a>
-                    </div>
-                </article>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         TECH STACK · 技术栈
-         ============================================================ -->
-    <section style="padding:5rem 0;background:var(--bg-primary);transition:background 0.3s ease;" aria-labelledby="tech-heading">
-        <div class="container-page">
-            <h2 id="tech-heading" class="section-title fade-in">🛠️ 技术栈</h2>
-            <p class="section-subtitle fade-in">项目中主要使用的技术与工具</p>
-
-            <!-- 后端 -->
-            <div class="fade-in mb-8">
-                <h4 class="text-sm font-semibold mb-3" style="color:var(--text-muted);letter-spacing:0.05em;text-transform:uppercase;">后端</h4>
-                <div class="flex flex-wrap gap-2.5">
-                    <span class="skill-badge">🐍 Python</span>
-                    <span class="skill-badge">⚡ FastAPI</span>
-                    <span class="skill-badge">🗄️ SQLAlchemy</span>
-                    <span class="skill-badge">🌐 Neo4j</span>
-                    <span class="skill-badge">📦 Redis</span>
-                    <span class="skill-badge">🐳 Docker</span>
-                </div>
-            </div>
-
-            <!-- 前端 -->
-            <div class="fade-in mb-8">
-                <h4 class="text-sm font-semibold mb-3" style="color:var(--text-muted);letter-spacing:0.05em;text-transform:uppercase;">前端</h4>
-                <div class="flex flex-wrap gap-2.5">
-                    <span class="skill-badge">⚛️ React 18</span>
-                    <span class="skill-badge">📘 TypeScript</span>
-                    <span class="skill-badge">🎨 Tailwind CSS</span>
-                    <span class="skill-badge">🔗 Zustand</span>
-                </div>
-            </div>
-
-            <!-- 桌面端 & AI -->
-            <div class="fade-in mb-8">
-                <h4 class="text-sm font-semibold mb-3" style="color:var(--text-muted);letter-spacing:0.05em;text-transform:uppercase;">桌面端 &amp; AI</h4>
-                <div class="flex flex-wrap gap-2.5">
-                    <span class="skill-badge">🖥️ C#</span>
-                    <span class="skill-badge">🔷 .NET 8</span>
-                    <span class="skill-badge">🪟 WPF</span>
-                    <span class="skill-badge">🧠 ONNX</span>
-                    <span class="skill-badge">🤖 LlamaIndex</span>
-                    <span class="skill-badge">🔌 LiteLLM</span>
-                </div>
-            </div>
-
-            <!-- DevOps -->
-            <div class="fade-in">
-                <h4 class="text-sm font-semibold mb-3" style="color:var(--text-muted);letter-spacing:0.05em;text-transform:uppercase;">DevOps</h4>
-                <div class="flex flex-wrap gap-2.5">
-                    <span class="skill-badge">📋 Makefile</span>
-                    <span class="skill-badge">🔧 GitHub Actions</span>
-                    <span class="skill-badge">🐘 PostgreSQL</span>
-                    <span class="skill-badge">📝 Markdown</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         GITHUB STATS · GitHub 动态
-         ============================================================ -->
-    <section style="padding:5rem 0;background:var(--bg-secondary);transition:background 0.3s ease;" aria-labelledby="stats-heading">
-        <div class="container-page">
-            <h2 id="stats-heading" class="section-title fade-in">📊 GitHub 动态</h2>
-            <p class="section-subtitle fade-in">开源贡献与项目活跃度</p>
-
-            <!-- 统计卡片 — 数字通过 GitHub API 动态获取 -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 fade-in-stagger">
-                <div class="stat-card fade-in">
-                    <div class="text-2xl font-bold gradient-text mb-1" id="stat-stars">--</div>
-                    <div class="text-xs" style="color:var(--text-muted);">Stars</div>
-                </div>
-                <div class="stat-card fade-in">
-                    <div class="text-2xl font-bold gradient-text mb-1" id="stat-repos">--</div>
-                    <div class="text-xs" style="color:var(--text-muted);">Repositories</div>
-                </div>
-                <div class="stat-card fade-in">
-                    <div class="text-2xl font-bold gradient-text mb-1" id="stat-projects">--</div>
-                    <div class="text-xs" style="color:var(--text-muted);">自研项目</div>
-                </div>
-                <div class="stat-card fade-in">
-                    <div class="text-2xl font-bold gradient-text mb-1">🎯</div>
-                    <div class="text-xs" style="color:var(--text-muted);">Focusing</div>
-                </div>
-            </div>
-
-            <!-- GitHub Readme Stats 图片卡片 -->
-            <div class="fade-in flex flex-col md:flex-row items-center justify-center gap-6">
-                <img id="gh-stats-img"
-                     src=""
-                     alt="GitHub 统计"
-                     class="max-w-full h-auto"
-                     loading="lazy"
-                     style="min-height:120px;">
-                <img id="gh-langs-img"
-                     src=""
-                     alt="最常用语言"
-                     class="max-w-full h-auto"
-                     loading="lazy"
-                     style="min-height:120px;">
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         FOOTER
-         ============================================================ -->
-    <footer class="footer" role="contentinfo">
-        <div class="container-page">
-            <div class="flex justify-center gap-4 mb-4">
-                <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer"
-                   style="color:var(--text-muted);transition:color 0.2s;"
-                   onmouseover="this.style.color='var(--accent)'"
-                   onmouseout="this.style.color=''"
-                   aria-label="WekiLee 的 GitHub 主页">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
-                    </svg>
+            <div class="flex justify-center gap-4 mb-3">
+                <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" aria-label="Weki Lee 的 GitHub 主页"
+                   style="color:var(--text-secondary);transition:color 0.2s;"
+                   onmouseover="this.style.color='var(--color-brand)'"
+                   onmouseout="this.style.color='var(--text-secondary)'">
+                    <svg class="w-5 h-5" aria-hidden="true"><use href="#icon-github-footer"/></svg>
                 </a>
             </div>
-            <p style="margin-bottom:0.3rem;">
+            <p style="margin-bottom:2px;">
                 © <span id="footerYear">2026</span> Weki Lee.
-                <span style="color:var(--text-muted);">Built with ❤️ and Open Source.</span>
+                <span style="color:var(--text-tertiary);">Built with ❤️ and Open Source.</span>
             </p>
-            <p style="font-size:0.78rem;">
-                <span class="font-mono" style="opacity:0.5;">wekilee.github.io</span>
-            </p>
+            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;opacity:0.4;">wekilee.github.io</p>
         </div>
     </footer>
 
-    <!-- ============================================================
-         JavaScript — 主题切换 / GitHub API 动态统计 / 滚动动画
-         ============================================================ -->
+
+    <!-- ═══ JavaScript：主题切换 + 移动端菜单 + GitHub API + 滚动动画 ═══ -->
     <script>
     (function() {
         'use strict';
 
-        // ============================================================
-        // 1. 主题切换逻辑
-        // ============================================================
         var html = document.documentElement;
-        var toggle = document.getElementById('themeToggle');
-        var icon = document.getElementById('themeIcon');
 
-        /**
-         * 应用主题
-         * @param {'dark'|'light'} theme - 主题名称
-         */
-        function applyTheme(theme) {
-            html.setAttribute('data-theme', theme);
-            icon.textContent = theme === 'dark' ? '🌙' : '☀️';
-            localStorage.setItem('theme', theme);
+        /* ================================================================
+         *  1. 主题管理
+         * ================================================================ */
+        var saved = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', saved);
+
+        function setThemeUI(theme) {
+            var isDark = theme === 'dark';
+            // 桌面端切换按钮
+            var icon = document.getElementById('themeIcon');
+            var toggle = document.getElementById('themeToggle');
+            if (icon) icon.textContent = isDark ? '🌙' : '☀️';
+            if (toggle) toggle.setAttribute('aria-label', isDark ? '切换到亮色模式' : '切换到暗色模式');
+            // 移动端切换按钮
+            var iconM = document.getElementById('themeIconMobile');
+            var toggleM = document.getElementById('themeToggleMobile');
+            if (iconM) iconM.textContent = isDark ? '🌙' : '☀️';
+            if (toggleM) toggleM.setAttribute('aria-label', isDark ? '切换到亮色模式' : '切换到暗色模式');
 
             // 更新浏览器 chrome 主题色（移动端地址栏颜色）
-            var metaTheme = document.querySelector('meta[name="theme-color"]');
-            if (metaTheme) {
-                metaTheme.setAttribute('content', theme === 'dark' ? '#0b1120' : '#f8fafc');
+            var metaThemeLight = document.querySelector('meta[media="(prefers-color-scheme: light)"]');
+            var metaThemeDark  = document.querySelector('meta[media="(prefers-color-scheme: dark)"]');
+            // 对手动切换，我们更新不带 media 查询的 meta 来覆盖
+            var metaGeneric = document.querySelector('meta[name="theme-color"]:not([media])');
+            if (!metaGeneric) {
+                metaGeneric = document.createElement('meta');
+                metaGeneric.name = 'theme-color';
+                document.head.appendChild(metaGeneric);
             }
+            metaGeneric.content = isDark ? '#000000' : '#ffffff';
+            // 也禁用/启用带 media 的 meta
+            if (metaThemeLight) metaThemeLight.removeAttribute('content');
+            if (metaThemeDark)  metaThemeDark.removeAttribute('content');
 
-            // 更新 GitHub Stats 图片主题参数后重新加载
+            // 更新 GitHub Stats 图片主题
             updateGitHubStatsImages();
         }
+        setThemeUI(saved);
 
-        // 初始化：读取本地存储或默认暗色
-        var savedTheme = localStorage.getItem('theme') || 'dark';
-        applyTheme(savedTheme);
-
-        // 按钮点击切换
-        toggle.addEventListener('click', function() {
+        function toggleTheme() {
             var current = html.getAttribute('data-theme');
             var next = current === 'dark' ? 'light' : 'dark';
-            applyTheme(next);
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            setThemeUI(next);
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+
+        /* ================================================================
+         *  2. 移动端汉堡菜单
+         * ================================================================ */
+        var hamburger = document.getElementById('hamburgerBtn');
+        var mobileMenu = document.getElementById('mobileMenu');
+        var menuOpen = false;
+
+        function openMenu() {
+            menuOpen = true;
+            hamburger.classList.add('open');
+            mobileMenu.classList.add('open');
+            hamburger.setAttribute('aria-label', '关闭菜单');
+            hamburger.setAttribute('aria-expanded', 'true');
+            var firstLink = mobileMenu.querySelector('a');
+            if (firstLink) setTimeout(function() { firstLink.focus(); }, 100);
+        }
+
+        function closeMenu() {
+            menuOpen = false;
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            hamburger.setAttribute('aria-label', '打开菜单');
+            hamburger.setAttribute('aria-expanded', 'false');
+            hamburger.focus();
+        }
+
+        hamburger.addEventListener('click', function() {
+            menuOpen ? closeMenu() : openMenu();
         });
 
-        // ============================================================
-        // 2. GitHub API — 动态获取用户统计数据
-        // ============================================================
+        var menuLinks = mobileMenu.querySelectorAll('a[role="menuitem"]');
+        menuLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                closeMenu();
+            });
+        });
 
-        /**
-         * 根据当前主题更新 GitHub Readme Stats 图片的 src
-         * 亮色模式使用深色文字，暗色模式使用浅色文字
-         */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && menuOpen) closeMenu();
+        });
+
+        document.addEventListener('click', function(e) {
+            if (menuOpen && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
+
+        /* ================================================================
+         *  3. GitHub Stats 图片（根据主题动态切换颜色）
+         * ================================================================ */
         function updateGitHubStatsImages() {
             var isDark = html.getAttribute('data-theme') === 'dark';
-            var textColor = isDark ? '94a3b8' : '475569';
-            var iconColor = '6366f1';
-            var ringColor = '6366f1';
+            var textColor = isDark ? '86868b' : '6e6e73';
+            var iconColor = '0071e3';
+            var ringColor = '0071e3';
 
             var statsImg = document.getElementById('gh-stats-img');
             var langsImg = document.getElementById('gh-langs-img');
@@ -605,12 +1271,11 @@
             }
         }
 
-        /**
-         * 通过 GitHub REST API 获取用户公开信息
-         * 用于填充统计卡片中的 Stars、Repos、自研项目
-         */
+
+        /* ================================================================
+         *  4. GitHub API — 动态获取用户统计数据
+         * ================================================================ */
         function fetchGitHubStats() {
-            // 并行请求用户信息和仓库列表
             Promise.all([
                 fetch('https://api.github.com/users/WekiLee').then(function(r) { return r.json(); }),
                 fetch('https://api.github.com/users/WekiLee/repos?per_page=100&sort=updated').then(function(r) { return r.json(); })
@@ -618,41 +1283,36 @@
                 var user = results[0];
                 var repos = Array.isArray(results[1]) ? results[1] : [];
 
-                // 计算总 Stars
                 var totalStars = repos.reduce(function(sum, repo) {
                     return sum + (repo.stargazers_count || 0);
                 }, 0);
 
-                // 计算自研项目数（排除 fork 仓库）
                 var ownRepos = repos.filter(function(r) { return !r.fork; });
 
-                // 更新 DOM
-                var starsEl = document.getElementById('stat-stars');
-                var reposEl = document.getElementById('stat-repos');
-                var projectsEl = document.getElementById('stat-projects');
+                var starsEl  = document.getElementById('stat-stars');
+                var reposEl  = document.getElementById('stat-repos');
+                var projsEl  = document.getElementById('stat-projects');
 
-                if (starsEl) starsEl.textContent = totalStars;
-                if (reposEl) reposEl.textContent = user.public_repos || '--';
-                if (projectsEl) projectsEl.textContent = ownRepos.length;
+                if (starsEl) { starsEl.textContent = totalStars; starsEl.classList.remove('loading'); }
+                if (reposEl) { reposEl.textContent = user.public_repos || '--'; reposEl.classList.remove('loading'); }
+                if (projsEl) { projsEl.textContent = ownRepos.length; projsEl.classList.remove('loading'); }
             }).catch(function(err) {
-                // API 请求失败时使用静态默认值
                 console.warn('GitHub API 请求失败，使用默认统计值:', err.message);
                 var starsEl = document.getElementById('stat-stars');
                 var reposEl = document.getElementById('stat-repos');
-                var projectsEl = document.getElementById('stat-projects');
-                if (starsEl) starsEl.textContent = '17';
-                if (reposEl) reposEl.textContent = '16';
-                if (projectsEl) projectsEl.textContent = '2';
+                var projsEl = document.getElementById('stat-projects');
+                if (starsEl) { starsEl.textContent = '17'; starsEl.classList.remove('loading'); }
+                if (reposEl) { reposEl.textContent = '16'; reposEl.classList.remove('loading'); }
+                if (projsEl) { projsEl.textContent = '2';  projsEl.classList.remove('loading'); }
             });
         }
 
-        // ============================================================
-        // 3. 滚动渐入动画 — Intersection Observer
-        // ============================================================
+
+        /* ================================================================
+         *  5. 滚动渐入动画 — Intersection Observer
+         * ================================================================ */
         function initScrollAnimations() {
-            // 检测是否支持 IntersectionObserver
             if (!('IntersectionObserver' in window)) {
-                // 不支持的浏览器直接显示所有元素
                 var allFadeEls = document.querySelectorAll('.fade-in');
                 for (var i = 0; i < allFadeEls.length; i++) {
                     allFadeEls[i].classList.add('visible');
@@ -664,42 +1324,32 @@
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        // 元素进入视口后取消观察，避免重复触发
                         observer.unobserve(entry.target);
                     }
                 });
             }, {
-                root: null,       // 相对于视口
-                threshold: 0.1,   // 10% 可见时触发
-                rootMargin: '0px 0px -30px 0px' // 底部提前 30px 触发
+                root: null,
+                threshold: 0.08,
+                rootMargin: '0px 0px -20px 0px'
             });
 
-            // 观察所有带 fade-in 类的元素
             var fadeElements = document.querySelectorAll('.fade-in');
             for (var j = 0; j < fadeElements.length; j++) {
                 observer.observe(fadeElements[j]);
             }
         }
 
-        // ============================================================
-        // 4. 页面初始化
-        // ============================================================
+
+        /* ================================================================
+         *  6. 页面初始化
+         * ================================================================ */
         function init() {
-            // 设置页脚年份
-            var yearEl = document.getElementById('footerYear');
-            if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-            // 加载 GitHub 统计图片
+            document.getElementById('footerYear').textContent = new Date().getFullYear();
             updateGitHubStatsImages();
-
-            // 获取动态统计数据
             fetchGitHubStats();
-
-            // 初始化滚动渐入动画
             initScrollAnimations();
         }
 
-        // DOM 就绪后执行
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
@@ -708,5 +1358,6 @@
 
     })();
     </script>
+
 </body>
 </html>
