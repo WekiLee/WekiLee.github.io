@@ -733,7 +733,7 @@
         }
 
         .stats-img-fallback {
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             height: 150px;
@@ -743,6 +743,9 @@
             color: var(--text-secondary);
             font-size: 13px;
             max-width: 100%;
+        }
+        .stats-img-fallback.hidden {
+            display: none;
         }
 
 
@@ -1037,25 +1040,24 @@
                 </div>
 
                 <div class="flex flex-col md:flex-row items-center justify-center gap-6 fade-in">
+                    <!-- 统计图：初始 src 用透明占位图，真实 src 由 JS 动态设置 -->
                     <img id="gh-stats-img"
-                        src=""
+                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                         alt="WekiLee 的 GitHub 统计：代码提交、Star 数与贡献热力图"
                         class="stats-img"
                         loading="lazy"
                         width="400" height="160"
-                        style="min-height:120px;"
-                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                    <div class="stats-img-fallback">GitHub 统计图加载中...</div>
+                        style="min-height:120px;" />
+                    <div class="stats-img-fallback" id="gh-stats-fallback">GitHub 统计图加载中...</div>
 
                     <img id="gh-langs-img"
-                        src=""
+                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                         alt="WekiLee 最常用的编程语言分布"
                         class="stats-img"
                         loading="lazy"
                         width="320" height="160"
-                        style="min-height:120px;"
-                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                    <div class="stats-img-fallback">语言统计图加载中...</div>
+                        style="min-height:120px;" />
+                    <div class="stats-img-fallback" id="gh-langs-fallback">语言统计图加载中...</div>
                 </div>
             </div>
         </section>
@@ -1245,6 +1247,22 @@
         /* ================================================================
          *  3. GitHub Stats 图片（根据主题动态切换颜色）
          * ================================================================ */
+        /**
+         * 处理统计图片加载结果：成功则显示图片隐藏 fallback，失败则保持 fallback
+         */
+        function handleStatsImgLoad(img, fallback) {
+            return function() {
+                img.style.display = '';
+                if (fallback) fallback.classList.add('hidden');
+            };
+        }
+        function handleStatsImgError(img, fallback) {
+            return function() {
+                img.style.display = 'none';
+                if (fallback) fallback.classList.remove('hidden');
+            };
+        }
+
         function updateGitHubStatsImages() {
             var isDark = html.getAttribute('data-theme') === 'dark';
             var textColor = isDark ? '86868b' : '6e6e73';
@@ -1253,6 +1271,8 @@
 
             var statsImg = document.getElementById('gh-stats-img');
             var langsImg = document.getElementById('gh-langs-img');
+            var statsFallback = document.getElementById('gh-stats-fallback');
+            var langsFallback = document.getElementById('gh-langs-fallback');
 
             if (statsImg) {
                 statsImg.src = 'https://github-readme-stats.vercel.app/api?username=WekiLee' +
@@ -1261,6 +1281,8 @@
                     '&text_color=' + textColor +
                     '&icon_color=' + iconColor +
                     '&ring_color=' + ringColor;
+                statsImg.onload = handleStatsImgLoad(statsImg, statsFallback);
+                statsImg.onerror = handleStatsImgError(statsImg, statsFallback);
             }
             if (langsImg) {
                 langsImg.src = 'https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee' +
@@ -1268,6 +1290,8 @@
                     '&theme=transparent&hide_border=true' +
                     '&text_color=' + textColor +
                     '&ring_color=' + ringColor;
+                langsImg.onload = handleStatsImgLoad(langsImg, langsFallback);
+                langsImg.onerror = handleStatsImgError(langsImg, langsFallback);
             }
         }
 
