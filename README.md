@@ -1,6 +1,6 @@
 # WekiLee.github.io
 
-这是 Weki Lee 的 GitHub Pages 个人主页仓库，使用 Vite 构建的静态站点，用于展示作品、技术栈、GitHub 动态与联系方式。
+人主页仓库，使用 Vite 构建的静态站点，用于展示作品、技术栈、GitHub 动态与联系方式。
 
 ## 当前展示作品
 
@@ -32,12 +32,3 @@ npm run build
 
 构建产物输出到 `dist/` 目录。
 
-## 最新校准
-
-- 数据来源：GitHub 公开 API 与当前仓库文件。
-- 最后校准日期：2026-06-24。
-- 公开仓库：19；当前展示自有项目：5；公开 Star：0。
-
-## 部署
-
-push 到 `main` 分支后，GitHub Actions 会自动构建并部署到 GitHub Pages。
