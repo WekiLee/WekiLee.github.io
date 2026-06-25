@@ -1,0 +1,20 @@
+{
+  "categories": [
+    {
+      "title": "AI & 后端",
+      "items": ["Python", "FastAPI", "Neo4j", "Docker", "LLM", "LlamaIndex"]
+    },
+    {
+      "title": "前端 & 页面",
+      "items": ["HTML", "CSS", "JavaScript", "React 18", "TypeScript", "Tailwind CSS"]
+    },
+    {
+      "title": "桌面 & 图像",
+      "items": ["C#", ".NET 8", "WPF", "ONNX", "RMBG-1.4", "u2netp"]
+    },
+    {
+      "title": "Agent 工作流",
+      "items": ["Skill", "需求交付", "TDD", "经验沉淀", "GitHub Pages", "Markdown"]
+    }
+  ]
+}

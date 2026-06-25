@@ -1,0 +1,72 @@
+{
+  "lastUpdated": "2026-06-24",
+  "items": [
+    {
+      "id": "edumind",
+      "name": "EduMind",
+      "emoji": "🧠",
+      "badge": "⭐ 主力项目",
+      "description": "学习路径不该碎片化。知识图谱 + AI 导师，让教、练、评、拓形成闭环。",
+      "tags": ["Python", "FastAPI", "React 18", "Neo4j", "Docker", "LLM"],
+      "features": [
+        "知识图谱驱动，拓扑序学习路径",
+        "领域感知，因材施教",
+        "模型自由切换，无厂商锁定"
+      ],
+      "github": "https://github.com/WekiLee/EduMind"
+    },
+    {
+      "id": "image-transformer",
+      "name": "ImageTransformer",
+      "emoji": "🖼️",
+      "badge": "实用工具",
+      "description": "证件照不该那么麻烦。一键换底、裁剪、压缩、排版打印。",
+      "tags": ["C#", ".NET 8", "WPF", "ONNX", "AI"],
+      "features": [
+        "双引擎 AI 抠图，RMBG-1.4 / u2netp",
+        "8+ 标准规格，支持自定义",
+        "5寸 / 6寸 / A4 排版打印"
+      ],
+      "github": "https://github.com/WekiLee/image.transformer"
+    },
+    {
+      "id": "weixin-image-zoom",
+      "name": "weixin.image.zoom",
+      "emoji": "🔍",
+      "badge": "近期活跃",
+      "description": "公众号文章图片太小？轻量脚本，点击即放大。",
+      "tags": ["JavaScript", "微信公众号", "内容工具"],
+      "features": [
+        "点击即放大，零依赖注入",
+        "轻量脚本，快速迭代"
+      ],
+      "github": "https://github.com/WekiLee/weixin.image.zoom"
+    },
+    {
+      "id": "delivery-loop",
+      "name": "delivery-loop",
+      "emoji": "🚚",
+      "badge": "Agent 工作流",
+      "description": "需求澄清 → 技术方案 → TDD 实现 → 验收 → 发布观察。端到端交付，每一步都有标准。",
+      "tags": ["JavaScript", "Skill", "TDD", "交付闭环"],
+      "features": [
+        "全流程闭环，证据驱动",
+        "验收标准明确，拒绝模糊"
+      ],
+      "github": "https://github.com/WekiLee/delivery-loop"
+    },
+    {
+      "id": "lessons-evolve",
+      "name": "lessons-evolve",
+      "emoji": "🧩",
+      "badge": "经验沉淀",
+      "description": "踩过的坑，不再重复。教训 → 模式 → 本能，经验的分层进化。",
+      "tags": ["JavaScript", "Multi-Agent", "知识沉淀"],
+      "features": [
+        "分层沉淀：临时修复 → 系统预防",
+        "故障复盘转化为可执行规则"
+      ],
+      "github": "https://github.com/WekiLee/lessons-evolve"
+    }
+  ]
+}

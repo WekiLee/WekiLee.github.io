@@ -1,0 +1,26 @@
+{
+  "name": "wekilee.github.io",
+  "version": "2.2.0",
+  "description": "Weki Lee 的 GitHub Pages 个人主页",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WekiLee/WekiLee.github.io.git"
+  },
+  "keywords": [
+    "github-pages",
+    "personal-website",
+    "portfolio"
+  ],
+  "author": "Weki Lee",
+  "license": "MIT",
+  "homepage": "https://wekilee.github.io",
+  "devDependencies": {
+    "terser": "^5.48.0",
+    "vite": "^5.3.0"
+  }
+}
