@@ -142,7 +142,8 @@
 
         function updateGitHubStatsImages() {
             var isDark = html.getAttribute('data-theme') === 'dark';
-            var textColor = isDark ? '86868b' : '6e6e73';
+            var themeSuffix = isDark ? 'dark' : 'light';
+            var cacheBuster = '?v=' + new Date().toISOString().slice(0, 10);
 
             var statsImg = document.getElementById('gh-stats-img');
             var langsImg = document.getElementById('gh-langs-img');
@@ -150,20 +151,11 @@
             var langsFallback = document.getElementById('gh-langs-fallback');
 
             if (statsImg) {
-                var statsUrl = 'https://github-readme-stats.vercel.app/api?username=WekiLee' +
-                    '&show_icons=true&hide_title=true&count_private=true&include_all_commits=true' +
-                    '&theme=transparent&hide_border=true' +
-                    '&text_color=' + textColor +
-                    '&icon_color=0071e3' +
-                    '&ring_color=0071e3';
+                var statsUrl = '/assets/stats/github-stats-' + themeSuffix + '.svg' + cacheBuster;
                 loadStatsImg(statsImg, statsFallback, statsUrl);
             }
             if (langsImg) {
-                var langsUrl = 'https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee' +
-                    '&layout=compact&hide_title=true' +
-                    '&theme=transparent&hide_border=true' +
-                    '&text_color=' + textColor +
-                    '&ring_color=0071e3';
+                var langsUrl = '/assets/stats/top-langs-' + themeSuffix + '.svg' + cacheBuster;
                 loadStatsImg(langsImg, langsFallback, langsUrl);
             }
         }
