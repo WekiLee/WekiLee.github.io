@@ -295,7 +295,7 @@
                     items += '<li>' + escapeHtml(c.items[j]) + '</li>';
                 }
                 markup += '<div class="tech-category fade-in">' +
-                    '<h4>' + escapeHtml(c.title) + '</h4>' +
+                    '<h3>' + escapeHtml(c.title) + '</h3>' +
                     '<ul class="space-y-3">' + items + '</ul>' +
                 '</div>';
             }

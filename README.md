@@ -1,8 +1,7 @@
 # WekiLee.github.io
 
-人主页仓库，使用 Vite 构建的静态站点，用于展示作品、技术栈、GitHub 动态与联系方式。
 
-## 当前展示作品
+## 作品
 
 - EduMind：知识图谱 + AI 导师，让学习路径不再碎片化。
 - image.transformer：AI 证件照处理工具，支持换底、裁剪、压缩、排版打印。
@@ -30,5 +29,4 @@ npm run dev
 npm run build
 ```
 
-构建产物输出到 `dist/` 目录。
 

@@ -16,7 +16,7 @@
             /* ── 文字 ── */
             --text-primary: #1d1d1f;
             --text-secondary: #6e6e73;
-            --text-tertiary: #aeaeb2;
+            --text-tertiary: #757575;
             --text-card-desc: #515154;
             --text-tag: #515154;
 
@@ -33,7 +33,7 @@
             /* ── 导航栏 ── */
             --nav-bg: rgba(255,255,255,0.80);
             --nav-border: rgba(0,0,0,0.08);
-            --nav-link-opacity: 0.56;
+            --nav-link-opacity: 0.65;
 
             /* ── 阴影 ── */
             --shadow-card-hover: 0 2px 12px rgba(0,0,0,0.04);
@@ -609,7 +609,7 @@
         /* ===================================================================
          *  Tech Stack
          * =================================================================== */
-        .tech-category h4 {
+        .tech-category h3 {
             font-size: 12px;
             font-weight: 600;
             letter-spacing: 0.08em;
@@ -658,7 +658,7 @@
             margin: 0 auto 16px;
         }
 
-        .contact-card h4 {
+        .contact-card h3 {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 4px;
