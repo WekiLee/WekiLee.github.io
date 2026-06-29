@@ -158,6 +158,7 @@
     border: 1px solid var(--border-primary);
     border-radius: 18px;
     padding: 28px;
+    text-align: center;
     transition: all 0.3s ease;
 }
 
@@ -179,6 +180,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    justify-content: center;
 }
 
 .pd-arch-tags span {
@@ -215,6 +217,7 @@
     border: 1px solid var(--border-primary);
     border-radius: 18px;
     padding: 32px;
+    text-align: center;
     transition: all 0.3s ease;
 }
 
@@ -260,6 +263,7 @@
     border: 1px solid var(--border-primary);
     border-radius: 18px;
     padding: 28px;
+    text-align: center;
     transition: all 0.4s ease;
 }
 
@@ -276,6 +280,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    justify-content: center;
 }
 
 .pd-tech-tags span {
