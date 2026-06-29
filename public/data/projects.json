@@ -6,6 +6,7 @@
       "name": "EduMind",
       "emoji": "🧠",
       "badge": "⭐ 主力项目",
+      "tier": "primary",
       "description": "学习路径不该碎片化。知识图谱 + AI 导师，让教、练、评、拓形成闭环。",
       "tags": ["Python", "FastAPI", "React 18", "Neo4j", "Docker", "LLM"],
       "features": [
@@ -13,13 +14,38 @@
         "领域感知，因材施教",
         "模型自由切换，无厂商锁定"
       ],
-      "github": "https://github.com/WekiLee/EduMind"
+      "github": "https://github.com/WekiLee/EduMind",
+      "detail": {
+        "subtitle": "开源 AI 驱动个人导师",
+        "overview": "EduMind 是一个开源的 AI 驱动个人学习系统。核心理念是：学习应该有一条清晰的路径。它通过知识图谱将零散的知识点组织成可导航的拓扑结构，再结合 AI 导师的个性化引导，让每个人都能从零到一建立起完整的知识体系。",
+        "architecture": {
+          "description": "EduMind 采用前后端分离架构，后端以 FastAPI 为核心，Neo4j 存储知识图谱，前端基于 React 18 构建交互式学习界面。",
+          "layers": [
+            { "name": "前端层", "items": ["React 18", "TypeScript", "知识图谱可视化"] },
+            { "name": "API 层", "items": ["FastAPI", "WebSocket 实时通信", "RESTful 接口"] },
+            { "name": "数据层", "items": ["Neo4j 知识图谱", "PostgreSQL", "Redis 缓存"] },
+            { "name": "AI 层", "items": ["LLM 多模型切换", "LlamaIndex", "领域感知策略"] }
+          ]
+        },
+        "highlights": [
+          { "title": "知识图谱驱动", "desc": "每个知识节点相互关联，自动生成拓扑序学习路径，告别碎片化学习。" },
+          { "title": "教、练、评、拓一体化", "desc": "从概念讲解到随堂练习，再到综合评测和能力拓展，形成完整学习闭环。" },
+          { "title": "AI 模型自由切换", "desc": "Web UI 界面即可切换底层 AI 模型，不被任何单一厂商锁定。" }
+        ],
+        "status": "活跃开发中",
+        "techDetail": {
+          "backend": ["Python 3.11+", "FastAPI", "SQLAlchemy", "Neo4j Driver"],
+          "frontend": ["React 18", "TypeScript", "Tailwind CSS", "Zustand"],
+          "infra": ["Docker", "Docker Compose", "GitHub Actions"]
+        }
+      }
     },
     {
       "id": "image-transformer",
       "name": "ImageTransformer",
       "emoji": "🖼️",
       "badge": "实用工具",
+      "tier": "primary",
       "description": "证件照不该那么麻烦。一键换底、裁剪、压缩、排版打印。",
       "tags": ["C#", ".NET 8", "WPF", "ONNX", "AI"],
       "features": [
@@ -27,46 +53,140 @@
         "8+ 标准规格，支持自定义",
         "5寸 / 6寸 / A4 排版打印"
       ],
-      "github": "https://github.com/WekiLee/image.transformer"
+      "github": "https://github.com/WekiLee/image.transformer",
+      "detail": {
+        "subtitle": "AI 智能证件照生成工具",
+        "overview": "ImageTransformer 是一个 Windows 桌面工具，利用 ONNX 深度学习模型实现精准人像分割。无需联网，本地即可一键完成证件照的换底、裁剪、压缩和排版打印。",
+        "architecture": {
+          "description": "基于 .NET 8 + WPF 构建桌面应用，集成本地 ONNX 推理引擎，无需 GPU 即可运行 AI 抠图。",
+          "layers": [
+            { "name": "UI 层", "items": ["WPF MVVM", "Material Design", "实时预览"] },
+            { "name": "AI 引擎", "items": ["ONNX Runtime", "RMBG-1.4", "u2netp"] },
+            { "name": "图像处理", "items": ["ImageSharp", "SkiaSharp", "色彩空间转换"] },
+            { "name": "输出层", "items": ["多规格排版", "DPI 自适应", "JPEG/PNG 导出"] }
+          ]
+        },
+        "highlights": [
+          { "title": "双引擎 AI 抠图", "desc": "内置 RMBG-1.4 和 u2netp 两种模型，可根据图片类型切换，准确率与速度兼顾。" },
+          { "title": "无网可用", "desc": "所有 AI 推理均在本地完成，无需上传图片到云端，保护隐私且离线可用。" },
+          { "title": "排版打印", "desc": "内置 5寸/6寸/A4 三种排版方案，直接导出即可打印，省去照相馆排队的麻烦。" }
+        ],
+        "status": "稳定版",
+        "techDetail": {
+          "backend": ["C# 12", ".NET 8", "ONNX Runtime"],
+          "frontend": ["WPF", "XAML", "Material Design In XAML"],
+          "infra": ["MSIX 打包", "GitHub Releases"]
+        }
+      }
     },
     {
       "id": "weixin-image-zoom",
       "name": "weixin.image.zoom",
       "emoji": "🔍",
       "badge": "近期活跃",
+      "tier": "secondary",
       "description": "公众号文章图片太小？轻量脚本，点击即放大。",
       "tags": ["JavaScript", "微信公众号", "内容工具"],
       "features": [
         "点击即放大，零依赖注入",
         "轻量脚本，快速迭代"
       ],
-      "github": "https://github.com/WekiLee/weixin.image.zoom"
+      "github": "https://github.com/WekiLee/weixin.image.zoom",
+      "detail": {
+        "subtitle": "微信公众号文章图片放大脚本",
+        "overview": "一个轻量级 JavaScript 脚本，专门解决微信公众号文章内嵌图片过小的问题。安装后点击文章中的任意图片即可放大查看，体验类似手机相册。零依赖注入，不拖慢页面加载。",
+        "architecture": {
+          "description": "纯 JavaScript 实现，通过监听 DOM 中的图片点击事件，动态创建全屏遮罩层实现图片放大效果。",
+          "layers": [
+            { "name": "注入层", "items": ["Tampermonkey", "Content Script"] },
+            { "name": "核心逻辑", "items": ["事件委托", "DOM 操作", "CSS 动画"] },
+            { "name": "兼容层", "items": ["微信公众号", "微信读书", "常见 CMS"] }
+          ]
+        },
+        "highlights": [
+          { "title": "零依赖", "desc": "不依赖 jQuery 或任何第三方库，纯原生 JS 实现，体积不到 3KB。" },
+          { "title": "一次安装，到处生效", "desc": "通过 Tampermonkey 安装后，所有公众号文章自动启用，无需额外操作。" }
+        ],
+        "status": "持续维护",
+        "techDetail": {
+          "backend": [],
+          "frontend": ["Vanilla JS", "CSS3 动画"],
+          "infra": ["Tampermonkey", "Greasy Fork"]
+        }
+      }
     },
     {
       "id": "delivery-loop",
       "name": "delivery-loop",
       "emoji": "🚚",
       "badge": "Agent 工作流",
+      "tier": "secondary",
       "description": "需求澄清 → 技术方案 → TDD 实现 → 验收 → 发布观察。端到端交付，每一步都有标准。",
       "tags": ["JavaScript", "Skill", "TDD", "交付闭环"],
       "features": [
         "全流程闭环，证据驱动",
         "验收标准明确，拒绝模糊"
       ],
-      "github": "https://github.com/WekiLee/delivery-loop"
+      "github": "https://github.com/WekiLee/delivery-loop",
+      "detail": {
+        "subtitle": "端到端业务需求交付闭环",
+        "overview": "一个面向软件工程团队的交付流程框架，将需求澄清、技术方案设计、TDD 实现、验收测试、发布观察和结项沉淀六个阶段固化为可执行的检查清单，确保每一步都有明确的标准和证据。",
+        "architecture": {
+          "description": "基于 Markdown 文档 + Skill 的轻量级流程框架，团队可直接复用模板，无需安装额外工具。",
+          "layers": [
+            { "name": "需求阶段", "items": ["需求卡片模板", "SLO 定义", "验收条件"] },
+            { "name": "设计阶段", "items": ["技术方案模板", "ADR", "契约定义"] },
+            { "name": "实现阶段", "items": ["TDD 工作流", "Commit 规范", "代码审查"] },
+            { "name": "验证阶段", "items": ["验收清单", "证据收集", "复盘模板"] }
+          ]
+        },
+        "highlights": [
+          { "title": "每一步都有标准", "desc": "从需求到发布的六个阶段，每个阶段都有明确的产出物和验收标准。" },
+          { "title": "证据驱动", "desc": "所有关键决策和结果都有证据支撑，形成可审计的交付记录。" }
+        ],
+        "status": "持续迭代",
+        "techDetail": {
+          "backend": [],
+          "frontend": ["Markdown 模板", "CLI 工具"],
+          "infra": ["GitHub Actions", "VS Code Extension"]
+        }
+      }
     },
     {
       "id": "lessons-evolve",
       "name": "lessons-evolve",
       "emoji": "🧩",
       "badge": "经验沉淀",
+      "tier": "secondary",
       "description": "踩过的坑，不再重复。教训 → 模式 → 本能，经验的分层进化。",
       "tags": ["JavaScript", "Multi-Agent", "知识沉淀"],
       "features": [
         "分层沉淀：临时修复 → 系统预防",
         "故障复盘转化为可执行规则"
       ],
-      "github": "https://github.com/WekiLee/lessons-evolve"
+      "github": "https://github.com/WekiLee/lessons-evolve",
+      "detail": {
+        "subtitle": "多 Agent 经验进化系统",
+        "overview": "将工程实践中反复遇到的坑和教训系统化管理，通过 lesson → pattern → instinct 三级进化机制，把一次性的故障修复逐步沉淀为可自动执行的预防规则，形成团队的长期经验资产。",
+        "architecture": {
+          "description": "采用分层进化架构，从记录到验证再到自动化执行，让经验从文档变成代码。",
+          "layers": [
+            { "name": "采集层", "items": ["故障复盘记录", "代码审查发现", "线上事故总结"] },
+            { "name": "进化层", "items": ["Lesson 分类", "Pattern 提取", "Instinct 转化"] },
+            { "name": "执行层", "items": ["自动检查规则", "CI 集成", "PR 阻断"] }
+          ]
+        },
+        "highlights": [
+          { "title": "三级进化", "desc": "lesson（临时记录）→ pattern（验证后的模式）→ instinct（自动执行的规则），层层递进。" },
+          { "title": "不只是文档", "desc": "最终落地为可执行的 CI 检查规则，在代码层面自动阻断同类错误。" }
+        ],
+        "status": "持续更新",
+        "techDetail": {
+          "backend": [],
+          "frontend": ["Markdown 模板"],
+          "infra": ["GitHub Actions", "ESLint Rules"]
+        }
+      }
     }
   ]
 }

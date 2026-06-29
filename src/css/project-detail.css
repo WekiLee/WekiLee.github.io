@@ -1,0 +1,224 @@
+/* ===================================================================
+ *  项目详情页样式
+ * =================================================================== */
+
+.project-detail-page {
+    padding: 120px 0 80px;
+    background: var(--bg-primary);
+    min-height: 100vh;
+}
+
+.project-detail-header {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
+.project-detail-header .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+}
+.project-detail-header .back-link:hover {
+    color: var(--color-brand);
+}
+.project-detail-header .back-link svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+}
+
+.project-detail-header .detail-emoji {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.project-detail-header h1 {
+    font-size: var(--fs-hero);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.project-detail-header .detail-subtitle {
+    font-size: 18px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-bottom: 16px;
+}
+
+.project-detail-header .detail-status {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-brand);
+    background: var(--color-brand-bg);
+    padding: 4px 14px;
+    border-radius: 980px;
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+}
+
+.project-detail-header .detail-links {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* ── Section 通用 ── */
+.detail-section {
+    margin-bottom: 56px;
+}
+
+.detail-section h2 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.detail-section p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-card-desc);
+}
+
+/* ── 架构层 ── */
+.arch-layers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.arch-layer {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.arch-layer h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-brand);
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+}
+
+.arch-layer ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.arch-layer ul li {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--tag-bg);
+    padding: 3px 10px;
+    border-radius: 980px;
+}
+
+/* ── Highlights ── */
+.highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.highlight-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all 0.3s ease;
+}
+
+.highlight-card:hover {
+    border-color: var(--border-card-hover);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+}
+
+.highlight-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.highlight-card p {
+    font-size: 14px;
+    color: var(--text-card-desc);
+    line-height: 1.7;
+}
+
+/* ── 技术栈详情 ── */
+.tech-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.tech-detail-group h4 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--tech-heading);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.tech-detail-group ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tech-detail-group ul li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: var(--tag-bg);
+    padding: 4px 12px;
+    border-radius: 980px;
+}
+
+/* ── Footer ── */
+.detail-footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--border-primary);
+    text-align: center;
+    margin-top: 32px;
+}
+
+/* ── 响应式 ── */
+@media (max-width: 768px) {
+    .project-detail-page {
+        padding: 100px 0 60px;
+    }
+    .detail-section h2 {
+        font-size: 22px;
+    }
+    .arch-layers {
+        grid-template-columns: 1fr;
+    }
+}

@@ -21,51 +21,19 @@ jobs:
 
       - name: Fetch GitHub stats SVG (light)
         run: |
-          curl -sL "https://github-readme-stats.vercel.app/api?username=WekiLee\
-            &show_icons=true\
-            &hide_title=true\
-            &include_all_commits=true\
-            &theme=transparent\
-            &hide_border=true\
-            &text_color=6e6e73\
-            &icon_color=0071e3\
-            &ring_color=0071e3" \
-            -o public/assets/stats/github-stats-light.svg
+          curl -sL 'https://github-readme-stats.vercel.app/api?username=WekiLee&show_icons=true&hide_title=true&include_all_commits=true&theme=transparent&hide_border=true&text_color=6e6e73&icon_color=0071e3&ring_color=0071e3' -o public/assets/stats/github-stats-light.svg
 
       - name: Fetch GitHub stats SVG (dark)
         run: |
-          curl -sL "https://github-readme-stats.vercel.app/api?username=WekiLee\
-            &show_icons=true\
-            &hide_title=true\
-            &include_all_commits=true\
-            &theme=transparent\
-            &hide_border=true\
-            &text_color=86868b\
-            &icon_color=0071e3\
-            &ring_color=0071e3" \
-            -o public/assets/stats/github-stats-dark.svg
+          curl -sL 'https://github-readme-stats.vercel.app/api?username=WekiLee&show_icons=true&hide_title=true&include_all_commits=true&theme=transparent&hide_border=true&text_color=86868b&icon_color=0071e3&ring_color=0071e3' -o public/assets/stats/github-stats-dark.svg
 
       - name: Fetch top languages SVG (light)
         run: |
-          curl -sL "https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee\
-            &layout=compact\
-            &hide_title=true\
-            &theme=transparent\
-            &hide_border=true\
-            &text_color=6e6e73\
-            &ring_color=0071e3" \
-            -o public/assets/stats/top-langs-light.svg
+          curl -sL 'https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee&layout=compact&hide_title=true&theme=transparent&hide_border=true&text_color=6e6e73&ring_color=0071e3' -o public/assets/stats/top-langs-light.svg
 
       - name: Fetch top languages SVG (dark)
         run: |
-          curl -sL "https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee\
-            &layout=compact\
-            &hide_title=true\
-            &theme=transparent\
-            &hide_border=true\
-            &text_color=86868b\
-            &ring_color=0071e3" \
-            -o public/assets/stats/top-langs-dark.svg
+          curl -sL 'https://github-readme-stats.vercel.app/api/top-langs/?username=WekiLee&layout=compact&hide_title=true&theme=transparent&hide_border=true&text_color=86868b&ring_color=0071e3' -o public/assets/stats/top-langs-dark.svg
 
       - name: Commit and push if changed
         run: |

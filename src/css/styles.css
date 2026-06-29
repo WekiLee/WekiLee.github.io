@@ -395,7 +395,9 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #0071e3, #40a9ff);
+            background: linear-gradient(135deg, #0071e3, #40a9ff, #0071e3);
+            background-size: 200% 200%;
+            animation: avatarGradient 6s ease infinite;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -409,6 +411,12 @@
         }
 
         .hero-avatar:hover { transform: scale(1.04); }
+
+        @keyframes avatarGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         .hero-section h1 {
             font-size: var(--fs-hero);
@@ -606,6 +614,27 @@
         .btn-project:hover { color: var(--color-brand-hover); }
 
 
+        /* ── 次要项目卡片 ── */
+        .project-card-apple.minor {
+            padding: 28px;
+        }
+        .project-card-apple.minor h3 {
+            font-size: 20px;
+        }
+        .project-card-apple.minor .project-desc {
+            font-size: 14px;
+        }
+        @media (min-width: 768px) {
+            .project-card-apple.minor {
+                opacity: 0.88;
+                transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .project-card-apple.minor:hover {
+                opacity: 1;
+            }
+        }
+
+
         /* ===================================================================
          *  Tech Stack
          * =================================================================== */
@@ -623,6 +652,26 @@
             font-size: 14px;
             list-style: none;
             padding: 0;
+        }
+        .tech-category ul li {
+            position: relative;
+            padding-left: 14px;
+            transition: color 0.2s;
+        }
+        .tech-category ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--border-secondary);
+            transition: background 0.2s;
+        }
+        .tech-category:hover ul li::before {
+            background: var(--color-brand);
         }
 
         [data-theme="dark"] .tech-category ul {

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="lessons-evolve — 多 Agent 经验进化系统" />
+    <title>lessons-evolve · 多 Agent 经验进化系统</title>
+    <link rel="stylesheet" href="/src/css/styles.css" />
+    <link rel="stylesheet" href="/src/css/project-detail.css" />
+</head>
+<body>
+
+    <a href="/" class="skip-link">跳到主内容</a>
+
+    <main id="main-content" class="project-detail-page">
+        <div class="container-page">
+
+            <header class="project-detail-header">
+                <a href="/" class="back-link">
+                    <svg viewBox="0 0 12 12"><path d="M10 6H2M6 10l-4-4 4-4"/></svg>
+                    返回首页
+                </a>
+                <span class="detail-emoji" aria-hidden="true">🧩</span>
+                <h1>lessons-evolve</h1>
+                <p class="detail-subtitle">多 Agent 经验进化系统</p>
+                <span class="detail-status">持续更新</span>
+                <div class="detail-links">
+                    <a href="https://github.com/WekiLee/lessons-evolve" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
+                        <svg class="icon-github" aria-hidden="true" style="width:16px;height:16px;fill:currentColor;"><use href="#icon-github"/></svg>
+                        GitHub
+                    </a>
+                </div>
+            </header>
+
+            <section class="detail-section">
+                <h2>概述</h2>
+                <p>将工程实践中反复遇到的坑和教训系统化管理，通过 lesson → pattern → instinct 三级进化机制，把一次性的故障修复逐步沉淀为可自动执行的预防规则，形成团队的长期经验资产。</p>
+            </section>
+
+            <section class="detail-section">
+                <h2>架构设计</h2>
+                <p>采用分层进化架构，从记录到验证再到自动化执行，让经验从文档变成代码。</p>
+                <div class="arch-layers"><div class="arch-layer"><h4>采集层</h4><ul><li>故障复盘记录</li><li>代码审查发现</li><li>线上事故总结</li></ul></div><div class="arch-layer"><h4>进化层</h4><ul><li>Lesson 分类</li><li>Pattern 提取</li><li>Instinct 转化</li></ul></div><div class="arch-layer"><h4>执行层</h4><ul><li>自动检查规则</li><li>CI 集成</li><li>PR 阻断</li></ul></div></div>
+            </section>
+
+            <section class="detail-section">
+                <h2>核心特性</h2>
+                <div class="highlights-grid"><div class="highlight-card"><h4>三级进化</h4><p>lesson（临时记录）→ pattern（验证后的模式）→ instinct（自动执行的规则），层层递进。</p></div><div class="highlight-card"><h4>不只是文档</h4><p>最终落地为可执行的 CI 检查规则，在代码层面自动阻断同类错误。</p></div></div>
+            </section>
+
+            <section class="detail-section">
+                <h2>技术细节</h2>
+                <div class="tech-detail-grid"><div class="tech-detail-group"><h4>前端</h4><ul><li>Markdown 模板</li></ul></div><div class="tech-detail-group"><h4>基础设施</h4><ul><li>GitHub Actions</li><li>ESLint Rules</li></ul></div></div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- SVG Icons -->
+    <svg style="display:none;" aria-hidden="true">
+        <symbol id="icon-github" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+        </symbol>
+    </svg>
+
+    <footer class="detail-footer">
+        <div class="container-page text-center">
+            <p style="font-size:13px;color:var(--text-secondary);">
+                <a href="/" style="color:var(--color-brand);text-decoration:none;">← 返回首页</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -265,7 +265,8 @@
                 for (var f = 0; f < p.features.length; f++) {
                     features += '<li>' + escapeHtml(p.features[f]) + '</li>';
                 }
-                markup += '<article class="project-card-apple flex flex-col fade-in">' +
+                var tierClass = p.tier === 'primary' ? '' : ' minor';
+                markup += '<article class="project-card-apple flex flex-col fade-in' + tierClass + '">' +
                     '<div>' +
                         '<span class="project-badge">' + escapeHtml(p.badge) + '</span>' +
                         '<h3><span aria-hidden="true">' + p.emoji + '</span> ' + escapeHtml(p.name) + '</h3>' +
@@ -274,9 +275,9 @@
                         '<ul class="project-features">' + features + '</ul>' +
                     '</div>' +
                     '<div class="mt-auto">' +
-                        '<a href="' + escapeHtml(p.github) + '" target="_blank" rel="noopener noreferrer" class="btn-project">' +
+                        '<a href="/projects/' + escapeHtml(p.id) + '/" class="btn-project">' +
                             '<svg class="icon-github" aria-hidden="true"><use href="#icon-github"/></svg>' +
-                            '查看源码' +
+                            '详细了解' +
                         '</a>' +
                     '</div>' +
                 '</article>';
