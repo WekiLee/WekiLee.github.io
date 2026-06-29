@@ -395,9 +395,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #0071e3, #40a9ff, #0071e3);
-            background-size: 200% 200%;
-            animation: avatarGradient 6s ease infinite;
+            background: linear-gradient(135deg, #0071e3, #40a9ff);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -411,12 +409,6 @@
         }
 
         .hero-avatar:hover { transform: scale(1.04); }
-
-        @keyframes avatarGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
 
         .hero-section h1 {
             font-size: var(--fs-hero);

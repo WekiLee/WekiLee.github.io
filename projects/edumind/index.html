@@ -1,84 +1,18 @@
-const fs = require('fs');
-const path = require('path');
-
-const projectsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../public/data/projects.json'), 'utf8'));
-
-function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-function escKV(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
-function emojiToFavicon(emoji) { return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E${encodeURIComponent(emoji)}%3C/text%3E%3C/svg%3E`; }
-
-function renderArchCards(layers) {
-  let html = '';
-  for (const layer of layers) {
-    let tags = '';
-    for (const item of layer.items) { tags += `<span>${esc(item)}</span>`; }
-    html += `
-                    <div class="pd-arch-card">
-                        <h4>${esc(layer.name)}</h4>
-                        <div class="pd-arch-tags">${tags}</div>
-                    </div>`;
-  }
-  return html;
-}
-
-function renderFeatureCards(highlights) {
-  let html = '';
-  const icons = ['🗺️', '🔄', '🔌', '⚡', '🛡️', '📋', '✅', '🏗️', '🧪'];
-  for (let i = 0; i < highlights.length; i++) {
-    const h = highlights[i];
-    const icon = h.icon || icons[i] || '◆';
-    html += `
-                    <div class="pd-feature-card">
-                        <span class="pd-feature-icon" aria-hidden="true">${icon}</span>
-                        <h4>${esc(h.title)}</h4>
-                        <p>${esc(h.desc)}</p>
-                    </div>`;
-  }
-  return html;
-}
-
-function renderTechGroups(techDetail) {
-  const groups = [];
-  if (techDetail.backend && techDetail.backend.length > 0) groups.push({ label: '后端', items: techDetail.backend });
-  if (techDetail.frontend && techDetail.frontend.length > 0) groups.push({ label: '前端', items: techDetail.frontend });
-  if (techDetail.infra && techDetail.infra.length > 0) groups.push({ label: '基础设施', items: techDetail.infra });
-
-  let html = '';
-  for (const g of groups) {
-    let tags = '';
-    for (const item of g.items) { tags += `<span>${esc(item)}</span>`; }
-    html += `
-                    <div class="pd-tech-group">
-                        <h4>${esc(g.label)}</h4>
-                        <div class="pd-tech-tags">${tags}</div>
-                    </div>`;
-  }
-  return html;
-}
-
-function generatePage(project) {
-  const d = project.detail;
-  const faviconUrl = emojiToFavicon(project.emoji);
-  const archIntro = d.architecture.description;
-  const archCards = renderArchCards(d.architecture.layers);
-  const featureCards = renderFeatureCards(d.highlights);
-  const techGroups = renderTechGroups(d.techDetail);
-
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-    <meta name="description" content="${escKV(project.name)} — ${escKV(d.subtitle)}" />
-    <meta name="keywords" content="${escKV(project.name)}, ${escKV(project.tags.join(', '))}, Weki Lee" />
-    <meta property="og:title" content="${escKV(project.name)} · ${escKV(d.subtitle)}" />
-    <meta property="og:description" content="${escKV(d.overview.slice(0, 120))}" />
+    <meta name="description" content="EduMind — 开源 AI 驱动个人导师" />
+    <meta name="keywords" content="EduMind, Python, FastAPI, React 18, Neo4j, Docker, LLM, Weki Lee" />
+    <meta property="og:title" content="EduMind · 开源 AI 驱动个人导师" />
+    <meta property="og:description" content="EduMind 是一个开源的 AI 驱动个人学习系统。核心理念是：学习应该有一条清晰的路径。它通过知识图谱将零散的知识点组织成可导航的拓扑结构，再结合 AI 导师的个性化引导，让每个人都能从零到一建立起完整的知识体系。" />
     <meta property="og:type" content="website" />
-    <title>${esc(project.name)} · ${esc(d.subtitle)} — Weki Lee</title>
+    <title>EduMind · 开源 AI 驱动个人导师 — Weki Lee</title>
 
-    <link rel="icon" href="${faviconUrl}" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="/src/css/styles.css" />
     <link rel="stylesheet" href="/src/css/project-detail.css" />
 </head>
@@ -130,12 +64,12 @@ function generatePage(project) {
 
         <section class="pd-hero" aria-labelledby="pd-hero-heading">
             <div class="container-page">
-                <span class="pd-hero-emoji fade-in" aria-hidden="true">${project.emoji}</span>
-                <h1 id="pd-hero-heading" class="fade-in">${esc(project.name)}</h1>
-                <p class="pd-hero-subtitle fade-in">${esc(d.subtitle)}</p>
-                <span class="pd-status-badge fade-in">${esc(d.status)}</span>
+                <span class="pd-hero-emoji fade-in" aria-hidden="true">🧠</span>
+                <h1 id="pd-hero-heading" class="fade-in">EduMind</h1>
+                <p class="pd-hero-subtitle fade-in">开源 AI 驱动个人导师</p>
+                <span class="pd-status-badge fade-in">活跃开发中</span>
                 <div class="pd-hero-actions fade-in">
-                    <a href="${esc(project.github)}" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
+                    <a href="https://github.com/WekiLee/EduMind" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
                         <svg class="icon-github" aria-hidden="true" style="width:16px;height:16px;fill:currentColor;"><use href="#icon-github"/></svg>
                         GitHub
                     </a>
@@ -152,7 +86,7 @@ function generatePage(project) {
                 <p class="section-label">Overview</p>
                 <h2 id="pd-overview-heading" class="section-title-apple fade-in">概述</h2>
                 <div class="pd-overview-card fade-in">
-                    <p>${esc(d.overview)}</p>
+                    <p>EduMind 是一个开源的 AI 驱动个人学习系统。核心理念是：学习应该有一条清晰的路径。它通过知识图谱将零散的知识点组织成可导航的拓扑结构，再结合 AI 导师的个性化引导，让每个人都能从零到一建立起完整的知识体系。</p>
                 </div>
             </div>
         </section>
@@ -161,8 +95,24 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Architecture</p>
                 <h2 id="pd-arch-heading" class="section-title-apple fade-in">架构设计</h2>
-                <p class="pd-arch-intro fade-in">${esc(archIntro)}</p>
-                <div class="pd-arch-grid fade-in">${archCards}
+                <p class="pd-arch-intro fade-in">EduMind 采用前后端分离架构，后端以 FastAPI 为核心，Neo4j 存储知识图谱，前端基于 React 18 构建交互式学习界面。</p>
+                <div class="pd-arch-grid fade-in">
+                    <div class="pd-arch-card">
+                        <h4>前端层</h4>
+                        <div class="pd-arch-tags"><span>React 18</span><span>TypeScript</span><span>知识图谱可视化</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>API 层</h4>
+                        <div class="pd-arch-tags"><span>FastAPI</span><span>WebSocket 实时通信</span><span>RESTful 接口</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>数据层</h4>
+                        <div class="pd-arch-tags"><span>Neo4j 知识图谱</span><span>PostgreSQL</span><span>Redis 缓存</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>AI 层</h4>
+                        <div class="pd-arch-tags"><span>LLM 多模型切换</span><span>LlamaIndex</span><span>领域感知策略</span></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -171,7 +121,22 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Features</p>
                 <h2 id="pd-features-heading" class="section-title-apple fade-in">核心特性</h2>
-                <div class="pd-features-grid fade-in">${featureCards}
+                <div class="pd-features-grid fade-in">
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🗺️</span>
+                        <h4>知识图谱驱动</h4>
+                        <p>每个知识节点相互关联，自动生成拓扑序学习路径，告别碎片化学习。</p>
+                    </div>
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🔄</span>
+                        <h4>教、练、评、拓一体化</h4>
+                        <p>从概念讲解到随堂练习，再到综合评测和能力拓展，形成完整学习闭环。</p>
+                    </div>
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🔌</span>
+                        <h4>AI 模型自由切换</h4>
+                        <p>Web UI 界面即可切换底层 AI 模型，不被任何单一厂商锁定。</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -180,7 +145,19 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Tech Details</p>
                 <h2 id="pd-tech-heading" class="section-title-apple fade-in">技术细节</h2>
-                <div class="pd-tech-groups fade-in">${techGroups}
+                <div class="pd-tech-groups fade-in">
+                    <div class="pd-tech-group">
+                        <h4>后端</h4>
+                        <div class="pd-tech-tags"><span>Python 3.11+</span><span>FastAPI</span><span>SQLAlchemy</span><span>Neo4j Driver</span></div>
+                    </div>
+                    <div class="pd-tech-group">
+                        <h4>前端</h4>
+                        <div class="pd-tech-tags"><span>React 18</span><span>TypeScript</span><span>Tailwind CSS</span><span>Zustand</span></div>
+                    </div>
+                    <div class="pd-tech-group">
+                        <h4>基础设施</h4>
+                        <div class="pd-tech-tags"><span>Docker</span><span>Docker Compose</span><span>GitHub Actions</span></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -281,14 +258,4 @@ function generatePage(project) {
     })();
     </script>
 </body>
-</html>`;
-}
-
-for (const project of projectsData.items) {
-  const dir = path.join(__dirname, '../projects', project.id);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), generatePage(project));
-  console.log('Generated:', project.id);
-}
-
-console.log('All project detail pages generated.');
+</html>

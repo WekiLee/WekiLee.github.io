@@ -1,84 +1,18 @@
-const fs = require('fs');
-const path = require('path');
-
-const projectsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../public/data/projects.json'), 'utf8'));
-
-function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-function escKV(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
-function emojiToFavicon(emoji) { return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E${encodeURIComponent(emoji)}%3C/text%3E%3C/svg%3E`; }
-
-function renderArchCards(layers) {
-  let html = '';
-  for (const layer of layers) {
-    let tags = '';
-    for (const item of layer.items) { tags += `<span>${esc(item)}</span>`; }
-    html += `
-                    <div class="pd-arch-card">
-                        <h4>${esc(layer.name)}</h4>
-                        <div class="pd-arch-tags">${tags}</div>
-                    </div>`;
-  }
-  return html;
-}
-
-function renderFeatureCards(highlights) {
-  let html = '';
-  const icons = ['🗺️', '🔄', '🔌', '⚡', '🛡️', '📋', '✅', '🏗️', '🧪'];
-  for (let i = 0; i < highlights.length; i++) {
-    const h = highlights[i];
-    const icon = h.icon || icons[i] || '◆';
-    html += `
-                    <div class="pd-feature-card">
-                        <span class="pd-feature-icon" aria-hidden="true">${icon}</span>
-                        <h4>${esc(h.title)}</h4>
-                        <p>${esc(h.desc)}</p>
-                    </div>`;
-  }
-  return html;
-}
-
-function renderTechGroups(techDetail) {
-  const groups = [];
-  if (techDetail.backend && techDetail.backend.length > 0) groups.push({ label: '后端', items: techDetail.backend });
-  if (techDetail.frontend && techDetail.frontend.length > 0) groups.push({ label: '前端', items: techDetail.frontend });
-  if (techDetail.infra && techDetail.infra.length > 0) groups.push({ label: '基础设施', items: techDetail.infra });
-
-  let html = '';
-  for (const g of groups) {
-    let tags = '';
-    for (const item of g.items) { tags += `<span>${esc(item)}</span>`; }
-    html += `
-                    <div class="pd-tech-group">
-                        <h4>${esc(g.label)}</h4>
-                        <div class="pd-tech-tags">${tags}</div>
-                    </div>`;
-  }
-  return html;
-}
-
-function generatePage(project) {
-  const d = project.detail;
-  const faviconUrl = emojiToFavicon(project.emoji);
-  const archIntro = d.architecture.description;
-  const archCards = renderArchCards(d.architecture.layers);
-  const featureCards = renderFeatureCards(d.highlights);
-  const techGroups = renderTechGroups(d.techDetail);
-
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-    <meta name="description" content="${escKV(project.name)} — ${escKV(d.subtitle)}" />
-    <meta name="keywords" content="${escKV(project.name)}, ${escKV(project.tags.join(', '))}, Weki Lee" />
-    <meta property="og:title" content="${escKV(project.name)} · ${escKV(d.subtitle)}" />
-    <meta property="og:description" content="${escKV(d.overview.slice(0, 120))}" />
+    <meta name="description" content="delivery-loop — 端到端业务需求交付闭环" />
+    <meta name="keywords" content="delivery-loop, JavaScript, Skill, TDD, 交付闭环, Weki Lee" />
+    <meta property="og:title" content="delivery-loop · 端到端业务需求交付闭环" />
+    <meta property="og:description" content="一个面向软件工程团队的交付流程框架，将需求澄清、技术方案设计、TDD 实现、验收测试、发布观察和结项沉淀六个阶段固化为可执行的检查清单，确保每一步都有明确的标准和证据。" />
     <meta property="og:type" content="website" />
-    <title>${esc(project.name)} · ${esc(d.subtitle)} — Weki Lee</title>
+    <title>delivery-loop · 端到端业务需求交付闭环 — Weki Lee</title>
 
-    <link rel="icon" href="${faviconUrl}" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%9A%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="/src/css/styles.css" />
     <link rel="stylesheet" href="/src/css/project-detail.css" />
 </head>
@@ -130,12 +64,12 @@ function generatePage(project) {
 
         <section class="pd-hero" aria-labelledby="pd-hero-heading">
             <div class="container-page">
-                <span class="pd-hero-emoji fade-in" aria-hidden="true">${project.emoji}</span>
-                <h1 id="pd-hero-heading" class="fade-in">${esc(project.name)}</h1>
-                <p class="pd-hero-subtitle fade-in">${esc(d.subtitle)}</p>
-                <span class="pd-status-badge fade-in">${esc(d.status)}</span>
+                <span class="pd-hero-emoji fade-in" aria-hidden="true">🚚</span>
+                <h1 id="pd-hero-heading" class="fade-in">delivery-loop</h1>
+                <p class="pd-hero-subtitle fade-in">端到端业务需求交付闭环</p>
+                <span class="pd-status-badge fade-in">持续迭代</span>
                 <div class="pd-hero-actions fade-in">
-                    <a href="${esc(project.github)}" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
+                    <a href="https://github.com/WekiLee/delivery-loop" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
                         <svg class="icon-github" aria-hidden="true" style="width:16px;height:16px;fill:currentColor;"><use href="#icon-github"/></svg>
                         GitHub
                     </a>
@@ -152,7 +86,7 @@ function generatePage(project) {
                 <p class="section-label">Overview</p>
                 <h2 id="pd-overview-heading" class="section-title-apple fade-in">概述</h2>
                 <div class="pd-overview-card fade-in">
-                    <p>${esc(d.overview)}</p>
+                    <p>一个面向软件工程团队的交付流程框架，将需求澄清、技术方案设计、TDD 实现、验收测试、发布观察和结项沉淀六个阶段固化为可执行的检查清单，确保每一步都有明确的标准和证据。</p>
                 </div>
             </div>
         </section>
@@ -161,8 +95,24 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Architecture</p>
                 <h2 id="pd-arch-heading" class="section-title-apple fade-in">架构设计</h2>
-                <p class="pd-arch-intro fade-in">${esc(archIntro)}</p>
-                <div class="pd-arch-grid fade-in">${archCards}
+                <p class="pd-arch-intro fade-in">基于 Markdown 文档 + Skill 的轻量级流程框架，团队可直接复用模板，无需安装额外工具。</p>
+                <div class="pd-arch-grid fade-in">
+                    <div class="pd-arch-card">
+                        <h4>需求阶段</h4>
+                        <div class="pd-arch-tags"><span>需求卡片模板</span><span>SLO 定义</span><span>验收条件</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>设计阶段</h4>
+                        <div class="pd-arch-tags"><span>技术方案模板</span><span>ADR</span><span>契约定义</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>实现阶段</h4>
+                        <div class="pd-arch-tags"><span>TDD 工作流</span><span>Commit 规范</span><span>代码审查</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>验证阶段</h4>
+                        <div class="pd-arch-tags"><span>验收清单</span><span>证据收集</span><span>复盘模板</span></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -171,7 +121,17 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Features</p>
                 <h2 id="pd-features-heading" class="section-title-apple fade-in">核心特性</h2>
-                <div class="pd-features-grid fade-in">${featureCards}
+                <div class="pd-features-grid fade-in">
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🗺️</span>
+                        <h4>每一步都有标准</h4>
+                        <p>从需求到发布的六个阶段，每个阶段都有明确的产出物和验收标准。</p>
+                    </div>
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🔄</span>
+                        <h4>证据驱动</h4>
+                        <p>所有关键决策和结果都有证据支撑，形成可审计的交付记录。</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -180,7 +140,15 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Tech Details</p>
                 <h2 id="pd-tech-heading" class="section-title-apple fade-in">技术细节</h2>
-                <div class="pd-tech-groups fade-in">${techGroups}
+                <div class="pd-tech-groups fade-in">
+                    <div class="pd-tech-group">
+                        <h4>前端</h4>
+                        <div class="pd-tech-tags"><span>Markdown 模板</span><span>CLI 工具</span></div>
+                    </div>
+                    <div class="pd-tech-group">
+                        <h4>基础设施</h4>
+                        <div class="pd-tech-tags"><span>GitHub Actions</span><span>VS Code Extension</span></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -281,14 +249,4 @@ function generatePage(project) {
     })();
     </script>
 </body>
-</html>`;
-}
-
-for (const project of projectsData.items) {
-  const dir = path.join(__dirname, '../projects', project.id);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), generatePage(project));
-  console.log('Generated:', project.id);
-}
-
-console.log('All project detail pages generated.');
+</html>

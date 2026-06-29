@@ -1,84 +1,18 @@
-const fs = require('fs');
-const path = require('path');
-
-const projectsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../public/data/projects.json'), 'utf8'));
-
-function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-function escKV(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
-function emojiToFavicon(emoji) { return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E${encodeURIComponent(emoji)}%3C/text%3E%3C/svg%3E`; }
-
-function renderArchCards(layers) {
-  let html = '';
-  for (const layer of layers) {
-    let tags = '';
-    for (const item of layer.items) { tags += `<span>${esc(item)}</span>`; }
-    html += `
-                    <div class="pd-arch-card">
-                        <h4>${esc(layer.name)}</h4>
-                        <div class="pd-arch-tags">${tags}</div>
-                    </div>`;
-  }
-  return html;
-}
-
-function renderFeatureCards(highlights) {
-  let html = '';
-  const icons = ['🗺️', '🔄', '🔌', '⚡', '🛡️', '📋', '✅', '🏗️', '🧪'];
-  for (let i = 0; i < highlights.length; i++) {
-    const h = highlights[i];
-    const icon = h.icon || icons[i] || '◆';
-    html += `
-                    <div class="pd-feature-card">
-                        <span class="pd-feature-icon" aria-hidden="true">${icon}</span>
-                        <h4>${esc(h.title)}</h4>
-                        <p>${esc(h.desc)}</p>
-                    </div>`;
-  }
-  return html;
-}
-
-function renderTechGroups(techDetail) {
-  const groups = [];
-  if (techDetail.backend && techDetail.backend.length > 0) groups.push({ label: '后端', items: techDetail.backend });
-  if (techDetail.frontend && techDetail.frontend.length > 0) groups.push({ label: '前端', items: techDetail.frontend });
-  if (techDetail.infra && techDetail.infra.length > 0) groups.push({ label: '基础设施', items: techDetail.infra });
-
-  let html = '';
-  for (const g of groups) {
-    let tags = '';
-    for (const item of g.items) { tags += `<span>${esc(item)}</span>`; }
-    html += `
-                    <div class="pd-tech-group">
-                        <h4>${esc(g.label)}</h4>
-                        <div class="pd-tech-tags">${tags}</div>
-                    </div>`;
-  }
-  return html;
-}
-
-function generatePage(project) {
-  const d = project.detail;
-  const faviconUrl = emojiToFavicon(project.emoji);
-  const archIntro = d.architecture.description;
-  const archCards = renderArchCards(d.architecture.layers);
-  const featureCards = renderFeatureCards(d.highlights);
-  const techGroups = renderTechGroups(d.techDetail);
-
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-    <meta name="description" content="${escKV(project.name)} — ${escKV(d.subtitle)}" />
-    <meta name="keywords" content="${escKV(project.name)}, ${escKV(project.tags.join(', '))}, Weki Lee" />
-    <meta property="og:title" content="${escKV(project.name)} · ${escKV(d.subtitle)}" />
-    <meta property="og:description" content="${escKV(d.overview.slice(0, 120))}" />
+    <meta name="description" content="ImageTransformer — AI 智能证件照生成工具" />
+    <meta name="keywords" content="ImageTransformer, C#, .NET 8, WPF, ONNX, AI, Weki Lee" />
+    <meta property="og:title" content="ImageTransformer · AI 智能证件照生成工具" />
+    <meta property="og:description" content="ImageTransformer 是一个 Windows 桌面工具，利用 ONNX 深度学习模型实现精准人像分割。无需联网，本地即可一键完成证件照的换底、裁剪、压缩和排版打印。" />
     <meta property="og:type" content="website" />
-    <title>${esc(project.name)} · ${esc(d.subtitle)} — Weki Lee</title>
+    <title>ImageTransformer · AI 智能证件照生成工具 — Weki Lee</title>
 
-    <link rel="icon" href="${faviconUrl}" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%96%BC%EF%B8%8F%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="/src/css/styles.css" />
     <link rel="stylesheet" href="/src/css/project-detail.css" />
 </head>
@@ -130,12 +64,12 @@ function generatePage(project) {
 
         <section class="pd-hero" aria-labelledby="pd-hero-heading">
             <div class="container-page">
-                <span class="pd-hero-emoji fade-in" aria-hidden="true">${project.emoji}</span>
-                <h1 id="pd-hero-heading" class="fade-in">${esc(project.name)}</h1>
-                <p class="pd-hero-subtitle fade-in">${esc(d.subtitle)}</p>
-                <span class="pd-status-badge fade-in">${esc(d.status)}</span>
+                <span class="pd-hero-emoji fade-in" aria-hidden="true">🖼️</span>
+                <h1 id="pd-hero-heading" class="fade-in">ImageTransformer</h1>
+                <p class="pd-hero-subtitle fade-in">AI 智能证件照生成工具</p>
+                <span class="pd-status-badge fade-in">稳定版</span>
                 <div class="pd-hero-actions fade-in">
-                    <a href="${esc(project.github)}" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
+                    <a href="https://github.com/WekiLee/image.transformer" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
                         <svg class="icon-github" aria-hidden="true" style="width:16px;height:16px;fill:currentColor;"><use href="#icon-github"/></svg>
                         GitHub
                     </a>
@@ -152,7 +86,7 @@ function generatePage(project) {
                 <p class="section-label">Overview</p>
                 <h2 id="pd-overview-heading" class="section-title-apple fade-in">概述</h2>
                 <div class="pd-overview-card fade-in">
-                    <p>${esc(d.overview)}</p>
+                    <p>ImageTransformer 是一个 Windows 桌面工具，利用 ONNX 深度学习模型实现精准人像分割。无需联网，本地即可一键完成证件照的换底、裁剪、压缩和排版打印。</p>
                 </div>
             </div>
         </section>
@@ -161,8 +95,24 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Architecture</p>
                 <h2 id="pd-arch-heading" class="section-title-apple fade-in">架构设计</h2>
-                <p class="pd-arch-intro fade-in">${esc(archIntro)}</p>
-                <div class="pd-arch-grid fade-in">${archCards}
+                <p class="pd-arch-intro fade-in">基于 .NET 8 + WPF 构建桌面应用，集成本地 ONNX 推理引擎，无需 GPU 即可运行 AI 抠图。</p>
+                <div class="pd-arch-grid fade-in">
+                    <div class="pd-arch-card">
+                        <h4>UI 层</h4>
+                        <div class="pd-arch-tags"><span>WPF MVVM</span><span>Material Design</span><span>实时预览</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>AI 引擎</h4>
+                        <div class="pd-arch-tags"><span>ONNX Runtime</span><span>RMBG-1.4</span><span>u2netp</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>图像处理</h4>
+                        <div class="pd-arch-tags"><span>ImageSharp</span><span>SkiaSharp</span><span>色彩空间转换</span></div>
+                    </div>
+                    <div class="pd-arch-card">
+                        <h4>输出层</h4>
+                        <div class="pd-arch-tags"><span>多规格排版</span><span>DPI 自适应</span><span>JPEG/PNG 导出</span></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -171,7 +121,22 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Features</p>
                 <h2 id="pd-features-heading" class="section-title-apple fade-in">核心特性</h2>
-                <div class="pd-features-grid fade-in">${featureCards}
+                <div class="pd-features-grid fade-in">
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🗺️</span>
+                        <h4>双引擎 AI 抠图</h4>
+                        <p>内置 RMBG-1.4 和 u2netp 两种模型，可根据图片类型切换，准确率与速度兼顾。</p>
+                    </div>
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🔄</span>
+                        <h4>无网可用</h4>
+                        <p>所有 AI 推理均在本地完成，无需上传图片到云端，保护隐私且离线可用。</p>
+                    </div>
+                    <div class="pd-feature-card">
+                        <span class="pd-feature-icon" aria-hidden="true">🔌</span>
+                        <h4>排版打印</h4>
+                        <p>内置 5寸/6寸/A4 三种排版方案，直接导出即可打印，省去照相馆排队的麻烦。</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -180,7 +145,19 @@ function generatePage(project) {
             <div class="container-page">
                 <p class="section-label">Tech Details</p>
                 <h2 id="pd-tech-heading" class="section-title-apple fade-in">技术细节</h2>
-                <div class="pd-tech-groups fade-in">${techGroups}
+                <div class="pd-tech-groups fade-in">
+                    <div class="pd-tech-group">
+                        <h4>后端</h4>
+                        <div class="pd-tech-tags"><span>C# 12</span><span>.NET 8</span><span>ONNX Runtime</span></div>
+                    </div>
+                    <div class="pd-tech-group">
+                        <h4>前端</h4>
+                        <div class="pd-tech-tags"><span>WPF</span><span>XAML</span><span>Material Design In XAML</span></div>
+                    </div>
+                    <div class="pd-tech-group">
+                        <h4>基础设施</h4>
+                        <div class="pd-tech-tags"><span>MSIX 打包</span><span>GitHub Releases</span></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -281,14 +258,4 @@ function generatePage(project) {
     })();
     </script>
 </body>
-</html>`;
-}
-
-for (const project of projectsData.items) {
-  const dir = path.join(__dirname, '../projects', project.id);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), generatePage(project));
-  console.log('Generated:', project.id);
-}
-
-console.log('All project detail pages generated.');
+</html>
