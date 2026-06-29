@@ -41,6 +41,21 @@
     transform: translateX(-2px);
 }
 
+/* ── 导航栏页内锚点 ── */
+.nav-anchor {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-primary);
+    opacity: var(--nav-link-opacity);
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s;
+    scroll-behavior: smooth;
+}
+.nav-anchor:hover { opacity: 1; }
+@media (max-width: 768px) {
+    .nav-anchor { display: none; }
+}
+
 
 /* ===================================================================
  *  Hero 区

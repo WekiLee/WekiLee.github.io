@@ -129,7 +129,7 @@
                 <h2 id="projects-heading" class="section-title-apple fade-in">作品</h2>
                 <p class="section-subtitle-apple fade-in">解决问题的过程，也是能力的边界。</p>
 
-                <div id="projects-grid" class="grid md:grid-cols-2 gap-5"></div>
+                <div id="projects-grid" class="grid md:grid-cols-3 gap-5"></div>
 
             </div>
         </section>
@@ -174,18 +174,16 @@
                 </div>
 
                 <div class="flex flex-col md:flex-row items-center justify-center gap-6 fade-in">
-                    <!-- 统计图：初始隐藏，真实 src 由 JS 动态设置 -->
-                    <img id="gh-stats-img"
-                        alt="WekiLee 的 GitHub 统计：代码提交、Star 数与贡献热力图"
-                        width="400" height="160"
-                        style="display:none;min-height:120px;" />
-                    <div class="stats-img-fallback" id="gh-stats-fallback" style="max-width:400px;width:100%;" data-loading-text="GitHub 统计图加载中...">GitHub 统计图加载中...</div>
+                    <!-- 统计图：亮暗两份预加载，CSS 切换可见性 -->
+                    <div style="position:relative;max-width:400px;width:100%;">
+                        <img id="gh-stats-light" alt="WekiLee 的 GitHub 统计" width="400" height="160" style="min-height:120px;" loading="lazy" class="stats-theme-img theme-light" />
+                        <img id="gh-stats-dark" alt="WekiLee 的 GitHub 统计" width="400" height="160" style="display:none;min-height:120px;" loading="lazy" class="stats-theme-img theme-dark" />
+                    </div>
 
-                    <img id="gh-langs-img"
-                        alt="WekiLee 最常用的编程语言分布"
-                        width="320" height="160"
-                        style="display:none;min-height:120px;" />
-                    <div class="stats-img-fallback" id="gh-langs-fallback" style="max-width:320px;width:100%;" data-loading-text="语言统计图加载中...">语言统计图加载中...</div>
+                    <div style="position:relative;max-width:320px;width:100%;">
+                        <img id="gh-langs-light" alt="WekiLee 最常用的编程语言分布" width="320" height="160" style="min-height:120px;" loading="lazy" class="stats-theme-img theme-light" />
+                        <img id="gh-langs-dark" alt="WekiLee 最常用的编程语言分布" width="320" height="160" style="display:none;min-height:120px;" loading="lazy" class="stats-theme-img theme-dark" />
+                    </div>
                 </div>
             </div>
         </section>
@@ -271,7 +269,7 @@
                 <span style="color:var(--text-tertiary);">开源，共享。</span>
             </p>
             <p style="font-size:11px;margin-bottom:2px;color:var(--text-tertiary);">热爱分享 · 持续创造 · 用 ❤️ 构建</p>
-            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;color:var(--text-tertiary);">wekilee.github.io</p>
+            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;color:var(--text-tertiary);opacity:0.5;">wekilee.github.io</p>
         </div>
     </footer>
 

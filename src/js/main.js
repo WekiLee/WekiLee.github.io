@@ -102,62 +102,20 @@
 
 
         /* ================================================================
-         *  3. GitHub Stats 图片（根据主题动态切换颜色）
+         *  3. GitHub Stats 图片（亮暗主题预加载双份，CSS 控制可见性）
          * ================================================================ */
-        /**
-         * 为统计图片设置 src 并处理加载结果
-         * 先绑事件再设 src，避免缓存命中时 onload 同步触发而丢失
-         */
-        function loadStatsImg(img, fallback, url) {
-            if (!img || !url) return;
-
-            // 重置为加载中状态
-            img.style.display = 'none';
-            if (fallback) {
-                fallback.textContent = fallback.getAttribute('data-loading-text') || '统计图加载中...';
-                fallback.classList.remove('hidden');
-            }
-
-            // 先绑定事件，再设置 src（避免竞态条件）
-            img.onload = function() {
-                img.style.display = '';
-                if (fallback) fallback.classList.add('hidden');
-            };
-            img.onerror = function() {
-                img.style.display = 'none';
-                if (fallback) {
-                    fallback.textContent = '⚠️ 统计图加载失败，请稍后刷新';
-                    fallback.classList.remove('hidden');
-                }
-            };
-
-            img.src = url;
-
-            // 处理缓存命中：图片在绑事件前已加载完成的情况
-            if (img.complete && img.naturalWidth > 0) {
-                img.style.display = '';
-                if (fallback) fallback.classList.add('hidden');
-            }
-        }
-
         function updateGitHubStatsImages() {
-            var isDark = html.getAttribute('data-theme') === 'dark';
-            var themeSuffix = isDark ? 'dark' : 'light';
             var cacheBuster = '?v=' + new Date().toISOString().slice(0, 10);
 
-            var statsImg = document.getElementById('gh-stats-img');
-            var langsImg = document.getElementById('gh-langs-img');
-            var statsFallback = document.getElementById('gh-stats-fallback');
-            var langsFallback = document.getElementById('gh-langs-fallback');
+            var lightStats = document.getElementById('gh-stats-light');
+            var darkStats = document.getElementById('gh-stats-dark');
+            var lightLangs = document.getElementById('gh-langs-light');
+            var darkLangs = document.getElementById('gh-langs-dark');
 
-            if (statsImg) {
-                var statsUrl = '/assets/stats/github-stats-' + themeSuffix + '.svg' + cacheBuster;
-                loadStatsImg(statsImg, statsFallback, statsUrl);
-            }
-            if (langsImg) {
-                var langsUrl = '/assets/stats/top-langs-' + themeSuffix + '.svg' + cacheBuster;
-                loadStatsImg(langsImg, langsFallback, langsUrl);
-            }
+            if (lightStats && !lightStats.src) lightStats.src = '/assets/stats/github-stats-light.svg' + cacheBuster;
+            if (darkStats && !darkStats.src) darkStats.src = '/assets/stats/github-stats-dark.svg' + cacheBuster;
+            if (lightLangs && !lightLangs.src) lightLangs.src = '/assets/stats/top-langs-light.svg' + cacheBuster;
+            if (darkLangs && !darkLangs.src) darkLangs.src = '/assets/stats/top-langs-dark.svg' + cacheBuster;
         }
 
 

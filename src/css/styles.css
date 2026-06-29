@@ -408,7 +408,9 @@
             transition: transform 0.3s ease, box-shadow 0.3s;
         }
 
-        .hero-avatar:hover { transform: scale(1.04); }
+        @media (hover: hover) {
+            .hero-avatar:hover { transform: scale(1.04); }
+        }
 
         .hero-section h1 {
             font-size: var(--fs-hero);
@@ -757,13 +759,31 @@
             background: var(--bg-card);
             border: 1px dashed var(--border-primary);
             border-radius: 12px;
-            color: var(--text-secondary);
-            font-size: 13px;
             max-width: 100%;
+            overflow: hidden;
+        }
+        .stats-img-fallback .skeleton {
+            width: 60%;
+            height: 12px;
+            border-radius: 6px;
+            background: var(--border-primary);
+            animation: skeletonPulse 1.5s ease-in-out infinite;
         }
         .stats-img-fallback.hidden {
             display: none;
         }
+
+        @keyframes skeletonPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* ── 统计图主题切换：亮暗双份预加载，CSS 控制可见性 ── */
+        .stats-theme-img { display: block; max-width: 100%; height: auto; }
+        [data-theme="light"] .theme-light { display: block; }
+        [data-theme="light"] .theme-dark  { display: none;  }
+        [data-theme="dark"] .theme-light  { display: none;  }
+        [data-theme="dark"] .theme-dark   { display: block; }
 
 
         /* ===================================================================
@@ -804,16 +824,20 @@
         .contact-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-        .project-card-apple:hover,
-        .contact-card:hover {
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .project-card-apple:hover,
+            .contact-card:hover {
+                transform: translateY(-2px);
+            }
         }
 
         .btn-project svg {
             transition: transform 0.2s ease;
         }
-        .btn-project:hover svg {
-            transform: translateX(2px);
+        @media (hover: hover) {
+            .btn-project:hover svg {
+                transform: translateX(2px);
+            }
         }
 
         body,
