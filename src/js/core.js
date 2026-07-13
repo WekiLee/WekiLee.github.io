@@ -8,11 +8,11 @@
 
     /* ================================================================
      * 主题管理
-     * 未显式保存过偏好时默认 light（跟随系统见后续提交）
+     * 未显式保存过偏好时，跟随系统 prefers-color-scheme（#4 改进）
      * ================================================================ */
     var saved = localStorage.getItem('theme');
     if (!saved) {
-        saved = 'light';
+        saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
     }
     html.setAttribute('data-theme', saved);
 
