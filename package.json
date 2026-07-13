@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:stats": "node scripts/generate-github-stats.mjs",
+    "test:stats": "node scripts/test-generate-github-stats.mjs"
   },
   "repository": {
     "type": "git",

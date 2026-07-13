@@ -105,17 +105,15 @@
          *  3. GitHub Stats 图片（亮暗主题预加载双份，CSS 控制可见性）
          * ================================================================ */
         function updateGitHubStatsImages() {
-            var cacheBuster = '?v=' + new Date().toISOString().slice(0, 10);
-
             var lightStats = document.getElementById('gh-stats-light');
             var darkStats = document.getElementById('gh-stats-dark');
             var lightLangs = document.getElementById('gh-langs-light');
             var darkLangs = document.getElementById('gh-langs-dark');
 
-            if (lightStats && !lightStats.src) lightStats.src = '/assets/stats/github-stats-light.svg' + cacheBuster;
-            if (darkStats && !darkStats.src) darkStats.src = '/assets/stats/github-stats-dark.svg' + cacheBuster;
-            if (lightLangs && !lightLangs.src) lightLangs.src = '/assets/stats/top-langs-light.svg' + cacheBuster;
-            if (darkLangs && !darkLangs.src) darkLangs.src = '/assets/stats/top-langs-dark.svg' + cacheBuster;
+            if (lightStats && !lightStats.src) lightStats.src = '/assets/stats/github-stats-light.svg';
+            if (darkStats && !darkStats.src) darkStats.src = '/assets/stats/github-stats-dark.svg';
+            if (lightLangs && !lightLangs.src) lightLangs.src = '/assets/stats/top-langs-light.svg';
+            if (darkLangs && !darkLangs.src) darkLangs.src = '/assets/stats/top-langs-dark.svg';
         }
 
 

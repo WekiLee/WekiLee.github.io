@@ -6,7 +6,8 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 2 * * 0'
+    # 每日北京时间 03:15 刷新并发布统计图。
+    - cron: '15 19 * * *'
 
 permissions:
   contents: read
@@ -32,6 +33,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Test GitHub stats generator
+        run: npm run test:stats
+
+      - name: Generate GitHub stats SVG
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run generate:stats
 
       - name: Build
         run: npm run build
