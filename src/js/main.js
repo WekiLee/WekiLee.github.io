@@ -276,7 +276,10 @@
                 if (techData && techData.categories) renderTechStack(techData.categories);
                 initScrollAnimations();
             }).catch(function(err) {
-                console.warn('数据加载失败:', err.message);
+                console.warn('数据加载失败，降级为静态显示:', err.message);
+                // 即使数据加载失败也必须初始化滚动动画，
+                // 否则全站 .fade-in 元素因缺少 .visible 类而永远透明（整页白屏）
+                initScrollAnimations();
             });
         }
 
