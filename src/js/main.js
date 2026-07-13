@@ -24,6 +24,15 @@ import './core.js';
     /* ================================================================
      *  GitHub API — 动态获取用户统计数据
      * ================================================================ */
+    function applyStatFallback(stars, repos, projs) {
+        var starsEl = document.getElementById('stat-stars');
+        var reposEl = document.getElementById('stat-repos');
+        var projsEl = document.getElementById('stat-projects');
+        if (starsEl) { starsEl.textContent = String(stars ?? 0); starsEl.classList.remove('loading'); }
+        if (reposEl) { reposEl.textContent = String(repos ?? 0); reposEl.classList.remove('loading'); }
+        if (projsEl) { projsEl.textContent = String(projs ?? 0); projsEl.classList.remove('loading'); }
+    }
+
     function fetchWithTimeout(url, timeoutMs) {
         return new Promise(function(resolve, reject) {
             var controller = new AbortController();
@@ -57,21 +66,17 @@ import './core.js';
 
             var ownRepos = repos.filter(function(r) { return !r.fork; });
 
-            var starsEl  = document.getElementById('stat-stars');
-            var reposEl  = document.getElementById('stat-repos');
-            var projsEl  = document.getElementById('stat-projects');
-
-            if (starsEl) { starsEl.textContent = totalStars; starsEl.classList.remove('loading'); }
-            if (reposEl) { reposEl.textContent = user.public_repos || '--'; reposEl.classList.remove('loading'); }
-            if (projsEl) { projsEl.textContent = ownRepos.length; projsEl.classList.remove('loading'); }
+            applyStatFallback(totalStars, user.public_repos || 0, ownRepos.length);
         }).catch(function(err) {
-            console.warn('GitHub API 请求失败，使用默认统计值:', err.message);
-            var starsEl = document.getElementById('stat-stars');
-            var reposEl = document.getElementById('stat-repos');
-            var projsEl = document.getElementById('stat-projects');
-            if (starsEl) { starsEl.textContent = '0'; starsEl.classList.remove('loading'); }
-            if (reposEl) { reposEl.textContent = '19'; reposEl.classList.remove('loading'); }
-            if (projsEl) { projsEl.textContent = '6';  projsEl.classList.remove('loading'); }
+            console.warn('GitHub API 请求失败，尝试本地 fallback:', err.message);
+            // 优先从 stats.json 读取 fallback 值（统一数据源）
+            fetch('data/stats.json').then(function(r) { return r.json(); }).then(function(data) {
+                var fb = (data && data.fallback) ? data.fallback : {};
+                applyStatFallback(fb.stars, fb.publicRepos, fb.ownRepos);
+            }).catch(function() {
+                // stats.json 也加载失败时使用硬编码兜底
+                applyStatFallback(0, 19, 6);
+            });
         });
     }
 
@@ -131,6 +136,35 @@ import './core.js';
         grid.innerHTML = markup;
     }
 
+    function renderPosts(items) {
+        var grid = document.getElementById('posts-grid');
+        if (!grid || !items || !items.length) return;
+        grid.style.display = ''; // 确保容器可见
+        var markup = '';
+        for (var i = 0; i < items.length; i++) {
+            var p = items[i];
+            var tags = '';
+            if (p.tags) {
+                for (var t = 0; t < p.tags.length; t++) {
+                    tags += '<span>' + escapeHtml(p.tags[t]) + '</span>';
+                }
+            }
+            var sourceLabel = { 'site': '站内文章', 'wechat': '公众号', 'xiaohongshu': '小红书', 'external': '外部链接' };
+            var src = sourceLabel[p.source] || '文章';
+            var targetAttr = (p.url && p.url.startsWith('http')) ? ' target="_blank" rel="noopener noreferrer"' : '';
+            markup += '<article class="post-card-apple fade-in">' +
+                '<div class="post-card__header">' +
+                    '<span class="post-card__source">' + escapeHtml(src) + '</span>' +
+                    (p.date ? '<time class="post-card__date" datetime="' + escapeHtml(p.date) + '">' + escapeHtml(p.date) + '</time>' : '') +
+                '</div>' +
+                '<h3 class="post-card__title"><a href="' + escapeHtml(p.url || '#') + '"' + targetAttr + '>' + escapeHtml(p.title) + '</a></h3>' +
+                '<p class="post-card__summary">' + escapeHtml(p.summary) + '</p>' +
+                (tags ? '<div class="post-card__tags">' + tags + '</div>' : '') +
+            '</article>';
+        }
+        grid.innerHTML = markup;
+    }
+
     function escapeHtml(text) {
         return String(text).replace(/[&<>"']/g, function(m) {
             return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
@@ -140,13 +174,16 @@ import './core.js';
     function loadData() {
         Promise.all([
             fetchWithTimeout('data/projects.json', 5000).then(function(r) { return r.json(); }),
-            fetchWithTimeout('data/tech-stack.json', 5000).then(function(r) { return r.json(); })
+            fetchWithTimeout('data/tech-stack.json', 5000).then(function(r) { return r.json(); }),
+            fetchWithTimeout('data/posts.json', 5000).then(function(r) { return r.json(); }).catch(function() { return null; })
         ]).then(function(results) {
             var projectsData = results[0];
             var techData = results[1];
+            var postsData = results[2];
             if (projectsData && projectsData.items) renderProjects(projectsData.items);
             if (techData && techData.categories) renderTechStack(techData.categories);
-            // 项目卡片为异步注入的新节点，渲染后需重新初始化滚动观察（core.js 已暴露）
+            if (postsData && postsData.items) renderPosts(postsData.items);
+            // 项目卡片与文章卡片为异步注入的新节点，渲染后需重新初始化滚动观察（core.js 已暴露）
             if (window.initScrollAnimations) window.initScrollAnimations();
         }).catch(function(err) {
             console.warn('数据加载失败，降级为静态显示:', err.message);

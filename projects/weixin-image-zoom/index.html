@@ -10,6 +10,13 @@
     <meta property="og:title" content="weixin.image.zoom · 微信公众号文章图片放大脚本" />
     <meta property="og:description" content="一个轻量级 JavaScript 脚本，专门解决微信公众号文章内嵌图片过小的问题。安装后点击文章中的任意图片即可放大查看，体验类似手机相册。零依赖注入，不拖慢页面加载。" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://wekilee.github.io/projects/weixin-image-zoom/" />
+    <meta property="og:image" content="https://wekilee.github.io/og-cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="weixin.image.zoom — Weki Lee" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="weixin.image.zoom — Weki Lee" />
     <title>weixin.image.zoom · 微信公众号文章图片放大脚本 — Weki Lee</title>
 
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8D%3C/text%3E%3C/svg%3E" />
@@ -25,7 +32,16 @@
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
         </symbol>
         <symbol id="icon-arrow-right" viewBox="0 0 12 12">
+        <symbol id="icon-arrow-up" viewBox="0 0 12 12">
+            <path d="M6 10V2m-4 4l4-4 4 4"/>
+        </symbol>
             <path d="M2 6h8M6 2l4 4-4 4"/>
+        <symbol id="icon-arrow-up" viewBox="0 0 12 12">
+            <path d="M6 10V2m-4 4l4-4 4 4"/>
+        </symbol>
+        </symbol>
+        <symbol id="icon-arrow-up" viewBox="0 0 12 12">
+            <path d="M6 10V2m-4 4l4-4 4 4"/>
         </symbol>
         <symbol id="icon-arrow-left" viewBox="0 0 12 12">
             <path d="M10 6H2M6 10l-4-4 4-4"/>
@@ -158,11 +174,16 @@
     <footer class="footer-apple">
         <div class="container-page">
             <div class="pd-footer-extra">
-                <a href="/" class="pd-footer-back">
-                    <svg aria-hidden="true"><use href="#icon-arrow-left"/></svg>
-                    返回首页
-                </a>
-            </div>
+                <div class="pd-footer-actions">
+                    <a href="/projects/image-transformer/" class="pd-proj-nav__link pd-proj-nav__prev"><svg aria-hidden="true"><use href="#icon-arrow-left"/></svg> 上一个</a>
+                    <a href="/" class="pd-footer-back pd-footer-back--center">
+                        <svg aria-hidden="true"><use href="#icon-arrow-up"/></svg>
+                        返回首页
+                    </a>
+                    <a href="/projects/delivery-loop/" class="pd-proj-nav__link pd-proj-nav__next">下一个 <svg aria-hidden="true"><use href="#icon-arrow-right"/></svg></a>
+                </div>
+                
+                            </div>
             <p style="margin-bottom:2px;">
                 © <span id="footerYear">2026</span> Weki Lee.
                 <span style="color:var(--text-tertiary);">开源，共享。</span>

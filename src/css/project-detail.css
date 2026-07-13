@@ -330,6 +330,58 @@
     transform: translateX(-2px);
 }
 
+/* 页脚操作区三栏布局：[上一个] — [返回首页] — [下一个] */
+.pd-footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 0 8px;
+}
+
+.pd-footer-actions > .pd-footer-back--center {
+    flex-shrink: 0;
+}
+
+.pd-proj-nav__empty {
+    visibility: hidden; /* 占位，保持居中对称 */
+}
+
+/* 上一个 / 下一个 按钮（与 pd-footer-back 统一风格） */
+.pd-proj-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.pd-proj-nav__link:hover {
+    color: var(--color-brand);
+}
+
+.pd-proj-nav__link:hover svg {
+    transform: translateX(-2px);
+}
+.pd-proj-nav__next:hover svg {
+    transform: translateX(2px);
+}
+
+.pd-proj-nav__next { flex-direction: row; }
+
+.pd-proj-nav__link svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 
 /* ===================================================================
  *  图片容器（可选：架构图、截图展示）
@@ -420,7 +472,23 @@
     .pd-image-card {
         margin-top: 24px;
     }
+
+    .pd-footer-actions {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pd-proj-nav__empty {
+        display: none;
+    }
+
+    .pd-proj-nav__prev,
+    .pd-proj-nav__next {
+        flex-direction: row !important; /* 移动端统一左箭头 */
+    }
 }
+
 
 
 /* ===================================================================
