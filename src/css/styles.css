@@ -885,10 +885,17 @@
          * =================================================================== */
         .footer-apple {
             border-top: 1px solid var(--footer-border);
-            padding: 24px 0;
+            padding: 32px 0 28px;
             text-align: center;
             font-size: 12px;
             color: var(--text-secondary);
+        }
+
+        .footer-apple .container-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
         }
 
         .footer-apple a {
@@ -902,6 +909,13 @@
             margin: 0 8px;
             color: var(--footer-divider);
         }
+
+        /* Footer GitHub 图标链接（替代内联 onmouseover/out） */
+        .footer-github-link {
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+        .footer-github-link:hover { color: var(--color-brand); }
 
 
         /* ===================================================================

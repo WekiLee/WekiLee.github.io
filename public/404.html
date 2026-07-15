@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <script>(function(){var t=localStorage.getItem('theme')||((matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);})()</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="页面未找到 — Weki Lee 的个人站点" />
+    <title>404 · 页面未找到 — Weki Lee</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/src/css/styles.css" />
+</head>
+<body>
+
+    <main id="main-content">
+
+        <section style="min-height:70vh;display:flex;align-items:center;justify-content:center;padding:80px 24px;text-align:center;" aria-labelledby="err-heading">
+
+            <div>
+                <p style="font-size:120px;font-weight:800;letter-spacing:-8px;line-height:1;color:var(--color-brand);opacity:0.85;margin-bottom:-10px;"
+                   aria-hidden="true">404</p>
+
+                <h1 id="err-heading" style="font-size:28px;font-weight:700;letter-spacing:-0.02em;color:var(--text-primary);margin-bottom:12px;">
+                    页面未找到
+                </h1>
+
+                <p style="font-size:17px;color:var(--text-secondary);max-width:420px;margin:0 auto 32px;line-height:1.7;">
+                    你访问的页面不存在，或者已经被移动到了其他位置。
+                    不如回首页看看？
+                </p>
+
+                <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+                    <a href="/" class="btn-apple btn-apple-primary"
+                       style="display:inline-flex;align-items:center;gap:7px;">
+                        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+                        返回首页
+                    </a>
+                    <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-secondary">
+                        GitHub 主页
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer-apple">
+        <div class="container-page" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <p>
+                &copy; <span id="footerYear">2026</span> Weki Lee.
+                <span style="color:var(--text-tertiary);">开源，共享。</span>
+            </p>
+            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;color:var(--text-tertiary);opacity:0.5;">wekilee.github.io</p>
+        </div>
+    </footer>
+
+    <script>document.getElementById('footerYear').textContent=new Date().getFullYear();</script>
+
+</body>
+</html>

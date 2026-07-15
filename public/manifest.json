@@ -1,12 +1,1 @@
-{
-  "name": "Weki Lee · AI & Open Source Developer",
-  "short_name": "Weki Lee",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0071e3",
-  "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
+{"name": "Weki Lee · AI & Open Source Developer", "short_name": "Weki Lee", "description": "AI 教育、图像工具、Agent 工作流与内容效率工具 — 开源，共享。", "start_url": "/", "scope": "/", "display": "standalone", "orientation": "portrait-primary", "background_color": "#ffffff", "theme_color": "#0071e3", "categories": ["personal", "portfolio", "developer"], "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}
