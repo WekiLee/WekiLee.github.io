@@ -297,8 +297,7 @@
  *  Footer（详情页延伸）
  * =================================================================== */
 .pd-footer-extra {
-    padding: 20px 0 32px;
-    text-align: center;
+    padding: 0;
 }
 
 .pd-footer-back {
@@ -310,7 +309,6 @@
     color: var(--color-brand);
     text-decoration: none;
     transition: color 0.2s;
-    margin-bottom: 20px;
 }
 
 .pd-footer-back:hover { color: var(--color-brand-hover); }
@@ -336,7 +334,9 @@
     justify-content: space-between;
     align-items: center;
     gap: 24px;
-    padding: 28px 0 8px;
+    padding: 16px 0 4px;
+    width: 100%;
+    align-self: stretch; /* 覆盖父级 .container-page 的 align-items:center */
 }
 
 .pd-footer-actions > .pd-footer-back--center {
@@ -344,7 +344,7 @@
 }
 
 .pd-proj-nav__empty {
-    visibility: hidden; /* 占位，保持居中对称 */
+    visibility: hidden; /* 占位，保持三栏对称 */
 }
 
 /* 上一个 / 下一个 按钮（与 pd-footer-back 统一风格） */
