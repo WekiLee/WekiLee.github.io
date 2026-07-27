@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-24",
+  "lastUpdated": "2026-07-27",
   "items": [
     {
       "id": "edumind",
@@ -185,6 +185,45 @@
           "backend": [],
           "frontend": ["Markdown 模板"],
           "infra": ["GitHub Actions", "ESLint Rules"]
+        }
+      }
+    },
+    {
+      "id": "hound-dog",
+      "name": "hound-dog",
+      "emoji": "🐕",
+      "badge": "数据分析 Skill",
+      "tier": "secondary",
+      "description": "像猎狗一样嗅出数据里的根因。工单/日志/Excel 深度根因分析与报告复核。",
+      "tags": ["Python", "Agent Skill", "根因分析", "数据画像"],
+      "features": [
+        "P0~P7 八阶段流程，带反馈回路",
+        "结论逐条溯源，可重跑复现",
+        "双路径：从零分析 / 报告复核"
+      ],
+      "github": "https://github.com/WekiLee/hound-dog",
+      "detail": {
+        "subtitle": "数据根因分析与报告复核 Skill",
+        "overview": "hound-dog 是一个通用 agent skill：手里只有一批原始数据（服务台工单、运行日志、业务 Excel/CSV），要回答\"问题出在哪、怎么改\"时，它把流程从目标对齐、数据画像、维度穷举、交叉验证、复检纠错，推进到根因提炼与可落地建议，让每个结论都能从原始数据逐条溯源、可重跑复现。",
+        "architecture": {
+          "description": "按 P0~P7 八阶段推进，每阶段有明确产出与过关条件，阶段间带反馈回路，关键指标必须 ≥2 个独立口径交叉验证。",
+          "layers": [
+            { "name": "对齐与画像", "items": ["P0 目标对齐", "P1 数据画像", "脏数据自动告警"] },
+            { "name": "分析与验证", "items": ["P2 维度穷举", "P3 交叉验证", "P4 复检纠错"] },
+            { "name": "结论与建议", "items": ["P5 结论落实", "P6 根因提炼", "P7 可落地建议"] },
+            { "name": "输出层", "items": ["MD 分析报告", "PPT 汇报（可选）", "可复现档案"] }
+          ]
+        },
+        "highlights": [
+          { "title": "先画像后结论", "desc": "数据画像脚本自动告警重复行、撞名列、字段黑洞，避免被脏数据带偏。" },
+          { "title": "每个数字可溯源", "desc": "分析脚本 + 中间产物 + 任务日志串成可复现档案，结论与数据可对账。" },
+          { "title": "多 agent 可用", "desc": "一条 npx 命令安装到 Codex / Claude Code / Cursor 等十余种 agent 的 skills 目录。" }
+        ],
+        "status": "活跃开发中",
+        "techDetail": {
+          "backend": ["Python 3", "标准库直写 OOXML"],
+          "frontend": ["SKILL.md", "Markdown 报告模板"],
+          "infra": ["npm 安装器", "npx skills CLI", "smoke_test 回归"]
         }
       }
     }
