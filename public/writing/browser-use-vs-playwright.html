@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="browser-use 与 Playwright 深度对比研究：AI 原生浏览器自动化 vs 确定性自动化框架，数据快照、成本账、风险雷达与选型决策树。">
+<link rel="canonical" href="https://wekilee.github.io/writing/browser-use-vs-playwright.html">
+<title>browser-use vs Playwright · 深度对比研究</title>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#161b22; --card:#1c2430; --line:#2d3748;
+    --txt:#e6edf3; --muted:#8b949e; --dim:#6e7681;
+    --bu:#f59e0b; --bu-soft:rgba(245,158,11,.13);
+    --pw:#45ba4b; --pw-soft:rgba(69,186,75,.12);
+    --good:#3fb950; --warn:#d29922; --bad:#f85149;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;padding:0 0 60px}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  header{padding:56px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
+  .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px}
+  h1{font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.3}
+  h1 .vs{color:var(--dim);font-weight:400;font-size:.6em;vertical-align:middle;margin:0 8px}
+  .bu-c{color:var(--bu)} .pw-c{color:var(--pw)}
+  .sub{color:var(--muted);margin-top:14px;font-size:14px}
+  h2{font-size:22px;margin:48px 0 18px;padding-left:12px;border-left:4px solid var(--bu)}
+  h2.alt{border-left-color:var(--pw)}
+  h3{font-size:16px;margin:22px 0 10px}
+  p{margin:10px 0;color:#c9d1d9}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0}
+  .verdict{background:linear-gradient(135deg,var(--bu-soft),var(--pw-soft));border:1px solid var(--line);border-radius:14px;padding:24px;margin:24px 0}
+  .verdict strong{color:#fff}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:13px}
+  td.num{font-variant-numeric:tabular-nums}
+  .win{color:var(--good);font-weight:700}
+  .flag{color:var(--warn);font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .pill{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
+  .pill.bu{border-color:var(--bu);color:var(--bu)}
+  .pill.pw{border-color:var(--pw);color:var(--pw)}
+  ul{margin:8px 0 8px 22px;color:#c9d1d9}
+  li{margin:5px 0}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
+  .bar-label{width:130px;color:var(--muted);flex-shrink:0;text-align:right}
+  .bar-track{flex:1;background:var(--bg2);border-radius:6px;height:22px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px}
+  .bar-val{width:96px;flex-shrink:0;font-variant-numeric:tabular-nums}
+  .risk{border-left:3px solid var(--warn);background:var(--bg2);padding:12px 16px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14px}
+  .risk b{color:var(--warn)}
+  .risk.ok{border-left-color:var(--good)} .risk.ok b{color:var(--good)}
+  .decide{font-size:15px}
+  .decide .q{color:#fff;font-weight:700}
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center}
+  code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:#f0883e}
+  .src{color:var(--dim);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="tag">深度研究 · 2026-07-28 · 数据来源:GitHub 仓库页 + GitHub API</div>
+    <h1><span class="bu-c">browser-use</span><span class="vs">⚔️</span><span class="pw-c">Playwright</span></h1>
+    <div class="sub">AI 原生浏览器自动化 vs 老牌自动化框架 —— 一对"师徒"的地盘争夺战</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="verdict">
+    <h3 style="margin-top:0">⚡ 核心结论(先看这个)</h3>
+    <p><strong>两者不在同一层级,但正在互相入侵。</strong>Playwright 是<strong>确定性</strong>的自动化基础设施——你写精确脚本,它分毫不差地执行;browser-use 是<strong>概率性</strong>的 AI Agent——你用自然语言描述意图,LLM 自己琢磨怎么点。</p>
+    <p>有趣的恩怨:browser-use 诞生时就构建在 Playwright 生态之上(GitHub topics 至今挂着 <code>playwright</code> 标签),而微软如今推出 <strong>Playwright MCP / CLI</strong>,反手杀进了 AI Agent 浏览器控制这个对方的主场。</p>
+    <p style="margin-bottom:0"><strong>一句话:写测试选 Playwright 没有悬念;让 AI 自主闯荡开放网页选 browser-use;最佳实践往往是混用。</strong></p>
+  </div>
+
+  <h2>📊 数据快照(2026-07-28 GitHub API 实时)</h2>
+  <div class="card">
+    <table>
+      <tr><th>指标</th><th class="bu-c">browser-use</th><th class="pw-c">Playwright</th><th>备注</th></tr>
+      <tr><td>⭐ Stars</td><td class="num win">107,074</td><td class="num">93,586</td><td>browser-use 反超</td></tr>
+      <tr><td>🍴 Forks</td><td class="num win">11,775</td><td class="num">6,163</td><td>fork 比 11% vs 6.6%</td></tr>
+      <tr><td>📝 Commits</td><td class="num">9,907</td><td class="num win">17,594</td><td>Playwright 积累深</td></tr>
+      <tr><td>🐛 Open Issues</td><td class="num">332</td><td class="num win">156</td><td>微软的 issue  hygiene 更好</td></tr>
+      <tr><td>📅 创建时间</td><td class="num">2024-10-31(21 个月)</td><td class="num">2019-11-15(6.7 年)</td><td>—</td></tr>
+      <tr><td>🚀 当前版本</td><td class="num flag">0.13.7 ⚠️</td><td class="num">v1.62 稳定 / v1.63-next</td><td>0.x vs 成熟版本线</td></tr>
+      <tr><td>🛠 语言</td><td>Python ≥ 3.11</td><td>TypeScript + Python / .NET / Java 绑定</td><td>—</td></tr>
+      <tr><td>🌐 浏览器</td><td>Chromium only</td><td class="win">Chromium + Firefox + WebKit</td><td>Playwright 三引擎</td></tr>
+      <tr><td>👤 背后</td><td>创业公司(苏黎世+旧金山)</td><td>Microsoft</td><td>—</td></tr>
+      <tr><td>📜 License</td><td>MIT</td><td>Apache-2.0</td><td>都可自由商用</td></tr>
+    </table>
+
+    <h3>增长斜率对比(月均新增 ⭐)</h3>
+    <div class="bar-row"><div class="bar-label">browser-use</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--bu)"></div></div><div class="bar-val">≈ 5,100/月</div></div>
+    <div class="bar-row"><div class="bar-label">Playwright</div><div class="bar-track"><div class="bar-fill" style="width:23%;background:var(--pw)"></div></div><div class="bar-val">≈ 1,170/月</div></div>
+    <p class="src">browser-use 用 21 个月走完了 Playwright 6.7 年的 star 路程——AI Agent 赛道的热度肉眼可见。但注意:star 涨得快不等于工程沉淀深,commit 数 Playwright 仍领先近一倍。</p>
+  </div>
+
+  <h2 class="alt">🎯 本质差异:确定性 vs 概率性</h2>
+  <div class="grid2">
+    <div class="card" style="border-top:3px solid var(--pw)">
+      <h3 class="pw-c" style="margin-top:0">Playwright —— 你说一步,它走一步</h3>
+      <p><b>哲学:</b>开发者用代码精确描述每一步操作,框架保证分毫不差、万次执行结果一致。</p>
+      <ul>
+        <li>自动等待 + Web-First 断言,消灭 flaky test</li>
+        <li>语义化定位器(getByRole/getByLabel),不靠脆弱选择器</li>
+        <li>追踪回放、截图、录屏,测试失败可查案发现场</li>
+        <li>并行执行、认证状态复用,为 CI 而生</li>
+      </ul>
+      <p><b>一句话:</b>浏览器自动化的"数控机床"。</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--bu)">
+      <h3 class="bu-c" style="margin-top:0">browser-use —— 你说目标,它自己想辙</h3>
+      <p><b>哲学:</b>用户用自然语言描述任务目标,LLM Agent 自主规划、观察页面、决策操作、处理意外。</p>
+      <ul>
+        <li>"用我的简历填这份求职申请" → Agent 自己搞定</li>
+        <li>自研 bu-* 模型,比通用 LLM 快 3-5 倍</li>
+        <li>Odysseys 排行榜第一(87.4%,200 个长时程任务)</li>
+        <li>云服务提供隐身指纹/代理轮换/CAPTCHA 处理</li>
+      </ul>
+      <p><b>一句话:</b>浏览器自动化的"自动驾驶"。</p>
+    </div>
+  </div>
+
+  <h2>🤖 AI 能力路线之争(本场最有意思的部分)</h2>
+  <div class="card">
+    <p>两家都在抢"AI Agent 控制浏览器"这块蛋糕,但技术路线截然不同:</p>
+    <table>
+      <tr><th>维度</th><th class="bu-c">browser-use</th><th class="pw-c">Playwright MCP / CLI</th></tr>
+      <tr><td><b>决策方式</b></td><td>LLM 持续在环:观察→思考→行动循环</td><td>Agent 调用确定性工具,LLM 只做编排</td></tr>
+      <tr><td><b>页面表示</b></td><td>DOM 序列化 + 可选截图,喂给 LLM</td><td>结构化无障碍快照 + 元素引用(e5、e10),无需视觉模型</td></tr>
+      <tr><td><b>Token 消耗</b></td><td class="flag">高:每步都要把页面状态喂给 LLM</td><td class="win">低:CLI 模式刻意省 token(不加载大量 schema)</td></tr>
+      <tr><td><b>失败模式</b></td><td>可能"瞎编"操作路径,概率性失误</td><td>工具调用失败就是明确报错,可调试</td></tr>
+      <tr><td><b>模型依赖</b></td><td>必须接 LLM(自研 bu-* / GPT / Claude / Gemini / Ollama)</td><td>无强依赖,任何 Agent 都能挂</td></tr>
+      <tr><td><b>适用任务</b></td><td>开放式、长尾、没见过的网站</td><td>结构化、可枚举、需要审计的操作</td></tr>
+    </table>
+    <p class="src">点评:browser-use 赌的是"模型足够聪明,规划交给 AI";Playwright 赌的是"确定性才是生产力,LLM 只配当调度员"。2026 年的现实是——两种哲学都活得很好,因为干的活本来就不一样。</p>
+  </div>
+
+  <h2 class="alt">💰 成本账(很多人忽略的一节)</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3 class="pw-c" style="margin-top:0">Playwright:零边际成本</h3>
+      <ul>
+        <li>开源免费,Apache-2.0</li>
+        <li>执行自动化<b>不烧任何 LLM token</b></li>
+        <li>CI 里跑一万次,成本就是电费</li>
+        <li>挂 MCP 给 Agent 用时才有模型调用,且 CLI 模式刻意压 token</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="bu-c" style="margin-top:0">browser-use:按任务付费</h3>
+      <ul>
+        <li>库本身 MIT 免费,但<b>每次任务都在烧 LLM token</b></li>
+        <li>自研 bu-* 模型快 3-5 倍,也是在压这笔账</li>
+        <li>云服务(隐身/代理/CAPTCHA/1000+ 集成)是付费订阅</li>
+        <li>典型 open-core:开源引流,云端变现</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>⚠️ 风险雷达</h2>
+  <div class="risk"><b>browser-use 版本号 0.13.7:</b>一个 10.7 万 star 的项目还在 0.x 游荡,意味着 API 随时可能翻脸。跟它升级要盯 changelog,生产环境务必锁版本。</div>
+  <div class="risk"><b>browser-use 的 LLM 成本不可小觑:</b>开放式任务每一步都在调用模型。跑通一次 demo 很爽,规模化跑一万次时账单会很感人。预算敏感的场景先算清 token 账。</div>
+  <div class="risk"><b>Chromium only:</b>browser-use 只支持 Chromium。需要 WebKit(Safari 内核)或多浏览器兼容性验证的场景,它直接出局。</div>
+  <div class="risk"><b>Playwright 做 AI 是"顺手":</b>MCP/CLI 是主航道(E2E 测试)之外的延伸。它的 AI 能力永远服务于"让 Agent 用确定性工具",不会去做 browser-use 那种全自主规划——这既是边界也是天花板。</div>
+  <div class="risk"><b>商业依赖:</b>browser-use 的看家本领(隐身、代理、CAPTCHA、1000+ 集成)拴在自家云服务上;Playwright 背靠微软,倒闭风险约等于零,但功能是社区投票说了算。</div>
+  <div class="risk ok"><b>值得肯定:</b>browser-use 把 benchmark 完全开源(browser-use/benchmark),Odysseys 87.4% 是第三方榜单成绩,不是自娱自乐;Playwright 的 issue hygiene(156 个 open)对一个 9.3 万 star 的项目堪称模范。</div>
+
+  <h2 class="alt">🧭 选型决策树</h2>
+  <div class="card decide">
+    <p class="q">「我要写 E2E 测试 / 接 CI 流水线」</p>
+    <p>→ <b class="pw-c">Playwright</b>,没有悬念。测试运行器、追踪、并行、多浏览器,这本来就是它的主场。</p>
+    <p class="q" style="margin-top:16px">「重复、精确、高频的自动化(定时抓数、RPA)」</p>
+    <p>→ <b class="pw-c">Playwright</b>。确定性 + 零 LLM 成本,跑一百万次也一样稳。</p>
+    <p class="q" style="margin-top:16px">「让 AI Agent 自主完成开放式网页任务(没见过的网站、长尾操作)」</p>
+    <p>→ <b class="bu-c">browser-use</b>。你没法为全网每个网站都写脚本,这正是 LLM 在环的价值。</p>
+    <p class="q" style="margin-top:16px">「给 Claude Code / Cursor 这类 coding agent 加浏览器能力」</p>
+    <p>→ 都行,看口味:<b class="pw-c">Playwright CLI/MCP</b> 更省 token 更可预测;<b class="bu-c">browser-use skill</b> 更自主更能处理意外页面。</p>
+    <p class="q" style="margin-top:16px">「最佳实践?」</p>
+    <p>→ <b>混合双打</b>:用 browser-use 探索、验证可行性(AI 趟路),跑通后把稳定流程固化成 Playwright 脚本进生产(确定性接管)。探索期买灵活,量产期买可靠。</p>
+  </div>
+
+  <footer>
+    <p>Weki Lee 出品 · 数据来源:github.com/browser-use/browser-use、github.com/microsoft/playwright 及 GitHub REST API(2026-07-28 抓取)</p>
+    <p>基准数字(Odysseys 87.4%、3-5x 速度)引自 browser-use 官方材料,未做独立复现 · 成本判断为架构层面推断,非实测账单</p>
+  <p style="margin-top:14px"><a href="/" style="color:#8b949e;text-decoration:none">← 返回 Weki Lee 首页</a></p>
+  </footer>
+</div>
+</body>
+</html>

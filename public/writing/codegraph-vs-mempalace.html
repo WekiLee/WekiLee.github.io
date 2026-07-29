@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CodeGraph 与 MemPalace 深度对比研究：预索引代码知识图谱 vs 本地优先 AI 记忆系统，数据快照、架构对比、基准证据质量与风险雷达。">
+<link rel="canonical" href="https://wekilee.github.io/writing/codegraph-vs-mempalace.html">
+<title>CodeGraph vs MemPalace · 深度对比研究</title>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#161b22; --card:#1c2430; --line:#2d3748;
+    --txt:#e6edf3; --muted:#8b949e; --dim:#6e7681;
+    --cg:#7c6cf0; --cg-soft:rgba(124,108,240,.14);
+    --mp:#e0a458; --mp-soft:rgba(224,164,88,.14);
+    --good:#3fb950; --warn:#d29922; --bad:#f85149;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;padding:0 0 60px}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  header{padding:56px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
+  .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px}
+  h1{font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.3}
+  h1 .vs{color:var(--dim);font-weight:400;font-size:.6em;vertical-align:middle;margin:0 8px}
+  .cg-c{color:var(--cg)} .mp-c{color:var(--mp)}
+  .sub{color:var(--muted);margin-top:14px;font-size:14px}
+  h2{font-size:22px;margin:48px 0 18px;padding-left:12px;border-left:4px solid var(--cg)}
+  h2.alt{border-left-color:var(--mp)}
+  h3{font-size:16px;margin:22px 0 10px}
+  p{margin:10px 0;color:#c9d1d9}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0}
+  .verdict{background:linear-gradient(135deg,var(--cg-soft),var(--mp-soft));border:1px solid var(--line);border-radius:14px;padding:24px;margin:24px 0}
+  .verdict strong{color:#fff}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-weight:600;font-size:13px}
+  td.num{font-variant-numeric:tabular-nums}
+  .win{color:var(--good);font-weight:700}
+  .flag{color:var(--warn);font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .pill{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
+  .pill.cg{border-color:var(--cg);color:var(--cg)}
+  .pill.mp{border-color:var(--mp);color:var(--mp)}
+  ul{margin:8px 0 8px 22px;color:#c9d1d9}
+  li{margin:5px 0}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
+  .bar-label{width:110px;color:var(--muted);flex-shrink:0;text-align:right}
+  .bar-track{flex:1;background:var(--bg2);border-radius:6px;height:22px;position:relative;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px}
+  .bar-val{width:86px;flex-shrink:0;font-variant-numeric:tabular-nums}
+  .risk{border-left:3px solid var(--warn);background:var(--bg2);padding:12px 16px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14px}
+  .risk b{color:var(--warn)}
+  .ok{border-left-color:var(--good)} .ok b{color:var(--good)}
+  .decide{font-size:15px}
+  .decide .q{color:#fff;font-weight:700}
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center}
+  a{color:var(--cg)}
+  .src{color:var(--dim);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="tag">深度研究 · 2026-07-28 · 数据来源:GitHub 仓库页 + GitHub API</div>
+    <h1><span class="cg-c">CodeGraph</span><span class="vs">⚔️</span><span class="mp-c">MemPalace</span></h1>
+    <div class="sub">预索引代码知识图谱 vs 本地优先 AI 记忆系统 —— 一场"关公战秦琼"式对比,以及为什么它俩其实该坐一桌</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="verdict">
+    <h3 style="margin-top:0">⚡ 核心结论(先看这个)</h3>
+    <p><strong>这不是竞品对比,是互补关系。</strong>CodeGraph 解决"AI Agent 看不懂代码库"的问题(静态代码智能,管<strong>空间</strong>),MemPalace 解决"AI Agent 记不住对话"的问题(动态记忆,管<strong>时间</strong>)。两者都是 MIT 协议、100% 本地运行、通过 MCP 协议接入同一批 AI 编程工具,<strong>可以同时安装、互不冲突</strong>。</p>
+    <p style="margin-bottom:0">真正需要对比的是:数据健康度、架构设计、基准证据质量、以及两个都很年轻的项目各自的风险。</p>
+  </div>
+
+  <h2>📊 数据快照(2026-07-28 GitHub API 实时)</h2>
+  <div class="card">
+    <table>
+      <tr><th>指标</th><th class="cg-c">CodeGraph</th><th class="mp-c">MemPalace</th><th>备注</th></tr>
+      <tr><td>⭐ Stars</td><td class="num win">62,944</td><td class="num">57,811</td><td>CodeGraph 略胜</td></tr>
+      <tr><td>🍴 Forks</td><td class="num">3,949</td><td class="num win">7,438</td><td>MemPalace 近 2 倍</td></tr>
+      <tr><td>Fork/Star 比</td><td class="num">6.3%</td><td class="num flag">12.9% ⚠️</td><td>MemPalace 偏高,见风险节</td></tr>
+      <tr><td>📝 Commits</td><td class="num">774</td><td class="num win">1,537</td><td>MemPalace 提交强度约 2 倍</td></tr>
+      <tr><td>🐛 Open Issues</td><td class="num">362</td><td class="num flag">654</td><td>两家积压都不小</td></tr>
+      <tr><td>📅 创建时间</td><td class="num">2026-01-18</td><td class="num">2026-04-05</td><td>都不到 7 个月</td></tr>
+      <tr><td>🚀 最新版本</td><td class="num">v1.5.0(07-21)</td><td class="num">v3.6.0(07-15)</td><td>都在一周内更新过</td></tr>
+      <tr><td>🛠 技术栈</td><td>Rust 内核 + TypeScript<br><span class="src">(GitHub 主语言显示 C,因 vendored tree-sitter 语法器)</span></td><td>Python 3.9+</td><td>—</td></tr>
+      <tr><td>👤 主体</td><td>个人作者 colbymchenry</td><td>组织账号(实际 igorls 主导)</td><td>bus factor 都 ≈ 1</td></tr>
+      <tr><td>📜 License</td><td>MIT</td><td>MIT</td><td>平手,均可自由商用</td></tr>
+    </table>
+
+    <h3>增长速度直观对比(月均)</h3>
+    <div class="bar-row"><div class="bar-label">CodeGraph ⭐/月</div><div class="bar-track"><div class="bar-fill" style="width:78%;background:var(--cg)"></div></div><div class="bar-val">≈ 10,000</div></div>
+    <div class="bar-row"><div class="bar-label">MemPalace ⭐/月</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--mp)"></div></div><div class="bar-val">≈ 15,300</div></div>
+    <div class="bar-row"><div class="bar-label">CodeGraph commit/日</div><div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--cg)"></div></div><div class="bar-val">≈ 4.3</div></div>
+    <div class="bar-row"><div class="bar-label">MemPalace commit/日</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--mp)"></div></div><div class="bar-val">≈ 14</div></div>
+    <p class="src">注:两个项目的增长曲线都异常陡峭(半年 6 万星级别),建议自行到 star-history.com 核对增长自然度。MemPalace 日均 14 个 commit 的节奏堪称狂暴,PR 编号已到 #2051。</p>
+  </div>
+
+  <h2>🎯 定位:解决什么问题</h2>
+  <div class="grid2">
+    <div class="card" style="border-top:3px solid var(--cg)">
+      <h3 class="cg-c" style="margin-top:0">CodeGraph —— 代码的地图</h3>
+      <p><b>痛点:</b>AI 编程 Agent 理解大代码库时,靠 grep/glob/Read 逐文件瞎翻,烧 token、慢、还经常找错地方。</p>
+      <p><b>方案:</b>预先用 tree-sitter 把整个代码库解析成知识图谱(符号 + 调用/继承/导入边),存进本地 SQLite。Agent 一次 MCP 调用就拿到精确上下文:入口点、相关符号、代码片段、影响半径。</p>
+      <p><b>一句话:</b>让 Agent "查地图"而不是"挨家挨户敲门"。</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--mp)">
+      <h3 class="mp-c" style="margin-top:0">MemPalace —— 对话的档案柜</h3>
+      <p><b>痛点:</b>AI Agent 会话结束就失忆(Claude Code 会话 30 天还会过期),跨会话协作等于每天重新认识一遍。</p>
+      <p><b>方案:</b>逐字(verbatim)存储原始对话,不做摘要改写;按"记忆宫殿"层级组织(Wings→Rooms→Closets→Drawers),向量检索 + 时序知识图谱召回。</p>
+      <p><b>一句话:</b>让 Agent "查档案"而不是"凭印象瞎编"。</p>
+    </div>
+  </div>
+
+  <h2 class="alt">🏗 架构与技术对比</h2>
+  <div class="card">
+    <table>
+      <tr><th>维度</th><th class="cg-c">CodeGraph</th><th class="mp-c">MemPalace</th></tr>
+      <tr><td><b>核心引擎</b></td><td>Rust 编译型内核,tree-sitter 解析 20 种语言,字节级一致</td><td>Python + 本地嵌入模型(embeddinggemma-300m,~300MB,100+ 语言)</td></tr>
+      <tr><td><b>存储</b></td><td>单一日志:SQLite(WAL + FTS5 全文搜索)</td><td>可插拔 5 后端:ChromaDB(默认)/ Milvus / Qdrant / pgvector / SQLite</td></tr>
+      <tr><td><b>新鲜度机制</b></td><td>原生 OS 文件事件监听,2s 防抖增量同步,连接时哈希校验追赶</td><td>IDE 钩子自动保存(Claude Code / Codex / Cursor),压缩前快照</td></tr>
+      <tr><td><b>MCP 工具面</b></td><td>聚焦代码查询:explore / callers / impact / affected / search</td><td>36 个工具:宫殿读写、知识图谱、跨翼导航、Agent 日记</td></tr>
+      <tr><td><b>特色能力</b></td><td>影响半径分析、17 种 Web 框架路由识别、Swift↔ObjC 等跨语言桥接、机器资源自适应</td><td>AAAK 30x 无损压缩方言、时序实体三元组、矛盾检测、多 Agent 各自一翼、远程 MCP serve(TLS+只读)</td></tr>
+      <tr><td><b>运行时依赖</b></td><td>自包含,无需用户装 Node;一行 curl 安装</td><td>需 Python 环境(uv/pipx),或 Docker(CPU/CUDA 镜像)</td></tr>
+    </table>
+  </div>
+
+  <h2>📈 性能与基准:证据质量评估</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3 class="cg-c" style="margin-top:0">CodeGraph 的牌</h3>
+      <ul>
+        <li>7 个真实开源仓库实测(VS Code / Django / Tokio / Alamofire 等):平均 <b>60% 成本↓、69% token↓、89% 工具调用↓</b>,文件读取次数降为 0</li>
+        <li>索引速度:Swift 编译器仓库(27k 文件)≈100 秒;Linux 内核(70k 文件、200 万符号)12 分钟</li>
+        <li>日常保存级增量同步 ~0.3-0.4s</li>
+      </ul>
+      <p class="src">评估:数据具体、场景真实,但基准绑定特定模型(Claude Opus 4.8),且为作者自测,未见第三方复现。</p>
+    </div>
+    <div class="card">
+      <h3 class="mp-c" style="margin-top:0">MemPalace 的牌</h3>
+      <ul>
+        <li>LongMemEval(学术基准,500 题):零 API 纯语义 R@5 <b>96.6%</b>,Hybrid v4 <b>98.4%</b>,+ LLM rerank ≥99%</li>
+        <li>LoCoMo R@10 88.9%、ConvoMem 92.9%、MemBench(ACL 2025)R@5 80.3%</li>
+        <li><b>诚实性声明:</b>明确拒绝展示"100%"数字(认为那是 teaching to the test),拒绝对 Mem0/Zep 等做不对等横向对比,逐题结果文件全部提交在仓库可复现</li>
+      </ul>
+      <p class="src">评估:用公开学术基准 + 结果文件入库 + 主动声明局限性,证据规范度明显更高。</p>
+    </div>
+  </div>
+
+  <h2 class="alt">🔌 生态集成</h2>
+  <div class="card">
+    <p><b class="cg-c">CodeGraph(广度优先,8 家):</b>
+      <span class="pill cg">Claude Code</span><span class="pill cg">Cursor</span><span class="pill cg">Codex CLI</span><span class="pill cg">Gemini CLI</span><span class="pill cg">OpenCode</span><span class="pill cg">Antigravity</span><span class="pill cg">Kiro</span><span class="pill cg">Hermes Agent</span>
+    </p>
+    <p><b class="mp-c">MemPalace(深度优先,3+1 家):</b>
+      <span class="pill mp">Claude Code</span><span class="pill mp">Codex CLI</span><span class="pill mp">Cursor</span><span class="pill mp">Antigravity</span>
+    </p>
+    <p class="src">CodeGraph 胜在覆盖面;MemPalace 胜在集成深度(自动保存钩子、压缩前快照、会话开始自动回忆)。两家都押注 MCP 协议,生态站位相同。</p>
+  </div>
+
+  <h2>⚠️ 风险雷达</h2>
+  <div class="risk"><b>两家共同的:</b>都是 2026 年才出生的项目(6 个月 / 4 个月),star 却冲到 5.7-6.3 万——这个量级通常是多年积累的结果。增长是自然爆红还是营销/刷量驱动,建议看 star 增长曲线再下结论。生产环境采用请锁版本。</div>
+  <div class="risk"><b>MemPalace fork 比异常:</b>fork/star 达 12.9%(7,438 forks),工具型 repo 常见区间是 5-8%。可能是大量用户自行部署二开,也不排除水分。另外其 README 专门警告"有假冒官网"——被仿冒者盯上,侧面说明热度,但也提醒认准 <code>github.com/MemPalace/mempalace</code> 和 PyPI 官方包。</div>
+  <div class="risk"><b>Bus factor ≈ 1:</b>CodeGraph 是个人项目(colbymchenry);MemPalace 虽是组织账号,但提交高度集中在 igorls 一人。核心作者一旦停更,社区接手能力未知。</div>
+  <div class="risk"><b>Issue 积压:</b>362 / 654 个 open issues,对年轻项目不算灾难,但说明用户涌入速度超过了维护带宽。</div>
+  <div class="risk ok"><b>值得肯定:</b>两家都是 MIT + 100% 本地运行 + 无 API key 依赖,隐私姿态一致且诚实;MemPalace 的基准诚实性声明、CodeGraph 的逐仓库具体数字,都比"AI 时代平均营销水准"高出一截。</div>
+
+  <h2 class="alt">🧭 选型建议</h2>
+  <div class="card decide">
+    <p class="q">「AI 写代码时瞎翻文件,token 烧得我心疼」</p>
+    <p>→ 装 <b class="cg-c">CodeGraph</b>。预索引图谱就是干这个的,尤其大仓库(万级文件)收益最大。</p>
+    <p class="q" style="margin-top:16px">「AI 每次都失忆,上周聊的架构决策这周全忘了」</p>
+    <p>→ 装 <b class="mp-c">MemPalace</b>。逐字记忆 + 自动保存钩子,Claude Code 用户尤其需要(30 天会话过期)。</p>
+    <p class="q" style="margin-top:16px">「我全都要?」</p>
+    <p>→ <b>可以,而且是推荐姿势。</b>两者都是 MCP server,一个给 Agent 装"代码地图",一个装"长期记忆",能力正交不打架。Agent 配置里同时挂两个 MCP 即可。</p>
+    <p class="q" style="margin-top:16px">「企业要上车?」</p>
+    <p>→ 先在小团队试点、锁定版本、观察 3-6 个月。项目太年轻,API 和存储格式都可能变。</p>
+  </div>
+
+  <footer>
+    <p>Weki Lee 出品 · 数据来源:github.com/colbymchenry/codegraph、github.com/MemPalace/mempalace 及 GitHub REST API(2026-07-28 抓取)</p>
+    <p>基准数字均引自各项目 README 自述,未做独立复现 · 增长异常性判断为主观风险提示,非定论</p>
+  <p style="margin-top:14px"><a href="/" style="color:#8b949e;text-decoration:none">← 返回 Weki Lee 首页</a></p>
+  </footer>
+</div>
+</body>
+</html>

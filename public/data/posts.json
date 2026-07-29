@@ -1,1 +1,24 @@
-{"lastUpdated": "2026-07-13", "description": "写作与笔记数据源。每条可指向站内文章、公众号文章链接、小红书笔记等外部内容。", "items": [{"id": "post-001", "title": "个人作品集站点从 0 到 1", "summary": "用 Vite + 原生 JS 搭建 Apple 风格的个人站点，涵盖 PWA、暗色模式、SEO 与自动化部署的完整实践。", "date": "2026-06-15", "tags": ["前端工程化", "Vite", "PWA"], "source": "site", "url": "/"}, {"id": "post-002", "title": "GitHub 统计图自建方案：告别第三方服务依赖", "summary": "用 Node.js + resvg 本地生成亮/暗双主题 SVG 统计图与语言分布图，接入 CI 定时刷新，彻底解决第三方服务不稳定的问题。", "date": "2026-07-13", "tags": ["CI/CD", "Node.js", "SVG"], "source": "site", "url": "/"}]}
+{
+  "lastUpdated": "2026-07-29",
+  "description": "写作与笔记数据源。每条可指向站内文章、公众号文章链接、小红书笔记等外部内容。",
+  "items": [
+    {
+      "id": "post-001",
+      "title": "browser-use vs Playwright：AI 原生浏览器自动化的地盘争夺战",
+      "summary": "确定性自动化基础设施 vs 概率性 AI Agent。基于 GitHub API 实时数据的深度对比：增长斜率、AI 路线之争、成本账、风险雷达与选型决策树。",
+      "date": "2026-07-28",
+      "tags": ["深度研究", "浏览器自动化", "AI Agent"],
+      "source": "site",
+      "url": "/writing/browser-use-vs-playwright.html"
+    },
+    {
+      "id": "post-002",
+      "title": "CodeGraph vs MemPalace：代码地图与长期记忆，其实该坐一桌",
+      "summary": "预索引代码知识图谱 vs 本地优先 AI 记忆系统。一场\"关公战秦琼\"式对比：数据健康度、架构设计、基准证据质量，以及为什么它俩是互补关系。",
+      "date": "2026-07-28",
+      "tags": ["深度研究", "MCP", "AI 编程工具"],
+      "source": "site",
+      "url": "/writing/codegraph-vs-mempalace.html"
+    }
+  ]
+}

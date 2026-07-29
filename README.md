@@ -8,6 +8,7 @@
 - weixin.image.zoom：微信公众号文章图片放大脚本。
 - delivery-loop：端到端需求交付闭环 skill。
 - lessons-evolve：多 Agent 经验进化与规则沉淀。
+- hound-dog：数据根因分析与报告复核 skill，结论可溯源复现。
 
 ## 技术栈
 
