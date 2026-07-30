@@ -3,37 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var t=localStorage.getItem('theme')||((matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);})()</script>
 <meta name="description" content="browser-use 与 Playwright 深度对比研究：AI 原生浏览器自动化 vs 确定性自动化框架，数据快照、成本账、风险雷达与选型决策树。">
-<link rel="canonical" href="https://wekilee.github.io/writing/browser-use-vs-playwright.html">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://wekilee.github.io/writing/browser-use-vs-playwright/">
 <title>browser-use vs Playwright · 深度对比研究</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/src/css/styles.css">
+<link rel="stylesheet" href="/src/css/project-detail.css">
 <style>
   :root{
+    --bg:#ffffff; --bg2:#f6f8fa; --card:#ffffff; --line:#d0d7de;
+    --txt:#1f2328; --txt2:#57606a; --muted:#57606a; --dim:#8b949e;
+    --bu:#b35900; --bu-soft:rgba(245,158,11,.18);
+    --pw:#1a7f37; --pw-soft:rgba(69,186,75,.18);
+    --good:#1a7f37; --warn:#9a6700; --bad:#cf222e;
+    --code:#b35900; --strong:#1f2328;
+  }
+  [data-theme="dark"]{
     --bg:#0d1117; --bg2:#161b22; --card:#1c2430; --line:#2d3748;
-    --txt:#e6edf3; --muted:#8b949e; --dim:#6e7681;
+    --txt:#e6edf3; --txt2:#c9d1d9; --muted:#8b949e; --dim:#6e7681;
     --bu:#f59e0b; --bu-soft:rgba(245,158,11,.13);
     --pw:#45ba4b; --pw-soft:rgba(69,186,75,.12);
     --good:#3fb950; --warn:#d29922; --bad:#f85149;
+    --code:#f0883e; --strong:#ffffff;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;padding:0 0 60px}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;transition:background .4s ease,color .4s ease}
   .wrap{max-width:960px;margin:0 auto;padding:0 20px}
-  header{padding:56px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
+  .article-hero{padding:96px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
   .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px}
-  h1{font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.3}
-  h1 .vs{color:var(--dim);font-weight:400;font-size:.6em;vertical-align:middle;margin:0 8px}
+  .article-body h1{font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.3}
+  .article-body h1 .vs{color:var(--dim);font-weight:400;font-size:.6em;vertical-align:middle;margin:0 8px}
   .bu-c{color:var(--bu)} .pw-c{color:var(--pw)}
   .sub{color:var(--muted);margin-top:14px;font-size:14px}
-  h2{font-size:22px;margin:48px 0 18px;padding-left:12px;border-left:4px solid var(--bu)}
-  h2.alt{border-left-color:var(--pw)}
-  h3{font-size:16px;margin:22px 0 10px}
-  p{margin:10px 0;color:#c9d1d9}
+  .article-body h2{font-size:22px;margin:48px 0 18px;padding-left:12px;border-left:4px solid var(--bu)}
+  .article-body h2.alt{border-left-color:var(--pw)}
+  .article-body h3{font-size:16px;margin:22px 0 10px}
+  .article-body p{margin:10px 0;color:var(--txt2)}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0}
   .verdict{background:linear-gradient(135deg,var(--bu-soft),var(--pw-soft));border:1px solid var(--line);border-radius:14px;padding:24px;margin:24px 0}
-  .verdict strong{color:#fff}
-  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
-  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-  th{color:var(--muted);font-weight:600;font-size:13px}
-  td.num{font-variant-numeric:tabular-nums}
+  .verdict strong{color:var(--strong)}
+  .article-body table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  .article-body th,.article-body td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .article-body th{color:var(--muted);font-weight:600;font-size:13px}
+  .article-body td.num{font-variant-numeric:tabular-nums}
   .win{color:var(--good);font-weight:700}
   .flag{color:var(--warn);font-weight:600}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -41,8 +56,8 @@
   .pill{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
   .pill.bu{border-color:var(--bu);color:var(--bu)}
   .pill.pw{border-color:var(--pw);color:var(--pw)}
-  ul{margin:8px 0 8px 22px;color:#c9d1d9}
-  li{margin:5px 0}
+  .article-body ul{margin:8px 0 8px 22px;color:var(--txt2)}
+  .article-body li{margin:5px 0}
   .bar-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
   .bar-label{width:130px;color:var(--muted);flex-shrink:0;text-align:right}
   .bar-track{flex:1;background:var(--bg2);border-radius:6px;height:22px;overflow:hidden}
@@ -52,20 +67,54 @@
   .risk b{color:var(--warn)}
   .risk.ok{border-left-color:var(--good)} .risk.ok b{color:var(--good)}
   .decide{font-size:15px}
-  .decide .q{color:#fff;font-weight:700}
-  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center}
-  code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:#f0883e}
+  .decide .q{color:var(--strong);font-weight:700}
+  .article-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center}
+  .article-body code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:var(--code)}
   .src{color:var(--dim);font-size:12px}
+  /* 文章页无汉堡菜单，覆盖站点 .nav-links 移动端隐藏规则，保证主题按钮可见 */
+  @media(max-width:768px){
+    .nav-bar .article-nav-links{display:flex!important;align-items:center;gap:14px}
+  }
 </style>
 </head>
 <body>
-<header>
+
+    <a href="#main-content" class="skip-link">跳到主内容</a>
+
+    <svg style="display:none;" aria-hidden="true">
+        <symbol id="icon-github" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+        </symbol>
+        <symbol id="icon-arrow-left" viewBox="0 0 12 12">
+            <path d="M10 6H2M6 10l-4-4 4-4"/>
+        </symbol>
+    </svg>
+
+    <header>
+        <nav class="nav-bar" aria-label="主导航">
+            <div class="nav-inner">
+                <a href="/" class="nav-back" aria-label="返回 Weki Lee 首页">
+                    <svg class="nav-back-icon" aria-hidden="true"><use href="#icon-arrow-left"/></svg>
+                    Weki Lee
+                </a>
+                <div class="nav-links article-nav-links">
+                    <button class="theme-toggle-apple" id="themeToggle" aria-label="切换到暗色模式">
+                        <span id="themeIcon" aria-hidden="true">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="article-body">
+
+<div class="article-hero">
   <div class="wrap">
     <div class="tag">深度研究 · 2026-07-28 · 数据来源:GitHub 仓库页 + GitHub API</div>
     <h1><span class="bu-c">browser-use</span><span class="vs">⚔️</span><span class="pw-c">Playwright</span></h1>
     <div class="sub">AI 原生浏览器自动化 vs 老牌自动化框架 —— 一对"师徒"的地盘争夺战</div>
   </div>
-</header>
+</div>
 
 <div class="wrap">
 
@@ -183,11 +232,28 @@
     <p>→ <b>混合双打</b>:用 browser-use 探索、验证可行性(AI 趟路),跑通后把稳定流程固化成 Playwright 脚本进生产(确定性接管)。探索期买灵活,量产期买可靠。</p>
   </div>
 
-  <footer>
+  <div class="article-footer">
     <p>Weki Lee 出品 · 数据来源:github.com/browser-use/browser-use、github.com/microsoft/playwright 及 GitHub REST API(2026-07-28 抓取)</p>
     <p>基准数字(Odysseys 87.4%、3-5x 速度)引自 browser-use 官方材料,未做独立复现 · 成本判断为架构层面推断,非实测账单</p>
-  <p style="margin-top:14px"><a href="/" style="color:#8b949e;text-decoration:none">← 返回 Weki Lee 首页</a></p>
-  </footer>
+  </div>
 </div>
+
+    </main>
+
+    <footer class="footer-apple">
+        <div class="container-page">
+            <div class="flex justify-center gap-4 mb-3">
+                <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" aria-label="Weki Lee 的 GitHub 主页" class="footer-github-link">
+                    <svg class="w-5 h-5" aria-hidden="true"><use href="#icon-github"/></svg>
+                </a>
+            </div>
+            <p>&copy; <span id="footerYear">2026</span> Weki Lee. <span style="color:var(--text-tertiary);">开源，共享。</span></p>
+            <p style="font-size:11px;color:var(--text-tertiary);">热爱分享 · 持续创造 · 用 ❤️ 构建</p>
+            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;color:var(--text-tertiary);opacity:0.5;">wekilee.github.io</p>
+        </div>
+    </footer>
+
+    <div id="theme-announce" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="/src/js/core.js"></script>
 </body>
 </html>

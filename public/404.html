@@ -10,7 +10,72 @@
     <title>404 · 页面未找到 — Weki Lee</title>
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="/src/css/styles.css" />
+    <!-- 自包含样式：404.html 在 public/ 下原样部署，不经过 Vite 打包，
+         故将本页所需的 CSS 变量与组件样式内嵌，避免引用不存在的构建产物路径 -->
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --color-brand: #0071e3;
+            --color-brand-hover: #0077ed;
+            --btn-secondary-bg: #e8e8ed;
+            --btn-secondary-hover: #d2d2d7;
+            --btn-secondary-text: #1d1d1f;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --text-tertiary: #757575;
+            --footer-border: #e8e8ed;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --btn-secondary-bg: #2d2d2f;
+            --btn-secondary-hover: #3d3d3f;
+            --btn-secondary-text: #f5f5f7;
+            --text-primary: #f5f5f7;
+            --text-secondary: #86868b;
+            --text-tertiary: #86868b;
+            --footer-border: #2d2d2f;
+        }
+        *, *:before, *:after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, SF Pro Display, SF Pro Text, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans SC, sans-serif;
+            background: var(--bg-primary);
+            transition: background 0.4s ease;
+        }
+        .btn-apple {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 980px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .btn-apple-primary { background: var(--color-brand); color: #ffffff; }
+        .btn-apple-primary:hover { background: var(--color-brand-hover); }
+        .btn-apple-secondary { background: var(--btn-secondary-bg); color: var(--btn-secondary-text); }
+        .btn-apple-secondary:hover { background: var(--btn-secondary-hover); }
+        .footer-apple {
+            border-top: 1px solid var(--footer-border);
+            padding: 32px 0 28px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .footer-apple .container-page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
 </head>
 <body>
 
@@ -48,7 +113,7 @@
     </main>
 
     <footer class="footer-apple">
-        <div class="container-page" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="container-page">
             <p>
                 &copy; <span id="footerYear">2026</span> Weki Lee.
                 <span style="color:var(--text-tertiary);">开源，共享。</span>

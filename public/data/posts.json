@@ -9,7 +9,7 @@
       "date": "2026-07-28",
       "tags": ["深度研究", "浏览器自动化", "AI Agent"],
       "source": "site",
-      "url": "/writing/browser-use-vs-playwright.html"
+      "url": "/writing/browser-use-vs-playwright/"
     },
     {
       "id": "post-002",
@@ -18,7 +18,7 @@
       "date": "2026-07-28",
       "tags": ["深度研究", "MCP", "AI 编程工具"],
       "source": "site",
-      "url": "/writing/codegraph-vs-mempalace.html"
+      "url": "/writing/codegraph-vs-mempalace/"
     }
   ]
 }
