@@ -1,7 +1,16 @@
 {
-  "lastUpdated": "2026-07-29",
+  "lastUpdated": "2026-08-05",
   "description": "写作与笔记数据源。每条可指向站内文章、公众号文章链接、小红书笔记等外部内容。",
   "items": [
+    {
+      "id": "post-003",
+      "title": "MemPalace vs TencentDB-Agent-Memory：AI 记忆系统的草根与正规军",
+      "summary": "逐字存储 vs 分层蒸馏，个人轻量记忆库 vs 团队级记忆中枢。同名\"记忆\"两种物种：数据快照、记忆哲学、架构部署、基准证据，以及三个值得警惕的仓库疑点。",
+      "date": "2026-08-05",
+      "tags": ["深度研究", "AI 记忆", "MCP"],
+      "source": "site",
+      "url": "/writing/mempalace-vs-tencentdb/"
+    },
     {
       "id": "post-001",
       "title": "browser-use vs Playwright：AI 原生浏览器自动化的地盘争夺战",

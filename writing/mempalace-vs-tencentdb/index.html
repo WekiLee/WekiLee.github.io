@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var t=localStorage.getItem('theme')||((matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);})()</script>
+<meta name="description" content="MemPalace 与 TencentDB-Agent-Memory 深度对比研究：个人轻量记忆库 vs 团队级记忆中枢，数据快照、记忆哲学、架构部署、基准证据质量与风险雷达。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://wekilee.github.io/writing/mempalace-vs-tencentdb/">
+<title>MemPalace vs TencentDB-Agent-Memory · 深度对比研究</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/src/css/styles.css">
+<link rel="stylesheet" href="/src/css/project-detail.css">
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f6f8fa; --card:#ffffff; --line:#d0d7de;
+    --txt:#1f2328; --txt2:#57606a; --muted:#57606a; --dim:#8b949e;
+    --mp:#b7791f; --mp-soft:rgba(224,164,88,.18);
+    --tn:#0969da; --tn-soft:rgba(59,157,255,.15);
+    --good:#1a7f37; --warn:#9a6700; --bad:#cf222e;
+    --code:#b35900; --strong:#1f2328;
+  }
+  [data-theme="dark"]{
+    --bg:#0d1117; --bg2:#161b22; --card:#1c2430; --line:#2d3748;
+    --txt:#e6edf3; --txt2:#c9d1d9; --muted:#8b949e; --dim:#6e7681;
+    --mp:#e0a458; --mp-soft:rgba(224,164,88,.13);
+    --tn:#3b9dff; --tn-soft:rgba(59,157,255,.12);
+    --good:#3fb950; --warn:#d29922; --bad:#f85149;
+    --code:#f0883e; --strong:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;transition:background .4s ease,color .4s ease}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  .article-hero{padding:96px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
+  .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px}
+  .article-body h1{font-size:clamp(24px,4.6vw,38px);font-weight:800;line-height:1.3}
+  .article-body h1 .vs{color:var(--dim);font-weight:400;font-size:.6em;vertical-align:middle;margin:0 8px}
+  .mp-c{color:var(--mp)} .tn-c{color:var(--tn)}
+  .sub{color:var(--muted);margin-top:14px;font-size:14px}
+  .article-body h2{font-size:22px;margin:48px 0 18px;padding-left:12px;border-left:4px solid var(--mp)}
+  .article-body h2.alt{border-left-color:var(--tn)}
+  .article-body h3{font-size:16px;margin:22px 0 10px}
+  .article-body p{margin:10px 0;color:var(--txt2)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0}
+  .verdict{background:linear-gradient(135deg,var(--mp-soft),var(--tn-soft));border:1px solid var(--line);border-radius:14px;padding:24px;margin:24px 0}
+  .verdict strong{color:var(--strong)}
+  .article-body table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  .article-body th,.article-body td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .article-body th{color:var(--muted);font-weight:600;font-size:13px}
+  .article-body td.num{font-variant-numeric:tabular-nums}
+  .win{color:var(--good);font-weight:700}
+  .flag{color:var(--warn);font-weight:600}
+  .bad{color:var(--bad);font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .pill{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
+  .pill.mp{border-color:var(--mp);color:var(--mp)}
+  .pill.tn{border-color:var(--tn);color:var(--tn)}
+  .article-body ul{margin:8px 0 8px 22px;color:var(--txt2)}
+  .article-body li{margin:5px 0}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
+  .bar-label{width:170px;color:var(--muted);flex-shrink:0;text-align:right}
+  .bar-track{flex:1;background:var(--bg2);border-radius:6px;height:22px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px}
+  .bar-val{width:100px;flex-shrink:0;font-variant-numeric:tabular-nums}
+  .risk{border-left:3px solid var(--warn);background:var(--bg2);padding:12px 16px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14px}
+  .risk b{color:var(--warn)}
+  .risk.ok{border-left-color:var(--good)} .risk.ok b{color:var(--good)}
+  .risk.bad{border-left-color:var(--bad)} .risk.bad b{color:var(--bad)}
+  .decide{font-size:15px}
+  .decide .q{color:var(--strong);font-weight:700}
+  .article-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center}
+  .article-body code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:var(--code)}
+  .src{color:var(--dim);font-size:12px}
+  .melon{background:rgba(240,136,62,.08);border:1px dashed var(--warn);border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px}
+  /* 文章页无汉堡菜单，覆盖站点 .nav-links 移动端隐藏规则，保证主题按钮可见 */
+  @media(max-width:768px){
+    .nav-bar .article-nav-links{display:flex!important;align-items:center;gap:14px}
+  }
+</style>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">跳到主内容</a>
+
+    <svg style="display:none;" aria-hidden="true">
+        <symbol id="icon-github" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+        </symbol>
+        <symbol id="icon-arrow-left" viewBox="0 0 12 12">
+            <path d="M10 6H2M6 10l-4-4 4-4"/>
+        </symbol>
+    </svg>
+
+    <header>
+        <nav class="nav-bar" aria-label="主导航">
+            <div class="nav-inner">
+                <a href="/" class="nav-back" aria-label="返回 Weki Lee 首页">
+                    <svg class="nav-back-icon" aria-hidden="true"><use href="#icon-arrow-left"/></svg>
+                    Weki Lee
+                </a>
+                <div class="nav-links article-nav-links">
+                    <button class="theme-toggle-apple" id="themeToggle" aria-label="切换到暗色模式">
+                        <span id="themeIcon" aria-hidden="true">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="article-body">
+
+<div class="article-hero">
+  <div class="wrap">
+    <div class="tag">深度研究 · 2026-08-05 · 数据来源:GitHub 仓库页 + GitHub API</div>
+    <h1><span class="mp-c">MemPalace</span><span class="vs">⚔️</span><span class="tn-c">TencentDB-Agent-Memory</span></h1>
+    <div class="sub">AI 记忆系统正面对决:草根基准卷王 vs 腾讯云团队级记忆中枢</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="verdict">
+    <h3 style="margin-top:0">⚡ 核心结论(先看这个)</h3>
+    <p><strong>同名"记忆",两种物种。</strong>MemPalace 是<strong>个人/单机</strong>导向的轻量记忆库:逐字存储、本地嵌入、pip 装完即用;TencentDB-Agent-Memory 是<strong>团队/多 Agent</strong>导向的重型记忆中枢:四类记忆资产 + ACL 治理面板 + 三服务 Docker 部署。</p>
+    <p>记忆哲学也相反:MemPalace <strong>拒绝摘要</strong>(verbatim 逐字,怕丢信息),腾讯 <strong>主动蒸馏</strong>(L0→L3 分层提炼,怕爆上下文)。</p>
+    <p style="margin-bottom:0"><strong>一句话:一个人用选 MemPalace,一支 Agent 团队用选腾讯;但腾讯这个仓库的工程细节有几个值得警惕的疑点(见风险节)。</strong></p>
+  </div>
+
+  <h2>📊 数据快照(2026-08-05 GitHub API 实时)</h2>
+  <div class="card">
+    <table>
+      <tr><th>指标</th><th class="mp-c">MemPalace</th><th class="tn-c">TencentDB-Agent-Memory</th><th>备注</th></tr>
+      <tr><td>⭐ Stars</td><td class="num win">58,077</td><td class="num">14,101</td><td>MemPalace 4 倍</td></tr>
+      <tr><td>🍴 Forks</td><td class="num">7,464(12.9%)</td><td class="num">1,302(9.2%)</td><td>fork 比都偏高</td></tr>
+      <tr><td>🐛 Open Issues</td><td class="num">680</td><td class="num flag">512 ⚠️</td><td>腾讯体量 1/4,issue 却达 3/4</td></tr>
+      <tr><td>📅 创建时间</td><td class="num">2026-04-05</td><td class="num">2026-04-07</td><td>只差 2 天,真·同期生</td></tr>
+      <tr><td>🚀 最新版本</td><td class="num">v3.6.0(07-15)</td><td class="num">v2.0.0(08-03)</td><td>都在活跃迭代</td></tr>
+      <tr><td>🛠 技术栈</td><td>Python 3.9+,嵌入式向量库</td><td>TypeScript / Node ≥ 22.16,三服务架构</td><td>轻 vs 重</td></tr>
+      <tr><td>📜 License</td><td class="win">MIT(GitHub 已识别)</td><td class="flag">"Other"⚠️(README 自称 MIT,GitHub 未识别)</td><td>见风险节</td></tr>
+      <tr><td>👤 背后</td><td>社区项目(igorls 主导)</td><td>腾讯云官方组织</td><td>草根 vs 正规军</td></tr>
+      <tr><td>🔌 接入面</td><td>Claude Code / Codex / Cursor 钩子 + 36 MCP 工具</td><td>OpenClaw / Hermes / Claude Code / CodeBuddy Proxy + SDK</td><td>—</td></tr>
+    </table>
+
+    <h3>增长动能(近 8 天新增 ⭐,连续两期追踪)</h3>
+    <div class="bar-row"><div class="bar-label">MemPalace(7-28 → 8-05)</div><div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--mp)"></div></div><div class="bar-val">+266 ⚠️</div></div>
+    <div class="bar-row"><div class="bar-label">腾讯(4 个月累计)</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--tn)"></div></div><div class="bar-val">14,101</div></div>
+    <p class="src">注意:MemPalace 的增长曲线已明显拉平——此前月均约 1.5 万星,最近 8 天只涨 266。爆红期结束,进入存量运营阶段;而腾讯 4 个月 1.4 万星属于大厂开源的正常偏上水平。</p>
+  </div>
+
+  <h2 class="alt">🧠 记忆哲学:逐字派 vs 蒸馏派</h2>
+  <div class="grid2">
+    <div class="card" style="border-top:3px solid var(--mp)">
+      <h3 class="mp-c" style="margin-top:0">MemPalace —— 一个字都不许丢</h3>
+      <ul>
+        <li><b>Verbatim 逐字存储:</b>不摘要、不改写,原文进"抽屉"(Drawers)</li>
+        <li><b>记忆宫殿结构:</b>Wings → Rooms → Closets → Drawers,Halls/Tunnels 做关联</li>
+        <li><b>AAAK 压缩:</b>30 倍无损压缩方言,压缩但不丢信息</li>
+        <li><b>时序知识图谱:</b>SQLite 三元组带有效期窗口</li>
+        <li><b>矛盾检测:</b>抓 Agent 记错的姓名、年龄、代词</li>
+      </ul>
+      <p><b>信念:</b>摘要就是失真,检索质量靠结构和嵌入解决。</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--tn)">
+      <h3 class="tn-c" style="margin-top:0">腾讯 —— 分层蒸馏,按需取用</h3>
+      <ul>
+        <li><b>L0 原始对话</b> → <b>L1 原子事实</b> → <b>L2 场景知识块</b> → <b>L3 长期画像</b>,逐层提炼</li>
+        <li><b>混合检索:</b>BM25 + 向量 + RRF 融合</li>
+        <li><b>防爆保护:</b>条目数/字符预算/超时三重限制,防记忆挤爆上下文</li>
+        <li><b>按需调用:</b>/v3/tools/call 现用现取,不全量注入</li>
+        <li><b>四类资产:</b>Chat Memory / Skill / Wiki / CodeGraph,均可版本化</li>
+      </ul>
+      <p><b>信念:</b>原始记录只是素材,蒸馏后的"资产"才能装备给 Agent 团队。</p>
+    </div>
+  </div>
+
+  <h2>🏗 架构与部署:轻骑兵 vs 重装旅</h2>
+  <div class="card">
+    <table>
+      <tr><th>维度</th><th class="mp-c">MemPalace</th><th class="tn-c">TencentDB-Agent-Memory</th></tr>
+      <tr><td><b>部署形态</b></td><td class="win">pip/uv 一条命令,Python 库即服务;Docker 可选</td><td>Docker 三服务(memory-core + memory-hub + proxy)一键脚本;Node ≥ 22.16</td></tr>
+      <tr><td><b>LLM 依赖</b></td><td class="win">核心功能零 API:本地嵌入模型(embeddinggemma-300m)即可跑;rerank 才可选接 LLM</td><td class="flag">必须配置两组 LLM 参数(记忆提炼 + 代理转发)——数据要过模型</td></tr>
+      <tr><td><b>存储</b></td><td>ChromaDB 默认,Milvus/Qdrant/pgvector/SQLite 可插拔</td><td>未明示底层库(TencentDB 品牌暗示云数据库体系),向量 + 图结构</td></tr>
+      <tr><td><b>治理能力</b></td><td>基本没有(个人工具取向)</td><td class="win">核心卖点:四档可见性(private/team/restricted/agent)+ ACL + 版本/状态/装备管理 + 审查共享流</td></tr>
+      <tr><td><b>超出"记忆"的能力</b></td><td>Agent 日记、多 Agent 各自一翼</td><td class="win">Skill 技能沉淀(带验证规则)、LLM-Wiki 文档知识化、CodeGraph 代码图谱与影响面分析</td></tr>
+    </table>
+  </div>
+
+  <h2 class="alt">📈 基准与证据质量</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3 class="mp-c" style="margin-top:0">MemPalace:学术基准全家桶</h3>
+      <ul>
+        <li>LongMemEval R@5 <b>96.6%</b>(零 API)→ Hybrid 98.4% → rerank ≥99%</li>
+        <li>LoCoMo R@10 88.9% / ConvoMem 92.9% / MemBench(ACL 2025)80.3%</li>
+        <li>逐题结果文件提交仓库,可复现</li>
+        <li>诚实性声明:拒绝展示 100%、拒绝对 Mem0/Zep 做不对等对比</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 class="tn-c" style="margin-top:0">腾讯:单一基准,但数字敢给绝对值</h3>
+      <ul>
+        <li>PersonaMem:<b>48% → 76%</b>(相对 +59%)</li>
+        <li>只挂了这一个基准,覆盖广度远不如 MemPalace</li>
+        <li>加分项:展示的是绝对值而非只吹相对提升,态度算诚实</li>
+        <li>减分项:未见结果文件/复现命令入库</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="melon">
+    🍉 <b>一个值得玩味的发现:</b>腾讯这个仓库是"组装式创新"——其 <b>CodeGraph 模块直接使用了 <code>colbymchenry/codegraph</code> 的代码</b>(没错,就是本系列第一期对比的那位主角),Skill 资产管理则基于 Nous Research 的 <code>hermes-agent</code> 优化而来。站在开源肩膀上做企业级治理层,本身无可厚非(均有致谢),但意味着其核心差异化在"治理面板 + 资产模型",而非底层技术自研。
+  </div>
+
+  <h2>⚠️ 风险雷达</h2>
+  <div class="risk bad"><b>腾讯 · License 疑点:</b>README 自称 MIT,但 GitHub API 识别为 <code>Other / NOASSERTION</code>——说明 license 文件不是标准 MIT 文本。商用前务必人工核对 LICENSE 文件全文,别只看 README。</div>
+  <div class="risk"><b>腾讯 · 仓库工程痕迹粗糙:</b>默认分支居然是 <code>feat/server_team</code>(feature 分支当主分支),当前分支可见 commits 仅 6 个(squash 导入,真实开发历史不可见),README 里 clone 地址还指向另一个组织(Tencent/ 而非 TencentCloud/)。典型的"内部项目匆忙开源"痕迹。</div>
+  <div class="risk"><b>腾讯 · Issue 积压率高:</b>14k star 对应 512 个 open issues(3.6%),MemPalace 是 680/58k(1.2%)。官方承诺 24 小时响应,但数字说明带宽吃紧。另外其 CodeGraph 目前只支持公开 HTTPS 仓库,私有代码库场景尚未就绪。</div>
+  <div class="risk"><b>MemPalace · 增长熄火:</b>8 天只涨 266 星,爆红期结束;bus factor ≈ 1(igorls 主导)的老问题仍在;fork 比 12.9% 依旧偏高;还得继续提防假冒官网(认准 github.com/MemPalace/mempalace 与 PyPI 官方包)。</div>
+  <div class="risk"><b>共同的隐私分野:</b>MemPalace 核心功能可纯本地零 API 跑完;腾讯方案的记忆蒸馏依赖 LLM,意味着对话数据要过模型——数据敏感场景部署前先想清楚模型接的是谁。</div>
+  <div class="risk ok"><b>值得肯定:</b>两家都开源了真实的基准数字且没吹 100%;腾讯的中英双语文档(README/INSTALL/CONTRIBUTING 全套)是大厂开源的体面;MemPalace 的多后端可插拔设计避免了供应商锁定。</div>
+
+  <h2 class="alt">🧭 选型决策树</h2>
+  <div class="card decide">
+    <p class="q">「个人开发者,就想让自己的 Claude Code / Cursor 记事」</p>
+    <p>→ <b class="mp-c">MemPalace</b>。pip 装完即用,本地嵌入零 API,钩子自动保存,轻量无负担。</p>
+    <p class="q" style="margin-top:16px">「我在搞多 Agent 团队/一人公司,要技能沉淀 + 权限治理」</p>
+    <p>→ <b class="tn-c">TencentDB-Agent-Memory</b>。Skill/Wiki/CodeGraph 四类资产 + ACL + 装备管理,这是它的设计原点,MemPalace 根本不在这个维度竞争。</p>
+    <p class="q" style="margin-top:16px">「数据敏感,绝不过外部 API」</p>
+    <p>→ <b class="mp-c">MemPalace</b>(本地嵌入跑全流程);腾讯方案蒸馏必须过 LLM,除非你愿意自托管 Ollama 类模型填它的两组 LLM 配置。</p>
+    <p class="q" style="margin-top:16px">「需要文档知识化 + 代码影响面分析」</p>
+    <p>→ <b class="tn-c">腾讯</b>(Wiki + CodeGraph 开箱即用,虽然 CodeGraph 是站在 colbymchenry 肩膀上);MemPalace 不做代码图谱。</p>
+    <p class="q" style="margin-top:16px">「最后的提醒」</p>
+    <p>→ 两家都只有 4 个月大。腾讯这个仓库 license、默认分支、issue 积压三个疑点建议先观望一个版本周期;MemPalace 增长熄火后更要看社区留存。生产采用都请锁版本。</p>
+  </div>
+
+  <div class="article-footer">
+    <p>基准数字均引自各项目 README 自述,未做独立复现 · License 疑点以 GitHub API 返回的 NOASSERTION 状态为准,请以仓库 LICENSE 文件全文为最终依据</p>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="footer-apple">
+        <div class="container-page">
+            <div class="flex justify-center gap-4 mb-3">
+                <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" aria-label="Weki Lee 的 GitHub 主页" class="footer-github-link">
+                    <svg class="w-5 h-5" aria-hidden="true"><use href="#icon-github"/></svg>
+                </a>
+            </div>
+            <p>&copy; <span id="footerYear">2026</span> Weki Lee. <span style="color:var(--text-tertiary);">开源，共享。</span></p>
+            <p style="font-size:11px;color:var(--text-tertiary);">热爱分享 · 持续创造 · 用 ❤️ 构建</p>
+            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;color:var(--text-tertiary);opacity:0.5;">wekilee.github.io</p>
+        </div>
+    </footer>
+
+    <div id="theme-announce" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="/src/js/core.js"></script>
+</body>
+</html>
