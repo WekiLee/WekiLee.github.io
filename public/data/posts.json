@@ -1,7 +1,16 @@
 {
-  "lastUpdated": "2026-08-05",
+  "lastUpdated": "2026-08-06",
   "description": "写作与笔记数据源。每条可指向站内文章、公众号文章链接、小红书笔记等外部内容。",
   "items": [
+    {
+      "id": "post-004",
+      "title": "Tencent/BrowserSkill：让 AI Agent 借用你的真实浏览器",
+      "summary": "本地优先桥接层 vs AI 自主浏览器。基于 GitHub API 实时数据：数据快照、三层桥接架构、与 browser-use/Playwright 的赛道定位、迭代节奏与风险雷达。",
+      "date": "2026-08-06",
+      "tags": ["深度研究", "浏览器自动化", "腾讯开源"],
+      "source": "site",
+      "url": "/writing/tencent-browserskill/"
+    },
     {
       "id": "post-003",
       "title": "MemPalace vs TencentDB-Agent-Memory：AI 记忆系统的草根与正规军",

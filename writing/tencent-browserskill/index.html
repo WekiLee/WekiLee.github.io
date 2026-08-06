@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var t=localStorage.getItem('theme')||((matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);})()</script>
+<meta name="description" content="Tencent/BrowserSkill 深度分析：让 AI Agent 借用你已登录的真实浏览器干活，本地优先桥接层，三层架构、赛道定位与风险雷达。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://wekilee.github.io/writing/tencent-browserskill/">
+<title>Tencent/BrowserSkill 深度分析</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧭%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/src/css/styles.css">
+<link rel="stylesheet" href="/src/css/project-detail.css">
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f6f8fa; --bg3:#eaeef2; --line:#d0d7de;
+    --txt:#1f2328; --txt2:#57606a; --dim:#656d76;
+    --acc:#0969da; --acc2:#1a7f37; --warn:#bc4c00; --bad:#cf222e; --pur:#8250df;
+    --strong:#1f2328;
+  }
+  [data-theme="dark"]{
+    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2330; --line:#2a3441;
+    --txt:#e6edf3; --txt2:#c9d1d9; --dim:#8b949e;
+    --acc:#58a6ff; --acc2:#3fb950; --warn:#f0883e; --bad:#f85149; --pur:#bc8cff;
+    --strong:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65;transition:background .4s ease,color .4s ease}
+  .wrap{max-width:860px;margin:0 auto;padding:0 16px}
+  .article-hero{padding:96px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
+  .article-hero .tag-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+  .article-body .tag{display:inline-block;background:var(--bg3);border:1px solid var(--line);color:var(--acc);font-size:12px;padding:2px 9px;border-radius:20px}
+  .article-body h1{font-size:clamp(24px,4.6vw,32px);font-weight:800;line-height:1.3}
+  .article-body .sub{color:var(--dim);font-size:14px;margin-top:12px}
+  .article-body .card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+  .article-body .card h2{font-size:18px;margin-bottom:12px;color:var(--acc)}
+  .article-body .card h3{font-size:15px;margin:14px 0 8px;color:var(--pur)}
+  .article-body .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+  .article-body .stat{background:var(--bg3);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+  .article-body .stat .v{font-size:24px;font-weight:700;color:var(--txt)}
+  .article-body .stat .l{font-size:12px;color:var(--dim);margin-top:4px}
+  .article-body .stat .v.green{color:var(--acc2)} .article-body .stat .v.orange{color:var(--warn)}
+  .article-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  .article-body th,.article-body td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  .article-body th{background:var(--bg3);color:var(--acc);font-weight:600}
+  .article-body tr:nth-child(even){background:var(--bg3)}
+  .article-body code{background:var(--bg3);padding:1px 6px;border-radius:5px;font-size:13px;color:var(--acc2)}
+  .article-body .flow{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+  .article-body .node{background:var(--bg3);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px}
+  .article-body .node .t{color:var(--acc);font-weight:600}
+  .article-body .arrow{text-align:center;color:var(--dim);font-size:12px}
+  .article-body .pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:6px;margin:2px 4px 2px 0}
+  .article-body .pill.ok{background:rgba(63,185,80,.15);color:var(--acc2);border:1px solid rgba(63,185,80,.4)}
+  .article-body .pill.no{background:rgba(248,81,73,.13);color:var(--bad);border:1px solid rgba(248,81,73,.4)}
+  .article-body .pill.plan{background:rgba(240,136,62,.13);color:var(--warn);border:1px solid rgba(240,136,62,.4)}
+  .article-body .warnbox{background:rgba(240,136,62,.08);border:1px solid rgba(240,136,62,.35);border-radius:10px;padding:14px 16px;margin:14px 0}
+  .article-body .warnbox b{color:var(--warn)}
+  .article-body .verdict{background:linear-gradient(135deg,var(--bg3),var(--bg2));border:1px solid var(--acc);border-radius:12px;padding:18px 20px;margin:18px 0}
+  .article-body .verdict h2{color:var(--acc);margin-bottom:8px;font-size:18px}
+  .article-body p{margin:10px 0;color:var(--txt2)}
+  .article-body ul{margin:8px 0 8px 20px} .article-body li{margin:5px 0}
+  .article-body .keras{color:var(--acc2)} .article-body .bad{color:var(--bad)}
+  .article-body a{color:var(--acc);text-decoration:none}
+  .article-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center;line-height:1.9}
+  @media(max-width:768px){
+    .nav-bar .article-nav-links{display:flex!important;align-items:center;gap:14px}
+  }
+</style>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">跳到主内容</a>
+
+    <svg style="display:none;" aria-hidden="true">
+        <symbol id="icon-github" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3 .405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+        </symbol>
+        <symbol id="icon-arrow-left" viewBox="0 0 12 12">
+            <path d="M10 6H2M6 10l-4-4 4-4"/>
+        </symbol>
+    </svg>
+
+    <header>
+        <nav class="nav-bar" aria-label="主导航">
+            <div class="nav-inner">
+                <a href="/" class="nav-back" aria-label="返回 Weki Lee 首页">
+                    <svg class="nav-back-icon" aria-hidden="true"><use href="#icon-arrow-left"/></svg>
+                    Weki Lee
+                </a>
+                <div class="nav-links article-nav-links">
+                    <button class="theme-toggle-apple" id="themeToggle" aria-label="切换主题">
+                        <span id="themeIcon" aria-hidden="true">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="article-body">
+
+<div class="article-hero">
+  <div class="wrap">
+    <div class="tag-row">
+      <span class="tag">单仓库深度分析 · 2026-08-06 · 数据来源:GitHub 仓库页 + GitHub API</span>
+    </div>
+    <h1>Tencent/BrowserSkill 🧭</h1>
+    <div class="sub">让 AI Agent 用你「真实、已登录」的浏览器干活，还不打断你自己的工作</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>📊 数据快照</h2>
+    <div class="grid">
+      <div class="stat"><div class="v">838</div><div class="l">⭐ Stars</div></div>
+      <div class="stat"><div class="v">62</div><div class="l">🍴 Forks</div></div>
+      <div class="stat"><div class="v orange">31</div><div class="l">⚠️ Open Issues</div></div>
+      <div class="stat"><div class="v green">MIT</div><div class="l">📜 License（干净）</div></div>
+      <div class="stat"><div class="v">~45天</div><div class="l">📅 仓库年龄</div></div>
+      <div class="stat"><div class="v">0.1.9</div><div class="l">🔖 最新版本</div></div>
+    </div>
+    <p style="color:var(--dim);font-size:13px;margin-top:12px">
+      创建于 <b>2026-06-22</b>，至统计日约 45 天涨到 838 星 → 日均 ≈ <b>18.6 星</b>。
+      对比同期爆款（browser-use 月均 5,100、MemPalace 月均 1.5 万），这是个<b>稳健型开源</b>，没有坐火箭，但也没注水痕迹。
+      License 是干净的 MIT（不像隔壁 TencentDB-Agent-Memory 那个 NOASSERTION 疑云），默认分支 <code>main</code> 规范（不像腾讯云那个拿 feature 分支当主分支的野路子）。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>🎯 它到底干嘛的</h2>
+    <p>一句话：<b>通过 CLI + 浏览器扩展，给任何能调用 shell 的 AI Agent 接上一个「借用你真实浏览器」的自动化桥。</b></p>
+    <p style="color:var(--dim);font-size:13px;margin-top:6px">官方原话：<i>"Let AI agents use your real, logged-in browser without interrupting your work."</i></p>
+    <h3>四大卖点</h3>
+    <ul>
+      <li><b>复用真实登录态</b>：Agent 操作你已经登录的网站，不用单独搞测试账号——这是它和 browser-use 最本质的区别。</li>
+      <li><b>无打断并行</b>：浏览器任务跑在独立的、可见的「Agent Window」里，你自己的浏览器照常用。</li>
+      <li><b>支持任意 Agent</b>：无模型/框架锁定，Cursor、Claude Code、Codex、Kimi Code…乃至 <span class="keras">WorkBuddy</span> 都在已适配列表里。</li>
+      <li><b>内置人机协同</b>：遇到验证码、登录、确认弹窗，Agent 可请求你接管，搞定后继续——而且是<b>本地</b>的，不用买云。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🏗️ 技术架构（三层桥接）</h2>
+    <div class="flow">
+      <div class="node"><span class="t">Agent Harness</span>（Cursor / Claude Code / Codex / WorkBuddy…）通过 shell 调 <code>bsk ...</code></div>
+      <div class="arrow">↓ 本地 IPC</div>
+      <div class="node"><span class="t">bsk CLI</span>（Rust）→ <span class="t">bsk daemon</span>（常驻本地进程）</div>
+      <div class="arrow">↓ WebSocket · 127.0.0.1（仅本机）</div>
+      <div class="node"><span class="t">BrowserSkill Extension</span>（TypeScript / Chromium 扩展）</div>
+      <div class="arrow">↓ CDP（Chromium DevTools Protocol）</div>
+      <div class="node"><span class="t">Agent Window</span>：独立可见窗口跑自动化 · <span class="t">User Window</span>：你的普通标签页，仅被「借用」、用完归还</div>
+    </div>
+    <p style="color:var(--dim);font-size:13px;margin-top:8px">
+      核心设计哲学：<b>Agent 从不直接碰浏览器</b>，全部经本地桥接。通信锁定 127.0.0.1，理论上不暴露到网络。
+    </p>
+    <h3>技术栈</h3>
+    <p>
+      <span class="pill ok">Rust（CLI / daemon / protocol）</span>
+      <span class="pill ok">TypeScript + pnpm（扩展 / UI / i18n）</span>
+      <span class="pill ok">CDP（Chromium DevTools Protocol）</span>
+      <span class="pill ok">本地 IPC + WebSocket</span>
+    </p>
+    <p style="color:var(--dim);font-size:13px;margin-top:6px">
+      GitHub 主语言标 TypeScript（扩展代码体量占大头），但性能敏感部分在 Rust。跨平台：macOS（Apple/Intel）、Linux（x64/ARM64）、Windows（x64）。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>⚔️ 赛道定位：和 browser-use / Playwright 怎么摆</h2>
+    <p style="color:var(--dim);font-size:13px">前文第二期分析过 browser-use vs Playwright，BrowserSkill 正好补齐这条线的第三块拼图——而且它 GitHub topics 直接挂了 <code>browser-use</code>，等于官方认领同赛道。</p>
+    <table>
+      <tr><th>维度</th><th>browser-use</th><th>BrowserSkill（腾讯）</th><th>Playwright（微软）</th></tr>
+      <tr><td>浏览器控制权</td><td>AI 自己开/控制浏览器</td><td><b>借用你已登录的真实浏览器</b></td><td>脚本精确操控浏览器</td></tr>
+      <tr><td>登录态</td><td>需自建账号/登录</td><td><b>复用你的真实登录态</b></td><td>无（基础设施层）</td></tr>
+      <tr><td>是否打扰你</td><td>占用浏览器</td><td><b>Agent Window 隔离</b></td><td>独立进程，不影响</td></tr>
+      <tr><td>人机协同</td><td>拴在付费云上</td><td><b>本地内置 human-in-loop</b></td><td>无（确定性脚本）</td></tr>
+      <tr><td>本质</td><td>AI-native 自主浏览器</td><td><b>本地优先桥接层</b></td><td>确定性自动化基础设施</td></tr>
+      <tr><td>成熟度</td><td>107k⭐ 但 0.13.7</td><td>838⭐ · 0.1.9</td><td>93k⭐ · v1.62 稳定</td></tr>
+    </table>
+    <p style="margin-top:10px">一句话区分：<b>browser-use 是「AI 自己冲浪」，BrowserSkill 是「AI 借你的浏览器帮你办事」。</b>两者不冲突，甚至能叠加——BrowserSkill 解决的是「登录态 + 不打扰」这个 browser-use 一直没优雅解决的痛点。</p>
+  </div>
+
+  <div class="card">
+    <h2>🌱 功能迭代节奏</h2>
+    <p style="color:var(--dim);font-size:13px">从提交历史看，是个<b>高频活跃</b>的早期项目（8 月初还在密集合并）：</p>
+    <ul>
+      <li><b>2026-06-22</b>：初始公开发布</li>
+      <li><b>2026-06-23</b>：Windows PowerShell 安装脚本 + Git Bash PATH 支持（跨平台认真做）</li>
+      <li><b>2026-07-29</b>：发布 <code>bsk 0.1.9</code> + <code>extension 0.1.5</code></li>
+      <li><b>2026-08-05</b>：新增 <code>bsk emulate</code> 移动设备模拟（CDP Emulation，7 种预设：iphone-14 / pixel-7 等）——<b>这是 browser-use 免费版没有的能力</b></li>
+      <li><b>2026-08-06</b>：扩展改用 function launcher icon；适配 Kimi Code harness（PR #65）</li>
+    </ul>
+    <p style="margin-top:8px">移动设备模拟这条值得高亮：意味着它能让 Agent 在「手机视口 + 触摸 + UA」环境下测你的站点响应式——对前端/QA 场景很实用。</p>
+  </div>
+
+  <div class="warnbox">
+    <b>⚠️ 风险雷达</b>
+    <ul>
+      <li><b>太嫩</b>：0.1.9 版本号，API/协议随时可能翻脸，生产环境务必锁版本。</li>
+      <li><b>浏览器局限</b>：官方只支持 Chrome / Edge（Chromium 系），Firefox 还在 <span class="pill plan">规划中</span>。Safari 用户暂时无缘。</li>
+      <li><b>用户侧摩擦</b>：依赖装浏览器扩展 + 引导加载，比纯 CLI 工具多一道门槛（不过它做了 Agent 自动安装脚本缓解）。</li>
+      <li><b>「借真实登录态」本身就是双刃剑</b>：设计上说隔离 Agent Window，但你把已登录的银行/邮箱标签页借出去，信任边界得自己掂量。扩展权限请求要看清楚。</li>
+      <li><b>bus factor 未知</b>：腾讯开源项目，背后的真实维护人力不透明；issue 已积压 31 个（早期正常，但得观察响应速度）。</li>
+      <li><b>star 体量小</b>：838 星 vs browser-use 的 10 万+，生态和社区验证远未到位。</li>
+    </ul>
+  </div>
+
+  <div class="verdict">
+    <h2>🧭 一句话结论</h2>
+    <p>
+      它是浏览器自动化赛道里一个<b>思路清奇的务实派</b>：不跟 browser-use 卷「AI 自主冲浪」，而是解决「<b>让 Agent 用真实登录态、还不打扰人</b>」这个真实痛点，还顺手把移动设备模拟和白嫖式 human-in-loop 塞了进来。
+    </p>
+    <p style="margin-top:10px">
+      <b>什么时候用它</b>：你想让 AI 替你在已登录的网站（后台、SaaS、内部系统）点来点去，又不想把浏览器让出去、不想买 browser-use 的云协同 → <span class="keras">BrowserSkill 是正解</span>。<br>
+      <b>什么时候别用</b>：要写确定性 E2E 测试/接 CI → 老老实实 Playwright；要让 AI 在开放互联网自主探索 → browser-use 更成熟。<br>
+      <b>搭配姿势</b>：BrowserSkill（借登录态办事）+ Playwright（确定性回归）混搭，探索期买灵活、量产期买可靠——和前文 browser-use 对比研究的结论一脉相承。
+    </p>
+    <p style="margin-top:10px;color:var(--dim);font-size:13px">
+      腾讯在 Agent 基础设施上的布局已经能看出脉络：<b>BrowserSkill（操控浏览器）+ TencentDB-Agent-Memory（记忆中枢）</b>，一个管「手」、一个管「脑」，野心不小。值得持续跟踪。
+    </p>
+  </div>
+
+  <div class="article-footer">
+    <p>本报告含分析观点，重要决策请自行核验时效性与真实性。</p>
+    <p>同类对比回顾：CodeGraph vs MemPalace · browser-use vs Playwright · MemPalace vs TencentDB-Agent-Memory。</p>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="footer-apple">
+        <div class="container-page">
+            <div class="flex justify-center gap-4 mb-3">
+                <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" aria-label="Weki Lee 的 GitHub 主页" class="footer-github-link">
+                    <svg class="w-5 h-5" aria-hidden="true"><use href="#icon-github"/></svg>
+                </a>
+            </div>
+            <p>&copy; <span id="footerYear">2026</span> Weki Lee. <span style="color:var(--text-tertiary);">开源，共享。</span></p>
+            <p style="font-size:11px;color:var(--text-tertiary);">热爱分享 · 持续创造 · 用 ❤️ 构建</p>
+            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;color:var(--text-tertiary);opacity:0.5;">wekilee.github.io</p>
+        </div>
+    </footer>
+
+    <div id="theme-announce" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="/src/js/core.js"></script>
+</body>
+</html>
