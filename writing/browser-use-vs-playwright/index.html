@@ -11,70 +11,23 @@
 <title>browser-use vs Playwright · 深度对比研究</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
 <link rel="stylesheet" href="/src/css/styles.css">
-<link rel="stylesheet" href="/src/css/project-detail.css">
+  <link rel="stylesheet" href="/src/css/article.css">
 <style>
+  /* 共享编辑风基底见 /src/css/article.css —— 此处仅覆盖本篇强调色与少量专属类 */
   :root{
-    --bg:#ffffff; --bg2:#f6f8fa; --card:#ffffff; --line:#d0d7de;
-    --txt:#1f2328; --txt2:#57606a; --muted:#57606a; --dim:#8b949e;
-    --bu:#b35900; --bu-soft:rgba(245,158,11,.18);
-    --pw:#1a7f37; --pw-soft:rgba(69,186,75,.18);
-    --good:#1a7f37; --warn:#9a6700; --bad:#cf222e;
-    --code:#b35900; --strong:#1f2328;
+    --accent:#b35900; --accent-soft:rgba(245,158,11,.18);
+    --accent2:#1a7f37; --accent2-soft:rgba(69,186,75,.18);
+    --bu:var(--accent); --pw:var(--accent2);
+    --bu-soft:var(--accent-soft); --pw-soft:var(--accent2-soft);
   }
   [data-theme="dark"]{
-    --bg:#0d1117; --bg2:#161b22; --card:#1c2430; --line:#2d3748;
-    --txt:#e6edf3; --txt2:#c9d1d9; --muted:#8b949e; --dim:#6e7681;
-    --bu:#f59e0b; --bu-soft:rgba(245,158,11,.13);
-    --pw:#45ba4b; --pw-soft:rgba(69,186,75,.12);
-    --good:#3fb950; --warn:#d29922; --bad:#f85149;
-    --code:#f0883e; --strong:#ffffff;
+    --accent:#f59e0b; --accent-soft:rgba(245,158,11,.13);
+    --accent2:#45ba4b; --accent2-soft:rgba(69,186,75,.12);
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;transition:background .4s ease,color .4s ease}
-  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
-  .article-hero{padding:96px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
-  .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px}
-  .article-body h1{font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.3}
-  .article-body h1 .vs{color:var(--dim);font-weight:400;font-size:.6em;vertical-align:middle;margin:0 8px}
-  .bu-c{color:var(--bu)} .pw-c{color:var(--pw)}
-  .sub{color:var(--muted);margin-top:14px;font-size:14px}
-  .article-body h2{font-size:22px;margin:48px 0 18px;padding-left:12px;border-left:4px solid var(--bu)}
-  .article-body h2.alt{border-left-color:var(--pw)}
-  .article-body h3{font-size:16px;margin:22px 0 10px}
-  .article-body p{margin:10px 0;color:var(--txt2)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0}
-  .verdict{background:linear-gradient(135deg,var(--bu-soft),var(--pw-soft));border:1px solid var(--line);border-radius:14px;padding:24px;margin:24px 0}
-  .verdict strong{color:var(--strong)}
-  .article-body table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
-  .article-body th,.article-body td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-  .article-body th{color:var(--muted);font-weight:600;font-size:13px}
-  .article-body td.num{font-variant-numeric:tabular-nums}
-  .win{color:var(--good);font-weight:700}
-  .flag{color:var(--warn);font-weight:600}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
-  .pill{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
-  .pill.bu{border-color:var(--bu);color:var(--bu)}
-  .pill.pw{border-color:var(--pw);color:var(--pw)}
-  .article-body ul{margin:8px 0 8px 22px;color:var(--txt2)}
-  .article-body li{margin:5px 0}
-  .bar-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
-  .bar-label{width:130px;color:var(--muted);flex-shrink:0;text-align:right}
-  .bar-track{flex:1;background:var(--bg2);border-radius:6px;height:22px;overflow:hidden}
-  .bar-fill{height:100%;border-radius:6px}
-  .bar-val{width:96px;flex-shrink:0;font-variant-numeric:tabular-nums}
-  .risk{border-left:3px solid var(--warn);background:var(--bg2);padding:12px 16px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14px}
-  .risk b{color:var(--warn)}
-  .risk.ok{border-left-color:var(--good)} .risk.ok b{color:var(--good)}
-  .decide{font-size:15px}
-  .decide .q{color:var(--strong);font-weight:700}
-  .article-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center}
-  .article-body code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:var(--code)}
-  .src{color:var(--dim);font-size:12px}
-  /* 文章页无汉堡菜单，覆盖站点 .nav-links 移动端隐藏规则，保证主题按钮可见 */
-  @media(max-width:768px){
-    .nav-bar .article-nav-links{display:flex!important;align-items:center;gap:14px}
-  }
+  .bu-c{color:var(--accent)} .pw-c{color:var(--accent2)}
+  .pill.bu{border-color:var(--accent);color:var(--accent)}
+  .pill.pw{border-color:var(--accent2);color:var(--accent2)}
+  .verdict{background:linear-gradient(135deg,var(--accent-soft),var(--accent2-soft));border-left-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -108,25 +61,24 @@
 
     <main id="main-content" class="article-body">
 
-<div class="article-hero">
-  <div class="wrap">
-    <div class="tag">深度研究 · 2026-07-28 · 数据来源:GitHub 仓库页 + GitHub API</div>
-    <h1><span class="bu-c">browser-use</span><span class="vs">⚔️</span><span class="pw-c">Playwright</span></h1>
-    <div class="sub">AI 原生浏览器自动化 vs 老牌自动化框架 —— 一对"师徒"的地盘争夺战</div>
-  </div>
-</div>
+<header class="masthead">
+  <div class="kicker">深度研究 · 2026-07-28 · 数据来源:GitHub 仓库页 + GitHub API</div>
+  <h1><span class="bu-c">browser-use</span><span class="vs">⚔️</span><span class="pw-c">Playwright</span></h1>
+  <div class="deck">AI 原生浏览器自动化 vs 老牌自动化框架 —— 一对"师徒"的地盘争夺战</div>
+  <div class="byline"><span>作者 <b>Weki Lee</b></span><span class="sep">·</span><span>数据来源 <b>GitHub 仓库页 + GitHub API</b></span><span class="sep">·</span><span>阅读约 11 分钟</span></div>
+</header>
 
 <div class="wrap">
 
   <div class="verdict">
-    <h3 style="margin-top:0">⚡ 核心结论(先看这个)</h3>
+    <h3 style="margin-top:0">⚡ 核心判断（先看这个）</h3>
     <p><strong>两者不在同一层级,但正在互相入侵。</strong>Playwright 是<strong>确定性</strong>的自动化基础设施——你写精确脚本,它分毫不差地执行;browser-use 是<strong>概率性</strong>的 AI Agent——你用自然语言描述意图,LLM 自己琢磨怎么点。</p>
     <p>有趣的恩怨:browser-use 诞生时就构建在 Playwright 生态之上(GitHub topics 至今挂着 <code>playwright</code> 标签),而微软如今推出 <strong>Playwright MCP / CLI</strong>,反手杀进了 AI Agent 浏览器控制这个对方的主场。</p>
     <p style="margin-bottom:0"><strong>一句话:写测试选 Playwright 没有悬念;让 AI 自主闯荡开放网页选 browser-use;最佳实践往往是混用。</strong></p>
   </div>
 
   <h2>📊 数据快照(2026-07-28 GitHub API 实时)</h2>
-  <div class="card">
+  <div class="card breakout">
     <table>
       <tr><th>指标</th><th class="bu-c">browser-use</th><th class="pw-c">Playwright</th><th>备注</th></tr>
       <tr><td>⭐ Stars</td><td class="num win">107,074</td><td class="num">93,586</td><td>browser-use 反超</td></tr>
@@ -148,8 +100,8 @@
   </div>
 
   <h2 class="alt">🎯 本质差异:确定性 vs 概率性</h2>
-  <div class="grid2">
-    <div class="card" style="border-top:3px solid var(--pw)">
+  <div class="duel">
+    <div class="duel-side s2">
       <h3 class="pw-c" style="margin-top:0">Playwright —— 你说一步,它走一步</h3>
       <p><b>哲学:</b>开发者用代码精确描述每一步操作,框架保证分毫不差、万次执行结果一致。</p>
       <ul>
@@ -160,7 +112,8 @@
       </ul>
       <p><b>一句话:</b>浏览器自动化的"数控机床"。</p>
     </div>
-    <div class="card" style="border-top:3px solid var(--bu)">
+    <div class="duel-vs">VS</div>
+    <div class="duel-side">
       <h3 class="bu-c" style="margin-top:0">browser-use —— 你说目标,它自己想辙</h3>
       <p><b>哲学:</b>用户用自然语言描述任务目标,LLM Agent 自主规划、观察页面、决策操作、处理意外。</p>
       <ul>
@@ -174,8 +127,8 @@
   </div>
 
   <h2>🤖 AI 能力路线之争(本场最有意思的部分)</h2>
-  <div class="card">
-    <p>两家都在抢"AI Agent 控制浏览器"这块蛋糕,但技术路线截然不同:</p>
+  <div class="card breakout">
+    <p>两家都在抢"AI Agent 控制浏览器"这块蛋糕，但技术路线截然不同:</p>
     <table>
       <tr><th>维度</th><th class="bu-c">browser-use</th><th class="pw-c">Playwright MCP / CLI</th></tr>
       <tr><td><b>决策方式</b></td><td>LLM 持续在环:观察→思考→行动循环</td><td>Agent 调用确定性工具,LLM 只做编排</td></tr>
@@ -189,8 +142,8 @@
   </div>
 
   <h2 class="alt">💰 成本账(很多人忽略的一节)</h2>
-  <div class="grid2">
-    <div class="card">
+  <div class="duel">
+    <div class="duel-side s2">
       <h3 class="pw-c" style="margin-top:0">Playwright:零边际成本</h3>
       <ul>
         <li>开源免费,Apache-2.0</li>
@@ -199,7 +152,8 @@
         <li>挂 MCP 给 Agent 用时才有模型调用,且 CLI 模式刻意压 token</li>
       </ul>
     </div>
-    <div class="card">
+    <div class="duel-vs">VS</div>
+    <div class="duel-side">
       <h3 class="bu-c" style="margin-top:0">browser-use:按任务付费</h3>
       <ul>
         <li>库本身 MIT 免费,但<b>每次任务都在烧 LLM token</b></li>
@@ -232,8 +186,9 @@
     <p>→ <b>混合双打</b>:用 browser-use 探索、验证可行性(AI 趟路),跑通后把稳定流程固化成 Playwright 脚本进生产(确定性接管)。探索期买灵活,量产期买可靠。</p>
   </div>
 
-  <div class="article-footer">
-    <p>基准数字(Odysseys 87.4%、3-5x 速度)引自 browser-use 官方材料,未做独立复现 · 成本判断为架构层面推断,非实测账单</p>
+  <div class="colophon">
+    <b>数据说明</b>　基准数字（Odysseys 87.4%、3–5× 速度）引自 browser-use 官方材料，未做独立复现；成本判断为架构层面推断，非实测账单。<br>
+    <span class="src">同类对比回顾：CodeGraph vs MemPalace · MemPalace vs TencentDB-Agent-Memory · Tencent/BrowserSkill 深度分析。</span>
   </div>
 </div>
 

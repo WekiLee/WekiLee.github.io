@@ -9,7 +9,7 @@
       "date": "2026-08-06",
       "tags": ["深度研究", "浏览器自动化", "腾讯开源"],
       "source": "site",
-      "url": "/writing/tencent-browserskill/"
+      "url": "/writing/tencent-browserskill/index.html"
     },
     {
       "id": "post-003",
@@ -18,7 +18,7 @@
       "date": "2026-08-05",
       "tags": ["深度研究", "AI 记忆", "MCP"],
       "source": "site",
-      "url": "/writing/mempalace-vs-tencentdb/"
+      "url": "/writing/mempalace-vs-tencentdb/index.html"
     },
     {
       "id": "post-001",
@@ -27,7 +27,7 @@
       "date": "2026-07-28",
       "tags": ["深度研究", "浏览器自动化", "AI Agent"],
       "source": "site",
-      "url": "/writing/browser-use-vs-playwright/"
+      "url": "/writing/browser-use-vs-playwright/index.html"
     },
     {
       "id": "post-002",
@@ -36,7 +36,7 @@
       "date": "2026-07-28",
       "tags": ["深度研究", "MCP", "AI 编程工具"],
       "source": "site",
-      "url": "/writing/codegraph-vs-mempalace/"
+      "url": "/writing/codegraph-vs-mempalace/index.html"
     }
   ]
 }

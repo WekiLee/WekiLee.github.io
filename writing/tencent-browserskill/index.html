@@ -11,61 +11,23 @@
 <title>Tencent/BrowserSkill 深度分析</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧭%3C/text%3E%3C/svg%3E" />
 <link rel="stylesheet" href="/src/css/styles.css">
-<link rel="stylesheet" href="/src/css/project-detail.css">
+  <link rel="stylesheet" href="/src/css/article.css">
 <style>
+  /* 共享编辑风基底见 /src/css/article.css —— 此处仅覆盖本篇强调色与少量专属类 */
   :root{
-    --bg:#ffffff; --bg2:#f6f8fa; --bg3:#eaeef2; --line:#d0d7de;
-    --txt:#1f2328; --txt2:#57606a; --dim:#656d76;
-    --acc:#0969da; --acc2:#1a7f37; --warn:#bc4c00; --bad:#cf222e; --pur:#8250df;
-    --strong:#1f2328;
+    --accent:#0969da; --accent-soft:rgba(9,105,218,.12);
+    --warn:#bc4c00; --pur:#8250df;
   }
   [data-theme="dark"]{
-    --bg:#0d1117; --bg2:#161b22; --bg3:#1c2330; --line:#2a3441;
-    --txt:#e6edf3; --txt2:#c9d1d9; --dim:#8b949e;
-    --acc:#58a6ff; --acc2:#3fb950; --warn:#f0883e; --bad:#f85149; --pur:#bc8cff;
-    --strong:#ffffff;
+    --accent:#58a6ff; --accent-soft:rgba(88,166,255,.14);
+    --warn:#f0883e; --pur:#bc8cff;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65;transition:background .4s ease,color .4s ease}
-  .wrap{max-width:860px;margin:0 auto;padding:0 16px}
-  .article-hero{padding:96px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
-  .article-hero .tag-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
-  .article-body .tag{display:inline-block;background:var(--bg3);border:1px solid var(--line);color:var(--acc);font-size:12px;padding:2px 9px;border-radius:20px}
-  .article-body h1{font-size:clamp(24px,4.6vw,32px);font-weight:800;line-height:1.3}
-  .article-body .sub{color:var(--dim);font-size:14px;margin-top:12px}
-  .article-body .card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
-  .article-body .card h2{font-size:18px;margin-bottom:12px;color:var(--acc)}
-  .article-body .card h3{font-size:15px;margin:14px 0 8px;color:var(--pur)}
-  .article-body .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
-  .article-body .stat{background:var(--bg3);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
-  .article-body .stat .v{font-size:24px;font-weight:700;color:var(--txt)}
-  .article-body .stat .l{font-size:12px;color:var(--dim);margin-top:4px}
-  .article-body .stat .v.green{color:var(--acc2)} .article-body .stat .v.orange{color:var(--warn)}
-  .article-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
-  .article-body th,.article-body td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
-  .article-body th{background:var(--bg3);color:var(--acc);font-weight:600}
-  .article-body tr:nth-child(even){background:var(--bg3)}
-  .article-body code{background:var(--bg3);padding:1px 6px;border-radius:5px;font-size:13px;color:var(--acc2)}
-  .article-body .flow{display:flex;flex-direction:column;gap:8px;margin:12px 0}
-  .article-body .node{background:var(--bg3);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px}
-  .article-body .node .t{color:var(--acc);font-weight:600}
-  .article-body .arrow{text-align:center;color:var(--dim);font-size:12px}
-  .article-body .pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:6px;margin:2px 4px 2px 0}
-  .article-body .pill.ok{background:rgba(63,185,80,.15);color:var(--acc2);border:1px solid rgba(63,185,80,.4)}
-  .article-body .pill.no{background:rgba(248,81,73,.13);color:var(--bad);border:1px solid rgba(248,81,73,.4)}
-  .article-body .pill.plan{background:rgba(240,136,62,.13);color:var(--warn);border:1px solid rgba(240,136,62,.4)}
-  .article-body .warnbox{background:rgba(240,136,62,.08);border:1px solid rgba(240,136,62,.35);border-radius:10px;padding:14px 16px;margin:14px 0}
-  .article-body .warnbox b{color:var(--warn)}
-  .article-body .verdict{background:linear-gradient(135deg,var(--bg3),var(--bg2));border:1px solid var(--acc);border-radius:12px;padding:18px 20px;margin:18px 0}
-  .article-body .verdict h2{color:var(--acc);margin-bottom:8px;font-size:18px}
-  .article-body p{margin:10px 0;color:var(--txt2)}
-  .article-body ul{margin:8px 0 8px 20px} .article-body li{margin:5px 0}
-  .article-body .keras{color:var(--acc2)} .article-body .bad{color:var(--bad)}
-  .article-body a{color:var(--acc);text-decoration:none}
-  .article-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center;line-height:1.9}
-  @media(max-width:768px){
-    .nav-bar .article-nav-links{display:flex!important;align-items:center;gap:14px}
-  }
+  .article-body .tag{color:var(--accent)}
+  .article-body .card h2{color:var(--accent)}
+  .article-body .card h3{color:var(--pur)}
+  .article-body .verdict h2{color:var(--accent)}
+  .article-body .keras{color:var(--good)}
+  .article-body .bad{color:var(--bad)}
 </style>
 </head>
 <body>
@@ -99,19 +61,16 @@
 
     <main id="main-content" class="article-body">
 
-<div class="article-hero">
-  <div class="wrap">
-    <div class="tag-row">
-      <span class="tag">单仓库深度分析 · 2026-08-06 · 数据来源:GitHub 仓库页 + GitHub API</span>
-    </div>
-    <h1>Tencent/BrowserSkill 🧭</h1>
-    <div class="sub">让 AI Agent 用你「真实、已登录」的浏览器干活，还不打断你自己的工作</div>
-  </div>
-</div>
+<header class="masthead">
+  <div class="kicker">单仓库深度分析 · 2026-08-06 · 数据来源:GitHub 仓库页 + GitHub API</div>
+  <h1>Tencent/BrowserSkill 🧭</h1>
+  <div class="deck">让 AI Agent 用你「真实、已登录」的浏览器干活，还不打断你自己的工作</div>
+  <div class="byline"><span>作者 <b>Weki Lee</b></span><span class="sep">·</span><span>数据来源 <b>GitHub 仓库页 + GitHub API</b></span><span class="sep">·</span><span>阅读约 9 分钟</span></div>
+</header>
 
 <div class="wrap">
 
-  <div class="card">
+  <div class="card breakout">
     <h2>📊 数据快照</h2>
     <div class="grid">
       <div class="stat"><div class="v">838</div><div class="l">⭐ Stars</div></div>
@@ -130,7 +89,7 @@
 
   <div class="card">
     <h2>🎯 它到底干嘛的</h2>
-    <p>一句话：<b>通过 CLI + 浏览器扩展，给任何能调用 shell 的 AI Agent 接上一个「借用你真实浏览器」的自动化桥。</b></p>
+    <p class="lead">一句话：<b>通过 CLI + 浏览器扩展，给任何能调用 shell 的 AI Agent 接上一个「借用你真实浏览器」的自动化桥。</b></p>
     <p style="color:var(--dim);font-size:13px;margin-top:6px">官方原话：<i>"Let AI agents use your real, logged-in browser without interrupting your work."</i></p>
     <h3>四大卖点</h3>
     <ul>
@@ -167,7 +126,7 @@
     </p>
   </div>
 
-  <div class="card">
+  <div class="card breakout">
     <h2>⚔️ 赛道定位：和 browser-use / Playwright 怎么摆</h2>
     <p style="color:var(--dim);font-size:13px">前文第二期分析过 browser-use vs Playwright，BrowserSkill 正好补齐这条线的第三块拼图——而且它 GitHub topics 直接挂了 <code>browser-use</code>，等于官方认领同赛道。</p>
     <table>
@@ -208,7 +167,7 @@
   </div>
 
   <div class="verdict">
-    <h2>🧭 一句话结论</h2>
+    <h2>🧭 一句话判断</h2>
     <p>
       它是浏览器自动化赛道里一个<b>思路清奇的务实派</b>：不跟 browser-use 卷「AI 自主冲浪」，而是解决「<b>让 Agent 用真实登录态、还不打扰人</b>」这个真实痛点，还顺手把移动设备模拟和白嫖式 human-in-loop 塞了进来。
     </p>
@@ -222,9 +181,9 @@
     </p>
   </div>
 
-  <div class="article-footer">
-    <p>本报告含分析观点，重要决策请自行核验时效性与真实性。</p>
-    <p>同类对比回顾：CodeGraph vs MemPalace · browser-use vs Playwright · MemPalace vs TencentDB-Agent-Memory。</p>
+  <div class="colophon">
+    <b>关于本报告</b>　含分析观点，重要决策请自行核验时效性与真实性。<br>
+    <span class="src">同类对比回顾：CodeGraph vs MemPalace · browser-use vs Playwright · MemPalace vs TencentDB-Agent-Memory。</span>
   </div>
 </div>
 

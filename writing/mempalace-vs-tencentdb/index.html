@@ -11,73 +11,24 @@
 <title>MemPalace vs TencentDB-Agent-Memory · 深度对比研究</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
 <link rel="stylesheet" href="/src/css/styles.css">
-<link rel="stylesheet" href="/src/css/project-detail.css">
+  <link rel="stylesheet" href="/src/css/article.css">
 <style>
+  /* 共享编辑风基底见 /src/css/article.css —— 此处仅覆盖本篇强调色与少量专属类 */
   :root{
-    --bg:#ffffff; --bg2:#f6f8fa; --card:#ffffff; --line:#d0d7de;
-    --txt:#1f2328; --txt2:#57606a; --muted:#57606a; --dim:#8b949e;
-    --mp:#b7791f; --mp-soft:rgba(224,164,88,.18);
-    --tn:#0969da; --tn-soft:rgba(59,157,255,.15);
-    --good:#1a7f37; --warn:#9a6700; --bad:#cf222e;
-    --code:#b35900; --strong:#1f2328;
+    --accent:#b7791f; --accent-soft:rgba(224,164,88,.18);
+    --accent2:#0969da; --accent2-soft:rgba(59,157,255,.15);
+    --mp:var(--accent); --tn:var(--accent2);
+    --mp-soft:var(--accent-soft); --tn-soft:var(--accent2-soft);
   }
   [data-theme="dark"]{
-    --bg:#0d1117; --bg2:#161b22; --card:#1c2430; --line:#2d3748;
-    --txt:#e6edf3; --txt2:#c9d1d9; --muted:#8b949e; --dim:#6e7681;
-    --mp:#e0a458; --mp-soft:rgba(224,164,88,.13);
-    --tn:#3b9dff; --tn-soft:rgba(59,157,255,.12);
-    --good:#3fb950; --warn:#d29922; --bad:#f85149;
-    --code:#f0883e; --strong:#ffffff;
+    --accent:#e0a458; --accent-soft:rgba(224,164,88,.13);
+    --accent2:#3b9dff; --accent2-soft:rgba(59,157,255,.12);
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;transition:background .4s ease,color .4s ease}
-  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
-  .article-hero{padding:96px 0 28px;text-align:center;border-bottom:1px solid var(--line)}
-  .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px}
-  .article-body h1{font-size:clamp(24px,4.6vw,38px);font-weight:800;line-height:1.3}
-  .article-body h1 .vs{color:var(--dim);font-weight:400;font-size:.6em;vertical-align:middle;margin:0 8px}
-  .mp-c{color:var(--mp)} .tn-c{color:var(--tn)}
-  .sub{color:var(--muted);margin-top:14px;font-size:14px}
-  .article-body h2{font-size:22px;margin:48px 0 18px;padding-left:12px;border-left:4px solid var(--mp)}
-  .article-body h2.alt{border-left-color:var(--tn)}
-  .article-body h3{font-size:16px;margin:22px 0 10px}
-  .article-body p{margin:10px 0;color:var(--txt2)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0}
-  .verdict{background:linear-gradient(135deg,var(--mp-soft),var(--tn-soft));border:1px solid var(--line);border-radius:14px;padding:24px;margin:24px 0}
-  .verdict strong{color:var(--strong)}
-  .article-body table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
-  .article-body th,.article-body td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-  .article-body th{color:var(--muted);font-weight:600;font-size:13px}
-  .article-body td.num{font-variant-numeric:tabular-nums}
-  .win{color:var(--good);font-weight:700}
-  .flag{color:var(--warn);font-weight:600}
-  .bad{color:var(--bad);font-weight:600}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
-  .pill{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;background:var(--bg2);border:1px solid var(--line);color:var(--muted)}
-  .pill.mp{border-color:var(--mp);color:var(--mp)}
-  .pill.tn{border-color:var(--tn);color:var(--tn)}
-  .article-body ul{margin:8px 0 8px 22px;color:var(--txt2)}
-  .article-body li{margin:5px 0}
-  .bar-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
-  .bar-label{width:170px;color:var(--muted);flex-shrink:0;text-align:right}
-  .bar-track{flex:1;background:var(--bg2);border-radius:6px;height:22px;overflow:hidden}
-  .bar-fill{height:100%;border-radius:6px}
-  .bar-val{width:100px;flex-shrink:0;font-variant-numeric:tabular-nums}
-  .risk{border-left:3px solid var(--warn);background:var(--bg2);padding:12px 16px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14px}
-  .risk b{color:var(--warn)}
-  .risk.ok{border-left-color:var(--good)} .risk.ok b{color:var(--good)}
-  .risk.bad{border-left-color:var(--bad)} .risk.bad b{color:var(--bad)}
-  .decide{font-size:15px}
-  .decide .q{color:var(--strong);font-weight:700}
-  .article-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;text-align:center}
-  .article-body code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:var(--code)}
-  .src{color:var(--dim);font-size:12px}
-  .melon{background:rgba(240,136,62,.08);border:1px dashed var(--warn);border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px}
-  /* 文章页无汉堡菜单，覆盖站点 .nav-links 移动端隐藏规则，保证主题按钮可见 */
-  @media(max-width:768px){
-    .nav-bar .article-nav-links{display:flex!important;align-items:center;gap:14px}
-  }
+  .mp-c{color:var(--accent)} .tn-c{color:var(--accent2)}
+  .pill.mp{border-color:var(--accent);color:var(--accent)}
+  .pill.tn{border-color:var(--accent2);color:var(--accent2)}
+  .melon{background:color-mix(in srgb,var(--warn) 9%,transparent);border:1px dashed color-mix(in srgb,var(--warn) 45%,transparent);border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px}
+  .verdict{background:linear-gradient(135deg,var(--accent-soft),var(--accent2-soft));border-left-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -111,25 +62,24 @@
 
     <main id="main-content" class="article-body">
 
-<div class="article-hero">
-  <div class="wrap">
-    <div class="tag">深度研究 · 2026-08-05 · 数据来源:GitHub 仓库页 + GitHub API</div>
-    <h1><span class="mp-c">MemPalace</span><span class="vs">⚔️</span><span class="tn-c">TencentDB-Agent-Memory</span></h1>
-    <div class="sub">AI 记忆系统正面对决:草根基准卷王 vs 腾讯云团队级记忆中枢</div>
-  </div>
-</div>
+<header class="masthead">
+  <div class="kicker">深度研究 · 2026-08-05 · 数据来源:GitHub 仓库页 + GitHub API</div>
+  <h1><span class="mp-c">MemPalace</span><span class="vs">⚔️</span><span class="tn-c">TencentDB-Agent-Memory</span></h1>
+  <div class="deck">AI 记忆系统正面对决：草根基准卷王 vs 腾讯云团队级记忆中枢</div>
+  <div class="byline"><span>作者 <b>Weki Lee</b></span><span class="sep">·</span><span>数据来源 <b>GitHub 仓库页 + GitHub API</b></span><span class="sep">·</span><span>阅读约 10 分钟</span></div>
+</header>
 
 <div class="wrap">
 
   <div class="verdict">
-    <h3 style="margin-top:0">⚡ 核心结论(先看这个)</h3>
+    <h3 style="margin-top:0">⚡ 核心判断（先看这个）</h3>
     <p><strong>同名"记忆",两种物种。</strong>MemPalace 是<strong>个人/单机</strong>导向的轻量记忆库:逐字存储、本地嵌入、pip 装完即用;TencentDB-Agent-Memory 是<strong>团队/多 Agent</strong>导向的重型记忆中枢:四类记忆资产 + ACL 治理面板 + 三服务 Docker 部署。</p>
     <p>记忆哲学也相反:MemPalace <strong>拒绝摘要</strong>(verbatim 逐字,怕丢信息),腾讯 <strong>主动蒸馏</strong>(L0→L3 分层提炼,怕爆上下文)。</p>
     <p style="margin-bottom:0"><strong>一句话:一个人用选 MemPalace,一支 Agent 团队用选腾讯;但腾讯这个仓库的工程细节有几个值得警惕的疑点(见风险节)。</strong></p>
   </div>
 
   <h2>📊 数据快照(2026-08-05 GitHub API 实时)</h2>
-  <div class="card">
+  <div class="card breakout">
     <table>
       <tr><th>指标</th><th class="mp-c">MemPalace</th><th class="tn-c">TencentDB-Agent-Memory</th><th>备注</th></tr>
       <tr><td>⭐ Stars</td><td class="num win">58,077</td><td class="num">14,101</td><td>MemPalace 4 倍</td></tr>
@@ -150,8 +100,8 @@
   </div>
 
   <h2 class="alt">🧠 记忆哲学:逐字派 vs 蒸馏派</h2>
-  <div class="grid2">
-    <div class="card" style="border-top:3px solid var(--mp)">
+  <div class="duel">
+    <div class="duel-side">
       <h3 class="mp-c" style="margin-top:0">MemPalace —— 一个字都不许丢</h3>
       <ul>
         <li><b>Verbatim 逐字存储:</b>不摘要、不改写,原文进"抽屉"(Drawers)</li>
@@ -162,7 +112,8 @@
       </ul>
       <p><b>信念:</b>摘要就是失真,检索质量靠结构和嵌入解决。</p>
     </div>
-    <div class="card" style="border-top:3px solid var(--tn)">
+    <div class="duel-vs">VS</div>
+    <div class="duel-side s2">
       <h3 class="tn-c" style="margin-top:0">腾讯 —— 分层蒸馏,按需取用</h3>
       <ul>
         <li><b>L0 原始对话</b> → <b>L1 原子事实</b> → <b>L2 场景知识块</b> → <b>L3 长期画像</b>,逐层提炼</li>
@@ -176,7 +127,7 @@
   </div>
 
   <h2>🏗 架构与部署:轻骑兵 vs 重装旅</h2>
-  <div class="card">
+  <div class="card breakout">
     <table>
       <tr><th>维度</th><th class="mp-c">MemPalace</th><th class="tn-c">TencentDB-Agent-Memory</th></tr>
       <tr><td><b>部署形态</b></td><td class="win">pip/uv 一条命令,Python 库即服务;Docker 可选</td><td>Docker 三服务(memory-core + memory-hub + proxy)一键脚本;Node ≥ 22.16</td></tr>
@@ -188,8 +139,8 @@
   </div>
 
   <h2 class="alt">📈 基准与证据质量</h2>
-  <div class="grid2">
-    <div class="card">
+  <div class="duel">
+    <div class="duel-side">
       <h3 class="mp-c" style="margin-top:0">MemPalace:学术基准全家桶</h3>
       <ul>
         <li>LongMemEval R@5 <b>96.6%</b>(零 API)→ Hybrid 98.4% → rerank ≥99%</li>
@@ -198,7 +149,8 @@
         <li>诚实性声明:拒绝展示 100%、拒绝对 Mem0/Zep 做不对等对比</li>
       </ul>
     </div>
-    <div class="card">
+    <div class="duel-vs">VS</div>
+    <div class="duel-side s2">
       <h3 class="tn-c" style="margin-top:0">腾讯:单一基准,但数字敢给绝对值</h3>
       <ul>
         <li>PersonaMem:<b>48% → 76%</b>(相对 +59%)</li>
@@ -235,8 +187,9 @@
     <p>→ 两家都只有 4 个月大。腾讯这个仓库 license、默认分支、issue 积压三个疑点建议先观望一个版本周期;MemPalace 增长熄火后更要看社区留存。生产采用都请锁版本。</p>
   </div>
 
-  <div class="article-footer">
-    <p>基准数字均引自各项目 README 自述,未做独立复现 · License 疑点以 GitHub API 返回的 NOASSERTION 状态为准,请以仓库 LICENSE 文件全文为最终依据</p>
+  <div class="colophon">
+    <b>数据说明</b>　基准数字均引自各项目 README 自述，未做独立复现；License 疑点以 GitHub API 返回的 NOASSERTION 状态为准，请以仓库 LICENSE 文件全文为最终依据。<br>
+    <span class="src">同类对比回顾：browser-use vs Playwright · CodeGraph vs MemPalace · Tencent/BrowserSkill 深度分析。</span>
   </div>
 </div>
 

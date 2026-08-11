@@ -1,0 +1,239 @@
+/* Hallmark · macrostructure: Long Document · tone: editorial-technical · anchor hue: per-page */
+/* =====================================================================
+   article.css — 博客/写作页共享样式（Hallmark 编辑风 · 结构级重构）
+   设计纪律（来自 Nutlope/hallmark，反 AI-slop）：
+   - 结构多样性优先于视觉多样性：报头(masthead)左对齐、导语首字下沉、
+     章节以短强调刻度起头(非侧边彩条)、对决分栏(duel)、结论陈述带、
+     版本说明(colophon)。
+   - 阅读栏(.wrap)与破栏宽图(.breakout)分离：正文舒适字宽，表格/对比条
+     破栏到更宽，不再被挤成多行。
+   - 去纯黑白、serif 标题配对、tabular-nums、focus-visible 即时环、
+     prefers-reduced-motion、移动端 overflow-x:clip。
+   - 所有颜色/字体一律走 token(var(--…))，不内联裸值。
+   每篇页面只在内联 <style> 里覆盖各自的强调色 token 与少量专属组件类。
+   ===================================================================== */
+
+:root{
+  --paper:#fbfaf8; --paper-2:#f3f1ec; --paper-3:#ebe7df;
+  --line:#e4dfd6; --line-strong:#d2ccbf;
+  --ink:#211f1b; --ink-2:#56524a; --muted:#8a8478; --dim:#a59e90;
+  --accent:#9a5b1e; --accent-soft:rgba(154,91,30,.12);
+  --good:#1a7f37; --warn:#9a6700; --bad:#cf222e;
+  --display:"Iowan Old Style","Palatino Linotype","Songti SC","STSong","Georgia",ui-serif,serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --rule:1px solid var(--line);
+  --ease-out:cubic-bezier(.2,.7,.3,1);
+  --dur:260ms;
+
+  /* 布局尺度 */
+  --measure:860px;        /* 阅读栏（正文） */
+  --wide:1120px;          /* 破栏宽图/宽表 */
+  --pad:22px;
+  --space-sm:10px; --space-md:18px; --space-lg:34px; --space-xl:60px;
+}
+[data-theme="dark"]{
+  --paper:#0e1116; --paper-2:#161b22; --paper-3:#1c232e;
+  --line:#2a313c; --line-strong:#39414e;
+  --ink:#ece7df; --ink-2:#c4bdb1; --muted:#8b8678; --dim:#6b665a;
+  --accent:#d99a5b; --accent-soft:rgba(217,154,91,.14);
+  --good:#3fb950; --warn:#d29922; --bad:#f85149;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--body);line-height:1.75;
+  font-size:16.5px;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  transition:background var(--dur) ease,color var(--dur) ease;
+}
+
+/* ── 容器：阅读栏 / 破栏宽图 ─────────────────────────── */
+.wrap{max-width:var(--measure);margin:0 auto;padding:0 var(--pad)}
+.wrap-wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+/* 破栏：暂回归正文阅读栏——宽屏下"右抵视口破栏"实测显拥挤、贴边挤成一坨，已回退。
+   后续若要做更丰富的编辑排版，单独设计不破坏宽度的手法（边注 / 引文刻痕等），不再用抵视口破栏。 */
+.breakout{width:auto;margin-left:0;margin-right:0}
+
+/* ── 报头 Masthead（左对齐，打破“居中一切”） ─────────── */
+.masthead{max-width:var(--measure);margin:0 auto;padding:92px var(--pad) 30px}
+.masthead .kicker{
+  font-family:var(--body);font-size:12px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+}
+.masthead h1{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(32px,5.2vw,52px);line-height:1.12;letter-spacing:-.015em;
+  color:var(--ink);margin:18px 0 0;max-width:20ch;
+}
+.masthead h1 .vs{color:var(--dim);font-weight:400;font-size:.5em;vertical-align:middle;margin:0 12px}
+.masthead .deck{
+  font-size:clamp(17px,2vw,21px);line-height:1.5;color:var(--ink-2);
+  margin-top:18px;max-width:62ch;
+}
+.masthead .byline{
+  display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;
+  margin-top:26px;padding-top:18px;border-top:var(--rule);
+  font-size:13px;color:var(--muted);line-height:1.6;
+}
+.masthead .byline b{color:var(--ink-2);font-weight:600}
+.masthead .byline .sep{color:var(--dim)}
+
+/* ── 导语 + 首字下沉 ─────────────────────────────────── */
+.lead{font-size:19px;line-height:1.7;color:var(--ink);margin:var(--space-lg) 0 var(--space-md)}
+.lead::first-letter{
+  font-family:var(--display);float:left;font-weight:700;
+  font-size:3.3em;line-height:.80;padding:8px 12px 0 0;color:var(--accent);
+}
+
+/* ── 章节标题：短强调刻度起头（非侧边彩条） ─────────── */
+.article-body h2{
+  font-family:var(--display);
+  font-size:clamp(23px,3.4vw,29px);font-weight:700;line-height:1.28;
+  margin:var(--space-xl) 0 var(--space-md);position:relative;padding-top:20px;
+  letter-spacing:-.005em;color:var(--ink);
+}
+.article-body h2::before{
+  content:"";position:absolute;top:0;left:0;width:34px;height:3px;
+  background:var(--accent);border-radius:2px;
+}
+.article-body h2.alt::before{background:var(--accent2,var(--accent))}
+.article-body h3{
+  font-family:var(--body);
+  font-size:17.5px;font-weight:700;color:var(--ink);
+  margin:var(--space-lg) 0 var(--space-sm);letter-spacing:.01em;
+}
+
+/* ── 正文 ───────────────────────────────────────────── */
+.article-body p{margin:var(--space-sm) 0;color:var(--ink-2);line-height:1.8}
+.article-body a{color:var(--accent);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent);transition:border-color var(--dur) var(--ease-out)}
+.article-body a:hover{border-bottom-color:var(--accent)}
+.article-body ul,.article-body ol{margin:var(--space-sm) 0 var(--space-sm) 1.4em;color:var(--ink-2)}
+.article-body li{margin:7px 0;line-height:1.78}
+.article-body strong{color:var(--ink);font-weight:700}
+.article-body code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--paper-2);border:1px solid var(--line);
+  border-radius:5px;padding:1px 6px;font-size:.86em;color:var(--ink);
+}
+.article-body hr{border:none;border-top:var(--rule);margin:var(--space-lg) 0}
+
+/* 引文（编辑风左刻度，非彩条卡片） */
+.pull{
+  font-family:var(--display);font-size:clamp(20px,2.6vw,27px);line-height:1.4;
+  color:var(--ink);margin:var(--space-lg) 0;padding:0 0 0 22px;position:relative;
+}
+.pull::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;background:var(--accent);border-radius:2px}
+
+/* ── 卡片（仅发丝边，无单侧厚彩条） ─────────────────── */
+.card{
+  background:var(--paper-2);border:1px solid var(--line);
+  border-radius:14px;padding:22px 24px;margin:var(--space-md) 0;
+}
+.card h2,.card h3{margin-top:0}
+.card > h2:first-child,.card > h3:first-child{margin-top:0}
+
+/* ── 结论陈述带（statement band，带“结论”标签） ─────── */
+.verdict{
+  background:linear-gradient(135deg,var(--accent-soft),var(--paper-2));
+  border:1px solid var(--line);border-radius:14px;
+  padding:28px 28px 24px;margin:var(--space-lg) 0;position:relative;
+}
+.verdict::before{
+  content:"结论";position:absolute;top:-11px;left:22px;
+  background:var(--paper);padding:0 10px;
+  font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);
+}
+.verdict h2,.verdict h3{margin-top:0;color:var(--ink)}
+.verdict strong{color:var(--ink);font-weight:700}
+
+/* ── 表格（宽友好 + tabular-nums） ──────────────────── */
+.article-body table{width:100%;border-collapse:collapse;margin:var(--space-md) 0;font-size:14.5px}
+.article-body th,.article-body td{
+  padding:11px 13px;border-bottom:1px solid var(--line);
+  text-align:left;vertical-align:top;
+}
+.article-body th{
+  color:var(--muted);font-weight:600;font-size:12.5px;letter-spacing:.03em;
+  text-transform:uppercase;background:var(--paper-2);
+  border-bottom:1px solid var(--line-strong);
+}
+.article-body tr:nth-child(even) td{background:color-mix(in srgb,var(--paper-2) 55%,transparent)}
+.article-body td.num{font-variant-numeric:tabular-nums}
+.win{color:var(--good);font-weight:700}
+.flag{color:var(--warn);font-weight:600}
+.bad{color:var(--bad);font-weight:600}
+
+/* ── 网格 / 胶囊 ─────────────────────────────────────── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.pill{
+  display:inline-block;font-size:12px;border-radius:6px;padding:2px 9px;
+  margin:2px 5px 2px 0;background:var(--paper-2);border:1px solid var(--line);color:var(--muted);
+}
+
+/* ── 对比条 / 风险 / 决策 ───────────────────────────── */
+.bar-row{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13px}
+.bar-label{width:128px;color:var(--muted);flex-shrink:0;text-align:right}
+.bar-track{flex:1;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;height:22px;overflow:hidden;min-width:0}
+.bar-fill{height:100%;border-radius:6px;background:var(--accent)}
+.bar-val{width:96px;flex-shrink:0;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink-2)}
+.risk{border-left:3px solid var(--warn);background:var(--paper-2);padding:13px 17px;border-radius:0 10px 10px 0;margin:var(--space-sm) 0;font-size:14.5px;color:var(--ink-2)}
+.risk b{color:var(--warn)}
+.risk.ok{border-left-color:var(--good)} .risk.ok b{color:var(--good)}
+.risk.bad{border-left-color:var(--bad)} .risk.bad b{color:var(--bad)}
+.decide{font-size:15.5px;color:var(--ink-2);line-height:1.8}
+.decide .q{color:var(--ink);font-weight:700}
+
+/* ── 对决分栏 Duel（vs 页专用，结构性差异） ─────────── */
+.duel{display:grid;grid-template-columns:1fr 56px 1fr;align-items:stretch;margin:var(--space-md) 0}
+.duel-side{padding:22px 24px;border-top:3px solid var(--accent);background:var(--paper-2);border-radius:0 0 14px 14px}
+.duel-side.s2{border-top-color:var(--accent2,var(--accent))}
+.duel-side h2,.duel-side h3{margin-top:0}
+.duel-vs{display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;color:var(--dim);font-size:18px}
+@media(max-width:720px){.duel{grid-template-columns:1fr}.duel-vs{width:auto;padding:10px 0;font-size:14px}}
+
+/* ── tencent-browserskill 专属组件 ────────────────────── */
+.stat{background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.stat .v{font-size:24px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat .l{font-size:12px;color:var(--muted);margin-top:4px}
+.stat .v.green{color:var(--good)} .stat .v.orange{color:var(--warn)}
+.flow{display:flex;flex-direction:column;gap:8px;margin:var(--space-sm) 0}
+.node{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:11px 15px;font-size:13.5px;color:var(--ink-2)}
+.node .t{color:var(--accent);font-weight:600}
+.arrow{text-align:center;color:var(--muted);font-size:12px}
+.warnbox{background:color-mix(in srgb,var(--warn) 9%,transparent);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:10px;padding:14px 17px;margin:var(--space-sm) 0;font-size:14.5px;color:var(--ink-2)}
+.warnbox b{color:var(--warn)}
+.pill.ok{background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good);border:1px solid color-mix(in srgb,var(--good) 40%,transparent)}
+.pill.no{background:color-mix(in srgb,var(--bad) 13%,transparent);color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 40%,transparent)}
+.pill.plan{background:color-mix(in srgb,var(--warn) 13%,transparent);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent)}
+
+/* ── 版本说明 Colophon（左对齐，替代居中页脚） ──────── */
+.colophon{
+  max-width:var(--measure);margin:var(--space-xl) auto 0;
+  padding:26px var(--pad) 64px;border-top:1px solid var(--line-strong);
+  font-size:13px;color:var(--muted);line-height:1.95;
+}
+.colophon b{color:var(--ink-2);font-weight:600}
+.colophon a{color:var(--accent);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+.colophon .src{display:block;margin-top:8px}
+
+/* ── 焦点可达性 ───────────────────────────────────────── */
+a:focus-visible,button:focus-visible,.theme-toggle-apple:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;
+}
+
+/* ── 减少动效 ─────────────────────────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+
+/* ── 文章页移动端：保证主题切换按钮可见 ─────────────── */
+@media(max-width:768px){
+  .nav-bar .article-nav-links{display:flex!important;align-items:center;gap:14px}
+  .masthead{padding:84px var(--pad) 26px}
+  .wrap,.wrap-wide{padding:0 18px}
+}

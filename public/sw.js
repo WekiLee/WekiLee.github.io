@@ -68,8 +68,11 @@ self.addEventListener('fetch', function(event) {
           return response;
         })
         .catch(function() {
-          // 离线时回退到缓存的 index.html
-          return caches.match('/index.html');
+          // 离线时优先回退到「缓存的当前页面」,避免文章页被错兜底成首页壳
+          // (多页静态站:每个 HTML 都是真实文件,不应把任意导航兜底到首页)
+          return caches.match(event.request).then(function(cached) {
+            return cached || caches.match('/index.html');
+          });
         })
     );
     return;

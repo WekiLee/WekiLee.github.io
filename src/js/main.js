@@ -108,7 +108,7 @@ import './core.js';
                     '<ul class="project-features">' + features + '</ul>' +
                 '</div>' +
                 '<div class="mt-auto">' +
-                    '<a href="/projects/' + escapeHtml(p.id) + '/" class="btn-project">' +
+                    '<a href="/projects/' + escapeHtml(p.id) + '/index.html" class="btn-project">' +
                         '<svg class="icon-github" aria-hidden="true"><use href="#icon-github"/></svg>' +
                         '详细了解' +
                     '</a>' +

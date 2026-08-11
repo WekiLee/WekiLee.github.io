@@ -264,7 +264,7 @@
         }
 
         .nav-inner {
-            max-width: 980px;
+            max-width: 860px;
             margin: 0 auto;
             padding: 0 22px;
             height: 48px;
@@ -279,6 +279,26 @@
             letter-spacing: -0.01em;
             color: var(--text-primary);
             text-decoration: none;
+        }
+
+        /* 文章页返回链接：复用 logo 视觉，并约束内部未设尺寸的 SVG，
+           否则 .nav-back-icon 按浏览器替换元素默认值撑高，文字溢出到导航栏下方 */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-back-icon {
+            width: 15px;
+            height: 15px;
+            flex: none;
+            display: block;
         }
 
         .nav-links {
