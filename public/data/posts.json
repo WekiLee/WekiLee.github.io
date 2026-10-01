@@ -1,7 +1,16 @@
 {
-  "lastUpdated": "2026-08-06",
+  "lastUpdated": "2026-10-01",
   "description": "写作与笔记数据源。每条可指向站内文章、公众号文章链接、小红书笔记等外部内容。",
   "items": [
+    {
+      "id": "post-005",
+      "title": "隔离的下一个十年：从隔离技术史推演 AI 沙箱化",
+      "summary": "47 年隔离史的三条规律：跃迁靠换边界位置而非加固、性能决定采用而共享决定失守、失效模式只有绕过/错配/静默降级三种。据此推演 2026–2030 四个阶段，附五条反共识判断与分角色自测清单。",
+      "date": "2026-10-01",
+      "tags": ["深度研究", "Agent 基础设施", "沙箱安全"],
+      "source": "site",
+      "url": "/writing/isolation-next-decade/index.html"
+    },
     {
       "id": "post-004",
       "title": "Tencent/BrowserSkill：让 AI Agent 借用你的真实浏览器",

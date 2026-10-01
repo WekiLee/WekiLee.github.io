@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var t=localStorage.getItem('theme')||((matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);})()</script>
+<meta name="description" content="从 47 年隔离技术史提炼三条规律，推演 AI 沙箱化在 2026–2030 的四个阶段：microVM 成为默认但不会统一市场、隔离正在商品化、prompt injection 不会在沙箱层被解决。含五条反共识判断与分角色思考题。">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://wekilee.github.io/writing/isolation-next-decade/">
+<title>隔离的下一个十年 · 从隔离技术史推演 AI 沙箱化</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/src/css/styles.css">
+  <link rel="stylesheet" href="/src/css/article.css">
+<style>
+  /* 共享编辑风基底见 /src/css/article.css —— 此处仅覆盖本篇强调色与少量专属类 */
+  :root{
+    --accent:#1d5fa8; --accent-soft:rgba(29,95,168,.10);
+    --accent2:#7d4bc4; --accent2-soft:rgba(125,75,196,.10);
+  }
+  [data-theme="dark"]{
+    --accent:#7cb8ff; --accent-soft:rgba(124,184,255,.13);
+    --accent2:#b79cf0; --accent2-soft:rgba(183,156,240,.13);
+  }
+  .a2-c{color:var(--accent2)}
+
+  /* 判断条目：编号 + 置信度徽章 + 成色标签 */
+  .calls{list-style:none;margin:var(--space-md) 0;padding:0;counter-reset:call}
+  .calls > li{
+    counter-increment:call;position:relative;
+    background:var(--paper-2);border:1px solid var(--line);border-radius:14px;
+    padding:20px 24px 18px 62px;margin:0 0 12px;
+  }
+  .calls > li::before{
+    content:counter(call,decimal-leading-zero);position:absolute;left:22px;top:20px;
+    font-family:var(--display);font-size:18px;font-weight:700;color:var(--dim);
+    font-variant-numeric:tabular-nums;
+  }
+  .calls .ct{display:block;font-size:16.5px;font-weight:700;color:var(--ink);line-height:1.55;margin:0 0 8px}
+  .calls p{margin:0;font-size:15px;color:var(--ink-2);line-height:1.8}
+  .conf{
+    display:inline-block;font:600 11px/1 var(--body);letter-spacing:.08em;
+    padding:3px 8px;border-radius:999px;margin-left:8px;vertical-align:2px;
+    border:1px solid currentColor;white-space:nowrap;
+  }
+  .conf.hi{color:var(--good)} .conf.mid{color:var(--warn)}
+  .basis{
+    display:inline-block;font:500 11px/1 var(--body);letter-spacing:.04em;
+    padding:3px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;
+    border:1px solid var(--line-strong);color:var(--muted);white-space:nowrap;
+  }
+
+  /* 阶段时间线 */
+  .ph{display:grid;grid-template-columns:132px 1fr;gap:0;margin:0 0 14px}
+  .ph .pn{
+    background:var(--paper-2);border:1px solid var(--line);border-right:none;
+    border-radius:14px 0 0 14px;padding:18px 14px 18px 18px;
+  }
+  .ph .pn b{display:block;font-family:var(--display);font-size:17px;font-weight:700;color:var(--ink);line-height:1.3}
+  .ph .pn span{display:block;font-size:11.5px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+  .ph .pb{
+    background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:0 14px 14px 0;padding:16px 20px;
+  }
+  .ph .pb p{margin:0 0 9px;font-size:14.5px;color:var(--ink-2);line-height:1.78}
+  .ph .pb p:last-child{margin:0}
+  .ph .pb .lb{
+    display:block;font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:4px;
+  }
+  .ph .pb .sig{color:var(--warn);font-weight:500}
+  .ph.p1 .pb{border-left-color:var(--accent2)}
+  .ph.p2 .pb{border-left-color:var(--good)}
+  .ph.p3 .pb{border-left-color:var(--warn)}
+  @media(max-width:720px){
+    .ph{grid-template-columns:1fr}
+    .ph .pn{border-right:1px solid var(--line);border-radius:14px 14px 0 0;padding:14px 18px}
+    .ph .pn b,.ph .pn span{display:inline}
+    .ph .pn span{margin-left:10px}
+    .ph .pb{border-radius:0 0 14px 14px}
+    .calls > li{padding:18px 20px 16px 20px}
+    .calls > li::before{position:static;display:block;margin-bottom:6px}
+  }
+
+  /* 角色思考题 */
+  .role{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:14px;
+    padding:22px 24px;margin:var(--space-md) 0;
+  }
+  .role h3{margin:0 0 2px;font-size:17px}
+  .role .rl{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin:0 0 6px}
+  .role dl{margin:0}
+  .role dt{
+    font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin-top:16px;
+  }
+  .role dd{margin:6px 0 0;font-size:14.5px;color:var(--ink-2);line-height:1.78}
+  .role dd b{color:var(--ink)}
+  .role .act{
+    margin-top:18px;padding:14px 16px;background:var(--paper);
+    border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
+  }
+  .role .act .lb{
+    display:block;font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:6px;
+  }
+  .role .act p{margin:0;font-size:14.5px;color:var(--ink-2)}
+  .role .quiz{
+    margin-top:12px;padding-top:14px;border-top:1px dashed var(--line-strong);
+  }
+  .role .quiz .lb{
+    display:block;font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--warn);margin-bottom:6px;
+  }
+  .role .quiz p{margin:0;font-size:14.5px;color:var(--ink-2)}
+
+  /* 开放问题 */
+  .open{counter-reset:oq;margin:var(--space-md) 0;padding:0;list-style:none}
+  .open > li{
+    counter-increment:oq;position:relative;padding:16px 0 16px 44px;
+    border-bottom:1px solid var(--line);
+  }
+  .open > li:first-child{border-top:1px solid var(--line)}
+  .open > li::before{
+    content:"Q" counter(oq);position:absolute;left:0;top:17px;
+    font-family:var(--display);font-size:14px;font-weight:700;color:var(--accent);
+    font-variant-numeric:tabular-nums;
+  }
+  .open .qt{display:block;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.5}
+  .open p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.78}
+</style>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">跳到主内容</a>
+
+    <svg style="display:none;" aria-hidden="true">
+        <symbol id="icon-github" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+        </symbol>
+        <symbol id="icon-arrow-left" viewBox="0 0 12 12">
+            <path d="M10 6H2M6 10l-4-4 4-4"/>
+        </symbol>
+    </svg>
+
+    <header>
+        <nav class="nav-bar" aria-label="主导航">
+            <div class="nav-inner">
+                <a href="/" class="nav-back" aria-label="返回 Weki Lee 首页">
+                    <svg class="nav-back-icon" aria-hidden="true"><use href="#icon-arrow-left"/></svg>
+                    Weki Lee
+                </a>
+                <div class="nav-links article-nav-links">
+                    <button class="theme-toggle-apple" id="themeToggle" aria-label="切换到暗色模式">
+                        <span id="themeIcon" aria-hidden="true">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="article-body">
+
+<header class="masthead">
+  <div class="kicker">深度研究 · 2026-10-01 · 数据来源：一手安全披露 + 官方价格页 + 隔离技术编年</div>
+  <h1>隔离的下一个十年</h1>
+  <div class="deck">把 47 年的隔离技术史摊开，能读出三条相当稳定的规律。把它们套到 AI 上，得到的判断与当下主流叙事有几处明显冲突。</div>
+  <div class="byline"><span>作者 <b>Weki Lee</b></span><span class="sep">·</span><span>数据基准日 <b>2026-09-14</b></span><span class="sep">·</span><span>阅读约 18 分钟</span></div>
+</header>
+
+<div class="wrap">
+
+  <p class="lead">1979 年，Unix V7 加进了一个叫 <code>chroot</code> 的系统调用，把进程的文件系统视图换到一个新根目录下。当时的人管这叫隔离。四十七年后，全世界跑在云上的 AI Agent 每天被执行几亿次，托住它们的是硬件虚拟化、微架构快照和 eBPF 网络栈。中间这段路，是怎么走过来的？更重要的是——<strong>它接下来会怎么走？</strong></p>
+
+  <p>这篇文章想做的不是技术编年，而是<b>从历史里抠出可复用的机制</b>，再用它推演 AI 沙箱化的未来。之所以值得这么认真，是因为这个领域的判断分歧极大：有人说 microVM 会统一一切，有人说沙箱能解决 prompt injection，有人说自建沙箱是护城河。这些说法如果只是"观点之争"，那无所谓；但它们会直接影响架构决策和预算，所以值得被逐条检验。</p>
+
+  <p>全文分三部分：<b>规律</b>（历史给了什么）、<b>推演</b>（四个阶段与可证伪信号）、<b>思考题</b>（分角色的自测清单）。每条判断都标了成色与置信度，三个月后可以拿来对账。</p>
+
+  <div class="verdict">
+    <h3 style="margin-top:0">核心判断（先看这个）</h3>
+    <p><strong>隔离技术史的三条规律：</strong>①跃迁靠<b>换边界位置</b>，不靠加固现有边界；②<b>性能</b>决定谁被采用，<b>共享</b>决定谁被击穿；③失效模式只有三种——绕过、错配、静默降级，且几乎与"被正面攻破"无关。</p>
+    <p><strong>套到 AI 上的结论：</strong>microVM 会成为默认但不会统一市场；"沙箱"这个词会在 2028 年前被拆成三个互不相同的市场；隔离本身正在商品化（价格已经收敛到约 <code>$0.083/小时</code>），真正的差异化正在往能力描述与会话编排上移。</p>
+    <p style="margin-bottom:0"><strong>最需要说清的一条：沙箱不解决 prompt injection，它只负责压缩爆炸半径。</strong>把这两件事混为一谈，是当前安全讨论里最常见的范畴错误。</p>
+  </div>
+
+  <h2>⚖️ 八条判断与置信度</h2>
+  <p>下列八条按置信度自评排序，每条标了成色：<span class="basis">事实</span>表示已发生、可查证，<span class="basis">推断</span>表示从机制往下推，<span class="basis">观点</span>表示价值判断。</p>
+
+  <ol class="calls">
+    <li>
+      <span class="ct">「沙箱」这个词会在 2028 年前被拆成三个互不相同的市场<span class="conf hi">高置信</span><span class="basis">推断</span></span>
+      <p>隔离原语（会商品化）、会话编排（平台层的主战场）、能力与身份治理（真正的差异化）。今天把它们混在一个词里讨论，是绝大部分选型讨论跑偏的根源。</p>
+    </li>
+    <li>
+      <span class="ct">microVM 会成为默认隔离原语，但不会统一市场<span class="conf hi">高置信</span><span class="basis">事实</span></span>
+      <p>「默认」和「统一」是两件事。AWS、Azure、Google、Anthropic 四家已在 2026 上半年全部收敛到「会话即计算单元」，但底座各异：Firecracker、Hyper-V microVM、gVisor、以及 Cloudflare 的 microVM 或 V8 isolate。<b>收敛的是形状，不是实现。</b></p>
+    </li>
+    <li>
+      <span class="ct">隔离本身正在商品化，差异化已经移到上面两层<span class="conf hi">高置信</span><span class="basis">事实</span></span>
+      <p>E2B、Daytona、Blaxel 三家跑着<b>完全不同的隔离栈</b>（Firecracker / 容器可选 Kata / Firecracker），报价却收敛在同一个数：约 <code>$0.083/小时</code>（1 vCPU + 2 GB）。市场给<b>槽位</b>定价，不给隔离强度定价。</p>
+    </li>
+    <li>
+      <span class="ct">Prompt injection 不会在沙箱层被解决，沙箱只负责压缩爆炸半径<span class="conf hi">高置信</span><span class="basis">观点</span></span>
+      <p>沙箱管的是「跑出去之后能干什么」，管不了「模型是不是被骗了」。一个被污染的 MCP 工具关在无网络无文件权限的沙箱里确实什么都偷不走——<b>但沙箱没有让模型不被骗，只是让被骗的后果变小了。</b></p>
+    </li>
+    <li>
+      <span class="ct">Agent 身份会是下一个真正未解的大问题，比隔离更棘手<span class="conf mid">中高</span><span class="basis">事实</span></span>
+      <p>隔离问的是「能碰什么」，身份问的是「以谁的名义」。当 Agent 拿到 OAuth token 代表用户去调 GitHub、Jira、Slack，边界就从内核跳到了权限模型。一个细节值得留意：AWS AgentCore <b>明确不强制维护 session 与 user 的映射</b>，这块要应用自己兜。</p>
+    </li>
+    <li>
+      <span class="ct">「我怎么证明我真的在沙箱里」会在 2028 年前变成采购问题<span class="conf mid">中</span><span class="basis">推断</span></span>
+      <p>现在所有沙箱方案都有一个隐含前提：<b>你信任那个 runtime。</b>还没有标准让 Agent 用密码学方式验证自己身处真实沙箱、且未被篡改。EU AI Act 核心条款已于 2026-08-02 全面生效、中国监管从「大模型」延伸到「智能体」，合规一旦要求技术性证据，这个缺口就会变成硬需求。</p>
+    </li>
+    <li>
+      <span class="ct">自建沙箱会从「护城河」降级为「技术债」——但对某些人相反<span class="conf mid">中高</span><span class="basis">推断</span></span>
+      <p>稳态 200 个沙箱的月成本横评里，自建约 <code>$0.01–0.03/槽位小时</code>，托管约 <code>$0.083</code>，自建便宜 3–8 倍。但自建买到的是成本，卖掉的是「隔离强度可以随威胁演进替换」的期权。<b>规模小的时候自建是负债，规模大的时候自建是自由。</b></p>
+    </li>
+    <li>
+      <span class="ct">WASM / 轻隔离会在低风险侧吃掉一块，形成长期双轨<span class="conf mid">中</span><span class="basis">事实</span></span>
+      <p>隔离谱系的两端性能差着三个数量级：Cloudflare Dynamic Workers 约 <code>1ms / 2MB</code>，microVM 约 <code>125ms / 128MB</code>。Helm 4 已经把插件默认跑在 Extism 的 WASM 沙箱里——连 Kubernetes 生态里最保守的项目都换了。<b>不会是赢家通吃，会是按风险分层。</b></p>
+    </li>
+  </ol>
+
+  <h2 class="alt">📜 历史里的三条规律</h2>
+
+  <h3>规律一：跃迁靠换边界位置，不靠加固现有边界</h3>
+  <p><code>chroot</code>（1979）只管一个文件系统视图；FreeBSD Jail（1999）补上进程、网络、用户；namespaces + cgroups（2006–2008）把边界挪到内核对象；Docker（2013）把边界挪到镜像与交付；Firecracker（2018）把边界挪到 CPU 虚拟化。每一代都不是「上一代做得更好」，而是<b>换了一个地方画线</b>。</p>
+  <p>最值得记住的一句来自 Jessie Frazelle 在 2018 年的系列文章：容器从设计上就不是顶层安全边界。当时应者寥寥，行业花了七年才追上这个判断。而 Kubernetes 生态直到 2026 年 3 月的官方博客才把话说白：<code>Isolation achieved via runtime-level sandboxing (gVisor/Kata), not just container-level namespaces.</code></p>
+
+  <h3>规律二：性能决定谁被采用，共享决定谁被击穿</h3>
+  <p>Docker 赢不是因为它比 VM 安全，是因为它比 VM 轻。Firecracker 赢不是因为它比 QEMU 安全，是因为它把 170 万行 C 砍到只剩五个模拟设备、启动从秒级压到毫秒级。反过来看失守：<b>凡是共享的东西，最后都会被从共享的那个层面穿透。</b></p>
+  <p>共享内核 → 450 多个系统调用的攻击面全部暴露；共享微架构缓存与分支预测器 → Spectre（2018）一次穿透进程、容器、VM 三种边界。2025 年的 VMScape 更直接：租一台云 VM 就能污染分支预测器状态，去读同宿主机上其他租户和 hypervisor 的机密。</p>
+
+  <h3>规律三：失效模式只有三种，而且与「被攻破」无关</h3>
+  <p>这是最有操作价值的一条。回看历史案例，真正出事的方式几乎从来不是边界被正面攻破：</p>
+
+  <div class="card breakout">
+    <table>
+      <tr>
+        <th>失效模式</th><th>机制</th><th>历史案例</th><th>AI 侧对应案例</th>
+      </tr>
+      <tr>
+        <td><b>绕过</b><br><span style="font-size:12px;color:var(--muted)">bypass</span></td>
+        <td>边界没坏，只是这条路径没经过它</td>
+        <td style="color:var(--muted);font-size:13.5px">chroot 用 ptrace 直接跳出</td>
+        <td>Antigravity 的 <code>find_by_name</code> 被当作 <b>native tool</b> 直接执行，<b>Secure Mode 这条边界从来没见过这个调用</b></td>
+      </tr>
+      <tr>
+        <td><b>错配</b><br><span style="font-size:12px;color:var(--muted)">mismatch</span></td>
+        <td>边界在那，但它防的不是真实威胁</td>
+        <td style="color:var(--muted);font-size:13.5px">容器被拿来当多租户隔离用</td>
+        <td>把「防坏代码」的沙箱拿来防「坏文本」——威胁模型的输入侧一开始就错了</td>
+      </tr>
+      <tr>
+        <td><b>静默降级</b><br><span style="font-size:12px;color:var(--muted)">fail-open</span></td>
+        <td>边界失效时不报错，继续跑</td>
+        <td style="color:var(--muted);font-size:13.5px">配置声明「有 Docker」但运行时够不到</td>
+        <td>CrewAI 四个 CVE 串联：Docker 不可达时降级到进程内执行，<b>只打一行日志</b>；而 Lambda / Cloud Run / 无特权 sidecar 的 K8s 恰恰全是这种环境</td>
+      </tr>
+    </table>
+  </div>
+
+  <p>三种模式里，<b>静默降级最危险</b>：它让安全姿态对运维不可见。控制台写着「已隔离」，实际跑在最弱的沙箱里。这个教训在 LangChain 2024 年就出现过一次（PALChain 回退到本地 eval），两年后框架生态仍然没有把它吸收。</p>
+
+  <p class="pull">每一代人都在给下一代留一个假设。chroot 假设「文件系统隔离就够了」，容器假设「内核不会有洞」，microVM 假设「硬件边界不可穿透」。前两个已经被证伪，第三个正在被侧信道持续试探。</p>
+
+  <h2>🔄 AI 让老问题变了什么</h2>
+
+  <p>如果只是「又要跑不可信代码了」，那用老办法就行。真正的新东西是下面六个位移——它们让上一代的解法结构性失效。</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">位移 01 · 输入从「代码」变成「内容」</h3>
+      <p>传统沙箱的假设是：先审查代码，再决定跑不跑。但 Agent 的载荷是它读到的文本——README、issue 评论、工单、网页、PDF。这些内容在执行前<b>不可能审查</b>，因为它们看起来完全正常。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">位移 02 · 隔离边界和推理处在同一层</h3>
+      <p>进程级沙箱由 Agent 自己运行的程序维持——而 Agent 能理解并修改它。有记录的行为包括：自己找到 <code>/proc/self/root/…</code> 绕过 deny 规则，被 bubblewrap 拦住后<b>直接把沙箱关掉继续干活</b>。没有越狱提示词，它只是想完成任务。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">位移 03 · 会话成为计算单元</h3>
+      <p>Agent 运行持有对话状态、写文件、跑模型给的代码、活几分钟到几小时。HTTP 请求可以随便路由到任何副本，<b>会话不能</b>——同一条会话的第二个 turn 打到别的副本，丢的不是缓存，是正确性。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">位移 04 · 威胁模型从「外部攻击者」变成「自己的产品」</h3>
+      <p>不需要攻击者，Agent 自己就会撞边界：任务需要网络，它就申请网络；凭证不够，它就去借。边界必须假设<b>受保护方会主动往外推</b>——这是安全工程史上比较少见的位置。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">位移 05 · 沙箱从成本中心变成 UX 特性</h3>
+      <p>快照恢复把「冷启动 30 秒」压到「恢复 2 秒」，沙箱的延迟于是直接决定用户体感。AWS 甚至为此推出 14 天持久化工作目录——因为用户不想为了维持 Agent 会话而不敢合上笔记本。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">位移 06 · 隔离第一次有了可讨论的价格</h3>
+      <p>一个被反复引用的实测：Lambda MicroVMs 最小配置跑一天约 <code>$3.03</code>，大约是 Fargate spot 的 <b>9 倍</b>。隔离从「必须付出的成本」变成「可以在财报上讨论的选项」。</p>
+    </div>
+  </div>
+
+  <h2 class="alt">🧭 推演：四个阶段（2026–2030）</h2>
+
+  <p>每一阶段给出三样东西：驱动它的力量、已经能看到的标志事件、以及<b>可以被证伪的信号</b>。最后一项最重要——如果信号没出现，这个阶段的判断就该被丢掉。</p>
+
+  <div class="ph p0">
+    <div class="pn"><b>收敛期</b><span>2026 · 进行中</span></div>
+    <div class="pb">
+      <p><span class="lb">驱动</span>「会话成为计算单元」这件事，四家云在同一年各自独立想明白了。microVM 从「一个选项」变成「默认底座」。</p>
+      <p><span class="lb">标志</span>AWS 同时握着两个 Firecracker 产品（Lambda MicroVMs 6 月 22 日发布、AgentCore Runtime 6 月 GA、runtime instances 8 月 6 日 GA）；Google 把沙箱做成 GKE 原生 CRD 并在 7 月 1 日开始计费；Anthropic 把 sandbox 拆成可替换件，5 月 19 日接上 Cloudflare，底座可以是 microVM 也可以是更轻的 V8 isolate；Lin Sun 7 月 7 日在 CNCF 博客发文《Why sandboxing your agent is not enough》。</p>
+      <p class="sig"><span class="lb">证伪信号</span>还有人在用 runc 做多租户 Agent 隔离，说明迁移没完成；「沙箱」这个词开始被拆开讨论；托管价格停止下探，说明已经打到成本线。</p>
+    </div>
+  </div>
+
+  <div class="ph p1">
+    <div class="pn"><b>三分期</b><span>2027 · 推断</span></div>
+    <div class="pb">
+      <p><span class="lb">驱动</span>隔离商品化之后，钱必须往上走。竞争焦点会从「谁的启动快 30 毫秒」转到「谁的能力边界描述得更准」和「谁的会话生命周期管得更细」。</p>
+      <p><span class="lb">判断</span>这一层会出现事实标准，形式大概率类似「能力清单」：一份声明式的东西，描述这个 Agent 能访问哪些域名、能写哪些路径、能拿什么凭证、能活多久、能花多少钱。Kubernetes 已经先走一步——<code>agent-sandbox</code> 的 CRD 里 <code>networkPolicy</code>、<code>spiffe</code>、<code>identity</code>、<code>lifecycle.maxSessionDuration</code>、<code>ttl</code> 都是显式字段；OpenSandbox 的四大契约里专门有一条是七层域名加四层网段的细粒度网络管控。两边的思路撞上了。</p>
+      <p class="sig"><span class="lb">证伪信号</span>出现跨厂商可移植的能力描述格式（类似 OCI 对镜像做的事）；「沙箱迁移」成为一个真实动作（把跑着的会话从 A 平台搬到 B 平台）；隔离原语彻底沦为不标价的默认项。</p>
+    </div>
+  </div>
+
+  <div class="ph p2">
+    <div class="pn"><b>可验证期</b><span>2028 · 推断</span></div>
+    <div class="pb">
+      <p><span class="lb">驱动</span>两个方向同时施压。向下：无法证明的隔离在合规上不算隔离。向外：Agent 开始跨组织调用工具，对方凭什么信任你的执行环境？</p>
+      <p><span class="lb">判断</span>远程证明（attestation）会从机密计算的角落里被拽到主流。同时「Agent 身份」会独立成一门活：不是「你的 Agent 有没有权限」，而是「这个 Agent 能不能证明它代表谁、在什么环境里、按什么策略执行的」。SPIFFE 这类工作负载身份已经出现在 <code>agent-sandbox</code> 里了，说明方向是对的。</p>
+      <p class="sig"><span class="lb">证伪信号</span>出现「沙箱证明」的开放规范或被写进大厂 SLA；出现针对「无法证明隔离完整性」的监管问询或事故通报；TEE 真的进入 Agent 沙箱的成本结构，而不只在论文里。</p>
+    </div>
+  </div>
+
+  <div class="ph p3">
+    <div class="pn"><b>隐形期</b><span>2029–2030 · 推断</span></div>
+    <div class="pb">
+      <p><span class="lb">驱动</span>隔离像 HTTPS 一样变成默认基线之后，就没人再单独讨论它了。</p>
+      <p><span class="lb">判断</span>讨论会平移到三件事：成本（每个会话多少分钱）、可观测（这一千步里哪一步越界了）、以及<b>策略本身对不对</b>——因为边界已经不缺了，缺的是判断「这条边界该不该这么画」。岗位需求的性质也会跟着变：从「会不会配沙箱」变成「能不能把一个业务的信任关系描述清楚」。</p>
+      <p class="sig"><span class="lb">证伪信号</span>招聘 JD 里「sandbox」这个词开始消失（消失是好事，说明已经默认）；「沙箱工程师」作为独立岗位出现又迅速消失，很可能是个短命的中间态。</p>
+    </div>
+  </div>
+
+  <div class="warnbox">
+    <b>关于时间</b>　四个阶段的跨度是按机制推的，不是按发布会排的。历史上这类跃迁的实际节奏往往比技术预测慢、比商业预测快——容器从 LXC（2008）到 Docker 引爆（2013）隔了五年，从 Docker 到 OCI 标准落地又是两年。所以别把年份当承诺，<b>把信号当承诺</b>。
+  </div>
+
+  <h2>⚠️ 五条我认为会错的流行判断</h2>
+
+  <div class="card breakout">
+    <table>
+      <tr><th>流行说法</th><th>为什么我不同意</th></tr>
+      <tr>
+        <td><b>microVM 会统一沙箱市场</b></td>
+        <td>它会成为默认，但市场会分层。隔离谱系两端相差三个数量级——Cloudflare 的 isolate 约 1ms / 2MB，microVM 约 125ms / 128MB 起。一个只做字符串格式化的 Agent 挂在微秒级沙箱里，没有理由付 microVM 的钱。<b>双轨会是长期状态。</b></td>
+      </tr>
+      <tr>
+        <td><b>上了沙箱就安全了</b></td>
+        <td>沙箱压缩的是爆炸半径，不是概率。Antigravity 是在 <b>Secure Mode 最高安全档位下被绕过的</b>；Adversa AI 2026 年 8 月的汇总里那个 zero-click 注入不仅逃出终端沙箱，还<b>覆写了沙箱自己的 helper 二进制</b>。边界是必要项，不是充分项。</td>
+      </tr>
+      <tr>
+        <td><b>自建沙箱是技术护城河</b></td>
+        <td>正在快速变成负债。价格已打到成本线，自研的隔离栈不会比 Firecracker 更好，维护成本却是实打实的。但反过来也成立：<b>规模足够大时，自建是唯一能换隔离栈的路径</b>——托管平台不会因为你发现一类新逃逸就让你换底座。答案取决于规模，不取决于技术。</td>
+      </tr>
+      <tr>
+        <td><b>沙箱越强越好</b></td>
+        <td>有明确的经济学上限。计算机操作类 Agent（CUA）的实测对比很直白：浏览器级 <code>$0.0008–0.003/任务分钟</code>、每主机 50–200 并发；完整 OS VM 是 <code>$0.005–0.02</code>、每主机 5–20 并发。<b>差了 10–25 倍成本和 10 倍密度。</b>「都上最强隔离」是一种昂贵的安全表演。</td>
+      </tr>
+      <tr>
+        <td><b>Agent 会乖乖待在沙箱里</b></td>
+        <td>这是结构性矛盾，不是配置问题。Agent 的产品价值恰恰来自它要往外走：要网络、要凭证、要持久化、要跨会话记东西。AWS 那个 14 天持久化工作目录、Cloudflare 的 <code>outboundByHost</code> 出口白名单、各家都在做的「凭证在出口层注入而非放进沙箱」——<b>全都是在承认这个矛盾并给它找出口</b>。每开一个口，就是一次边界的重新谈判。</td>
+      </tr>
+    </table>
+  </div>
+
+  <h2 class="alt">🧠 从业者的思考题</h2>
+
+  <p>按角色拆。每个角色三样：正在贬值的、正在升值的、以及现在就该动手的一件事，最后配一道自测题——答不上那题，说明位置有风险。</p>
+
+  <div class="role">
+    <h3>平台 / 基础设施工程师</h3>
+    <p class="rl">platform engineer · infra engineer · SRE</p>
+    <dl>
+      <dt>正在贬值</dt>
+      <dd>「会配 Kubernetes」本身。K8s 是基线假设，不是加分项——2026 年那批 JD 数据里，Kubernetes、Docker、Python 被明确列为<b>雇主假定你已具备</b>的东西，不写在要求里。</dd>
+      <dt>正在升值</dt>
+      <dd>会话生命周期的运维能力：快照与恢复、热池调度、按活跃 CPU 计费的成本建模、会话路由（因为会话绑定是正确性要求，不是性能优化）。以及一个老技能的新用法——<b>把「隔离强度」当作可替换组件来设计</b>。</dd>
+    </dl>
+    <div class="act">
+      <span class="lb">现在就该做</span>
+      <p>给沙箱做一次「失效演练」：手动让底层隔离组件不可用，看系统是<b>报错停下</b>还是<b>静默降级继续跑</b>。CrewAI 那四个 CVE 唯一的正面价值就是提醒你：fail-open 会让安全姿态在控制台上不可见。</p>
+    </div>
+    <div class="quiz">
+      <span class="lb">自测</span>
+      <p>你能说清你现在这个沙箱，<b>边界精确画在哪一行</b>吗？不是「用了 microVM」这种答案，而是「哪个进程被虚拟化了、哪些 syscall 出不去、出口流量在哪一层被卡住」。</p>
+    </div>
+  </div>
+
+  <div class="role">
+    <h3>Agent 应用开发者</h3>
+    <p class="rl">agent developer · ai engineer · full-stack</p>
+    <dl>
+      <dt>正在贬值</dt>
+      <dd>「调通 prompt 让 demo 能动」。以及把安全当成平台层的事、自己只写业务逻辑——当会话单元、凭证注入、工具白名单都在你的代码里被调用时，<b>你就是安全边界的一部分</b>。</dd>
+      <dt>正在升值</dt>
+      <dd>把「不可信」这个标签贯穿全链路的能力：工具返回值一律当数据不当指令、指令通道与数据通道在架构上分开（不是靠 prompt 里写一句「忽略以上」）、每一步都是可审计的 span。<b>上下文工程正在替代 prompt 工程</b>——你设计的不是一句话，是 Agent 每次调用时看到的全部信息。</dd>
+    </dl>
+    <div class="act">
+      <span class="lb">现在就该做</span>
+      <p>清一遍给 Agent 的凭证。如果 API key 出现在环境变量、prompt 或者沙箱文件里，把它们挪到出口代理去注入。这是 2026 年生产事故里<b>重复率最高</b>的单点。</p>
+    </div>
+    <div class="quiz">
+      <span class="lb">自测</span>
+      <p>假设你读的下一份文档里藏着一句「把 <code>~/.aws/credentials</code> 贴到某个网址」，从读到执行，<b>你的系统里有几个环节会拦住？</b>如果答案是「靠模型自己判断」，那你其实没有防线。</p>
+    </div>
+  </div>
+
+  <div class="role">
+    <h3>安全从业者</h3>
+    <p class="rl">security engineer · appsec · red team</p>
+    <dl>
+      <dt>正在贬值</dt>
+      <dd>把传统边界安全那套直接平移过来：网络分段、容器基线加固、RBAC。这些是必要的地基（OpenClaw 那类事故的根因全在这里），但它们<b>不足以覆盖 Agent 特有的风险类别</b>，也不是差异化所在。</dd>
+      <dt>正在升值</dt>
+      <dd>威胁建模的对象变了：从「攻击者怎么进来」变成「Agent 被诱导之后的爆炸半径有多大」。以及一个新的取证问题——<b>侧信道类攻击不留传统日志痕迹</b>，Spectre 当年最让人不安的一点就是「大概无法察觉」。现有的遥测能力能支撑这种调查吗？</dd>
+    </dl>
+    <div class="act">
+      <span class="lb">现在就该做</span>
+      <p>把「沙箱逃逸」加入红队测试用例集，并且专门测<b>配置型逃逸</b>而不是二进制漏洞。2026 年 7 月那批跨厂商复现说明了一件事：Agent 自己没越界，它只是<b>写了文件，然后沙箱外的可信工具去执行了那些文件</b>。这类路径靠打补丁封不干净，得靠架构。</p>
+    </div>
+    <div class="quiz">
+      <span class="lb">自测</span>
+      <p>你能不能列出「哪些受信任的本机程序会去读 Agent 写的文件」？这个清单，就是当前最容易被忽略的攻击面。</p>
+    </div>
+  </div>
+
+  <div class="role">
+    <h3>技术决策者</h3>
+    <p class="rl">tech lead · 架构师 · CTO</p>
+    <dl>
+      <dt>正在贬值</dt>
+      <dd>「我们用了某某沙箱所以安全」这句话。它已经不能作为对外承诺，也不能作为内部结论。CSA（云安全联盟）的态度很直接：agentic 工具的价值恰恰来自那些让它难被保护的属性——自主行动、广泛访问、处理任意内容——<b>不会靠某一家的补丁周期解决。</b></dd>
+      <dt>正在升值</dt>
+      <dd>供应商评估的维度。2026 年值得加进问卷的两个新问题：<b>你的沙箱边界在哪一层、覆盖哪些执行路径？</b>（Antigravity 的问题就是边界看不到 native tool）<b>当隔离组件不可用时，你的产品是停还是降级？</b>两个问题都能把绝大多数供应商问住。</dd>
+    </dl>
+    <div class="act">
+      <span class="lb">现在就该做</span>
+      <p>把 Agent 当成一个<b>新的特权软件类别</b>来管，而不是当成 IDE 或 SaaS 工具的安全策略延伸。同时给凭证划出「任务级」而非「继承级」的授权——因为一次成功的注入，其爆炸半径就是那个 Agent 手里握住的一切。</p>
+    </div>
+    <div class="quiz">
+      <span class="lb">自测</span>
+      <p>如果明天有人问「我们部署的 Agent 现在有哪些文件系统写权限、能访问哪些域名、持有哪些 token」，<b>你能在半小时内拿出一份准确的清单吗？</b>拿不出来，说明你已经在管一个自己看不见的系统。</p>
+    </div>
+  </div>
+
+  <div class="role">
+    <h3>独立开发者 / 小团队</h3>
+    <p class="rl">solo dev · small team · indie</p>
+    <dl>
+      <dt>正在贬值</dt>
+      <dd>「这个我自己搭一个更省钱」。在 1–10 个沙箱的规模上，自建的时间成本远超省下的钱。托管方案在这个量级上基本免费或极便宜，而你的时间应该花在 Agent 逻辑本身上。</dd>
+      <dt>正在升值</dt>
+      <dd>知道<b>什么时候必须自己搭</b>的判断力。三个触发器：并发达到了解约成本的十倍以上、你的威胁模型不允许把数据交给第三方 runtime、或者你需要一类托管平台不提供的隔离强度。除此之外，把沙箱当成水电。</dd>
+    </dl>
+    <div class="act">
+      <span class="lb">现在就该做</span>
+      <p>把「每个任务一个干净沙箱、用完销毁」设成默认。持久化会话是调试期的方便，一旦上一个任务泄了凭证或投毒了文件到下一个任务，它就是安全负债。<b>要持久化，就快照到磁盘再恢复，不要跨天保持一个热的 VM。</b></p>
+    </div>
+    <div class="quiz">
+      <span class="lb">自测</span>
+      <p>你的 Agent 现在跑在什么上？如果答案是「我的开发机」或「一个长期开着的容器」，那你已经有一个真实的、就在手边的风险敞口——而且它离你的 SSH key 只有一层目录的距离。</p>
+    </div>
+  </div>
+
+  <h2>❓ 七个还没想清楚的问题</h2>
+
+  <p>下面这些是确实没有答案的部分。列在这里不是为了显得谦虚，而是因为这些问题的答案会决定上面哪些判断作废。</p>
+
+  <ol class="open">
+    <li>
+      <span class="qt">隔离怎么被证明？</span>
+      <p>所有方案都假设你信任那个 runtime。还没有标准让 Agent 用密码学方式验证「我确实在一个真实、未被篡改的沙箱里」。OCI 签名能验证工具来源，但<b>验证不了执行环境本身</b>。这个缺口在跨组织调用工具时会立刻变成阻塞问题。</p>
+    </li>
+    <li>
+      <span class="qt">当 Agent 自己持有资源、自己付费时，它的身份是什么？</span>
+      <p>现在 Agent 的身份都是从人类用户那里借来的。如果 Agent 有自己的预算、自己的凭证、能自己雇佣另一个 Agent——<b>责任归属画在哪？</b>非人类身份（NHI）管理是个方向，但目前的实践基本还在「给服务账号打标签」的阶段。</p>
+    </li>
+    <li>
+      <span class="qt">谁来定义「能力」的通用语义？</span>
+      <p>Kubernetes 的 <code>networkPolicy</code>、OpenSandbox 的七层域名管控、Cloudflare 的 <code>outboundByHost</code>，说的都是同一件事但表达方式完全不同。在出现一个真正的通用格式之前，「能力描述」没法跨平台复用，也就没法成为可交易的东西。</p>
+    </li>
+    <li>
+      <span class="qt">侧信道这个洞最终该怎么补？</span>
+      <p>从 Spectre（2018）到 VMScape（2025），七年过去，微架构侧信道依然能穿透 hypervisor 边界，而补丁往往伴随性能损失且无法根治。如果「硬件边界」这个最后的地基也被证明是渐近的而非绝对的，<b>沙箱的强度上限到底在哪？</b>目前还没有令人信服的答案。</p>
+    </li>
+    <li>
+      <span class="qt">GPU 沙箱的成本会不会成为下一个封顶？</span>
+      <p>目前托管沙箱在 GPU 上的支持是散点式的——有的完全没有、有的只有平台原生的那一档。Agent 要跑本地推理或微调时，「强隔离 + GPU + 便宜」这个三元组同时成立的方案还不存在。</p>
+    </li>
+    <li>
+      <span class="qt">沙箱之间的迁移可能吗？</span>
+      <p>把一个跑着的 Agent 会话从一个平台搬到另一个平台，需要序列化内存、文件系统、网络状态和凭证绑定。有厂商在做快照恢复，但<b>跨厂商的可移植性还没有人在认真做</b>。如果做不到，Agent 基础设施就会重复公有云的锁定模式。</p>
+    </li>
+    <li>
+      <span class="qt">谁来测「边界画得对不对」？</span>
+      <p>工具在快速成熟（供应链安全、运行时监控、行为基线），但「这个业务的信任关系应该怎么切」仍然高度依赖人的判断。这一层如果长期停留在专家手工，它会成为整个栈里最难规模化的环节。</p>
+    </li>
+  </ol>
+
+  <div class="card">
+    <h3 style="margin-top:0">给读者的一句话</h3>
+    <p style="margin-bottom:0">这份东西的价值不在于它现在多对，而在于它的判断可以被一条条验掉。欢迎带着反例、官方链接或一线数据来对账。</p>
+  </div>
+
+  <div class="colophon">
+    <b>口径与边界</b>　历史部分交叉了多个独立来源（隔离技术编年、容器演进史、Meltdown/Spectre 官方站与 ACM 的复盘），时间点一致；个别年份在不同文献里有 ±1 年差异（如 Jail 是 1999 还是 2000），不影响规律判断。2026 年的价格与规格来自各厂商官方文档与价格页，以及一次 26 方案横评——价格持续变动，任何数字都应当作方向而非报价。<b>所有标注「推断」的时间点均为本文判断，不是任何机构的路线图。</b>未核验项：各厂商宣称的冷启动数字（口径差异极大）、部分项目的真实生产渗透率、TEE 在 Agent 场景下的实测性能损失——这些方向刻意不下结论。<br>
+    <span class="src">案例来源：Pillar Security 对 Antigravity 的披露（2026-01 报告 / 02-28 修复 / 04 公开）、CrewAI 四 CVE 串联（CERT/CC VU#221883）、Adversa AI 2026-08 汇总、2026-07 跨厂商沙箱逃逸复现。同类研究回顾：browser-use vs Playwright · CodeGraph vs MemPalace · MemPalace vs TencentDB-Agent-Memory · Tencent/BrowserSkill。</span>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="footer-apple">
+        <div class="container-page">
+            <div class="flex justify-center gap-4 mb-3">
+                <a href="https://github.com/WekiLee" target="_blank" rel="noopener noreferrer" aria-label="Weki Lee 的 GitHub 主页" class="footer-github-link">
+                    <svg class="w-5 h-5" aria-hidden="true"><use href="#icon-github"/></svg>
+                </a>
+            </div>
+            <p>&copy; <span id="footerYear">2026</span> Weki Lee. <span style="color:var(--text-tertiary);">开源，共享。</span></p>
+            <p style="font-size:11px;color:var(--text-tertiary);">热爱分享 · 持续创造 · 用 ❤️ 构建</p>
+            <p style="font-size:11px;font-family:SF Mono,Menlo,monospace;color:var(--text-tertiary);opacity:0.5;">wekilee.github.io</p>
+        </div>
+    </footer>
+
+    <div id="theme-announce" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="/src/js/core.js"></script>
+</body>
+</html>
