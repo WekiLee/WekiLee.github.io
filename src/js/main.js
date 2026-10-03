@@ -75,7 +75,7 @@ import './core.js';
                 applyStatFallback(fb.stars, fb.publicRepos, fb.ownRepos);
             }).catch(function() {
                 // stats.json 也加载失败时使用硬编码兜底
-                applyStatFallback(0, 20, 7);
+                applyStatFallback(1, 8, 8);
             });
         });
     }

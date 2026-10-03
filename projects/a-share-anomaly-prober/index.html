@@ -6,29 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-    <meta name="description" content="hound-dog — 数据根因分析与报告复核 Skill" />
-    <meta name="keywords" content="hound-dog, Python, Agent Skill, 根因分析, 数据画像, Weki Lee" />
-    <meta property="og:title" content="hound-dog · 数据根因分析与报告复核 Skill" />
-    <meta property="og:description" content="像猎狗一样嗅出数据里的根因问题——对工单/日志/Excel/CSV 做深度根因分析与既有报告复核的通用 agent skill。八阶段流程带反馈回路，每个结论可溯源、可复跑复现。" />
+    <meta name="description" content="A-Share Anomaly Prober — A 股异动前因后果探测器" />
+    <meta name="keywords" content="A-Share Anomaly Prober, Python, akshare, 异动探测, 事件归因, LLM 研判, 回测, Weki Lee" />
+    <meta property="og:title" content="A-Share Anomaly Prober · A 股异动前因后果探测器" />
+    <meta property="og:description" content="自动探测大盘 / 个股 / 板块的异动信号，归集「前因后果」事件档案，由 LLM 生成多视角研判，人工审批把关、不自动下单。轻量栈实现，事件档案可追溯。" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://wekilee.github.io/projects/hound-dog/" />
+    <meta property="og:url" content="https://wekilee.github.io/projects/a-share-anomaly-prober/" />
     <meta property="og:image" content="https://wekilee.github.io/og-cover.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="hound-dog — Weki Lee" />
+    <meta property="og:image:alt" content="A-Share Anomaly Prober — Weki Lee" />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content="Weki Lee" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="hound-dog — Weki Lee" />
-    <title>hound-dog · 数据根因分析与报告复核 Skill — Weki Lee</title>
+    <meta name="twitter:title" content="A-Share Anomaly Prober — Weki Lee" />
+    <title>A-Share Anomaly Prober · A 股异动前因后果探测器 — Weki Lee</title>
     <script type="application/ld+json">{
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "hound-dog",
-    "description": "像猎狗一样嗅出数据里的根因。工单/日志/Excel 深度根因分析与报告复核。",
-    "url": "https://wekilee.github.io/projects/hound-dog/",
+    "name": "A-Share Anomaly Prober",
+    "description": "自动探测大盘 / 个股 / 板块的异动信号，归集「前因后果」事件档案，并由 LLM 生成多视角研判，人工审批把关、不自动下单。",
+    "url": "https://wekilee.github.io/projects/a-share-anomaly-prober/",
     "image": "https://wekilee.github.io/og-cover.png",
-    "applicationCategory": "DeveloperApplication",
+    "applicationCategory": "FinanceApplication",
     "author": {
         "@type": "Person",
         "name": "Weki Lee",
@@ -41,9 +41,9 @@
     },
     "license": "https://opensource.org/licenses/MIT"
 }</script>
-    <link rel="canonical" href="https://wekilee.github.io/projects/hound-dog/" />
+    <link rel="canonical" href="https://wekilee.github.io/projects/a-share-anomaly-prober/" />
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%95%3C/text%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%88%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="/src/css/styles.css" />
     <link rel="stylesheet" href="/src/css/project-detail.css" />
 </head>
@@ -102,12 +102,12 @@
 
         <section class="pd-hero" aria-labelledby="pd-hero-heading">
             <div class="container-page">
-                <span class="pd-hero-emoji fade-in" aria-hidden="true">🐕</span>
-                <h1 id="pd-hero-heading" class="fade-in">hound-dog</h1>
-                <p class="pd-hero-subtitle fade-in">数据根因分析与报告复核 Skill</p>
+                <span class="pd-hero-emoji fade-in" aria-hidden="true">📈</span>
+                <h1 id="pd-hero-heading" class="fade-in">A-Share Anomaly Prober</h1>
+                <p class="pd-hero-subtitle fade-in">A 股异动前因后果探测器</p>
                 <span class="pd-status-badge fade-in">活跃开发中</span>
                 <div class="pd-hero-actions fade-in">
-                    <a href="https://github.com/WekiLee/hound-dog" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
+                    <a href="https://github.com/WekiLee/A-Share-Anomaly-Prober" target="_blank" rel="noopener noreferrer" class="btn-apple btn-apple-primary">
                         <svg class="icon-github" aria-hidden="true" style="width:16px;height:16px;fill:currentColor;"><use href="#icon-github"/></svg>
                         GitHub
                     </a>
@@ -124,7 +124,7 @@
                 <p class="section-label">Overview</p>
                 <h2 id="pd-overview-heading" class="section-title-apple fade-in">概述</h2>
                 <div class="pd-overview-card fade-in">
-                    <p>hound-dog 是一个通用 agent skill：手里只有一批原始数据（服务台工单、运行日志、业务 Excel/CSV），要回答"问题出在哪、怎么改"时，它把流程从目标对齐、数据画像、维度穷举、交叉验证、复检纠错，推进到根因提炼与可落地建议，让每个结论都能从原始数据逐条溯源、可重跑复现。</p>
+                    <p>A-Share Anomaly Prober 是一个面向 A 股的开源辅助决策工具：自动探测大盘 / 个股 / 板块的异动信号，异动触发时归集结构化的「事件档案」——每条证据带支持 / 反证两栏、版本化留痕，再由 LLM 生成持有方 vs 旁观方多视角研判，结论产出模拟申请、必须经人工批准。轻量栈实现，无 MySQL / Redis / 通达信等重基建依赖，不自动下单，只做辅助研判。</p>
                 </div>
             </div>
         </section>
@@ -133,23 +133,23 @@
             <div class="container-page">
                 <p class="section-label">Architecture</p>
                 <h2 id="pd-arch-heading" class="section-title-apple fade-in">架构设计</h2>
-                <p class="pd-arch-intro fade-in">按 P0~P7 八阶段推进，每阶段有明确产出与过关条件，阶段间带反馈回路，关键指标必须 ≥2 个独立口径交叉验证。</p>
+                <p class="pd-arch-intro fade-in">五层单向依赖架构：数据层 → 异动规则引擎 → 归因引擎 → 研判层（含人审）→ 展示层 + 推送；akshare 为主源、腾讯 / 东财备用，本地 SQLite / DuckDB + TTL 缓存。</p>
                 <div class="pd-arch-grid fade-in">
                     <div class="pd-arch-card">
-                        <h4>对齐与画像</h4>
-                        <div class="pd-arch-tags"><span>P0 目标对齐</span><span>P1 数据画像</span><span>脏数据自动告警</span></div>
+                        <h4>数据层</h4>
+                        <div class="pd-arch-tags"><span>akshare 主源</span><span>腾讯 / 东财备用</span><span>SQLite / DuckDB + TTL 缓存</span></div>
                     </div>
                     <div class="pd-arch-card">
-                        <h4>分析与验证</h4>
-                        <div class="pd-arch-tags"><span>P2 维度穷举</span><span>P3 交叉验证</span><span>P4 复检纠错</span></div>
+                        <h4>异动规则引擎</h4>
+                        <div class="pd-arch-tags"><span>规则 + 元规则</span><span>收盘裁决</span><span>次日确认</span></div>
                     </div>
                     <div class="pd-arch-card">
-                        <h4>结论与建议</h4>
-                        <div class="pd-arch-tags"><span>P5 结论落实</span><span>P6 根因提炼</span><span>P7 可落地建议</span></div>
+                        <h4>归因引擎</h4>
+                        <div class="pd-arch-tags"><span>事件档案归集</span><span>前因 / 后果 / 传导链</span><span>相似案例检索</span></div>
                     </div>
                     <div class="pd-arch-card">
-                        <h4>输出层</h4>
-                        <div class="pd-arch-tags"><span>MD 分析报告</span><span>PPT 汇报（可选）</span><span>可复现档案</span></div>
+                        <h4>研判与展示</h4>
+                        <div class="pd-arch-tags"><span>LLM 多视角研判</span><span>人工审批流</span><span>移动端 HTML + 企微/飞书推送</span></div>
                     </div>
                 </div>
             </div>
@@ -161,19 +161,19 @@
                 <h2 id="pd-features-heading" class="section-title-apple fade-in">核心特性</h2>
                 <div class="pd-features-grid fade-in">
                     <div class="pd-feature-card">
-                        <span class="pd-feature-icon" aria-hidden="true">🔬</span>
-                        <h4>先画像后结论</h4>
-                        <p>数据画像脚本自动告警重复行、撞名列、字段黑洞，避免被脏数据带偏。</p>
+                        <span class="pd-feature-icon" aria-hidden="true">🧭</span>
+                        <h4>归因引擎是核心差异点</h4>
+                        <p>异动触发时自动归集结构化事件档案，每条证据带「支持 / 反证」两栏并版本化留痕，研判依据可追溯。</p>
                     </div>
                     <div class="pd-feature-card">
-                        <span class="pd-feature-icon" aria-hidden="true">🧾</span>
-                        <h4>每个数字可溯源</h4>
-                        <p>分析脚本 + 中间产物 + 任务日志串成可复现档案，结论与数据可对账。</p>
+                        <span class="pd-feature-icon" aria-hidden="true">🧪</span>
+                        <h4>回测复核，不做假验证</h4>
+                        <p>用真实历史日线回放线上同一套规则类，统计 T+1/T+3/T+5/T+10 前向收益并对照无信号日基线；无法回放的规则如实列入 skipped_rules。</p>
                     </div>
                     <div class="pd-feature-card">
-                        <span class="pd-feature-icon" aria-hidden="true">🤖</span>
-                        <h4>多 agent 可用</h4>
-                        <p>一条 npx 命令安装到 Codex / Claude Code / Cursor 等十余种 agent 的 skills 目录。</p>
+                        <span class="pd-feature-icon" aria-hidden="true">📱</span>
+                        <h4>轻量栈 + 移动端优先</h4>
+                        <p>无 MySQL / Redis / 客户端依赖，一条命令生成红涨绿跌的自包含 HTML 看板，手机打开即是大盘总览。</p>
                     </div>
                 </div>
             </div>
@@ -185,16 +185,16 @@
                 <h2 id="pd-tech-heading" class="section-title-apple fade-in">技术细节</h2>
                 <div class="pd-tech-groups fade-in">
                     <div class="pd-tech-group">
-                        <h4>分析脚本</h4>
-                        <div class="pd-tech-tags"><span>Python 3</span><span>标准库直写 OOXML</span><span>流式抽样</span></div>
+                        <h4>核心实现</h4>
+                        <div class="pd-tech-tags"><span>Python 3</span><span>akshare（版本锁定）</span><span>SQLite / DuckDB</span></div>
                     </div>
                     <div class="pd-tech-group">
-                        <h4>Skill 本体</h4>
-                        <div class="pd-tech-tags"><span>SKILL.md</span><span>Markdown 报告模板</span><span>复检清单</span></div>
+                        <h4>展示层</h4>
+                        <div class="pd-tech-tags"><span>自包含单文件 HTML</span><span>红涨绿跌移动端看板</span></div>
                     </div>
                     <div class="pd-tech-group">
-                        <h4>分发与质量</h4>
-                        <div class="pd-tech-tags"><span>npm 安装器</span><span>npx skills CLI</span><span>smoke_test 回归</span></div>
+                        <h4>部署与集成</h4>
+                        <div class="pd-tech-tags"><span>Docker</span><span>企业微信 / 飞书 webhook</span><span>OpenAI 兼容 LLM 接口</span></div>
                     </div>
                 </div>
             </div>
@@ -205,12 +205,12 @@
     <footer class="footer-apple">
         <div class="container-page">
             <div class="pd-footer-actions">
-                    <a href="/projects/lessons-evolve/index.html" class="pd-proj-nav__link pd-proj-nav__prev"><svg aria-hidden="true"><use href="#icon-arrow-left"/></svg> 上一个</a>
+                    <a href="/projects/hound-dog/index.html" class="pd-proj-nav__link pd-proj-nav__prev"><svg aria-hidden="true"><use href="#icon-arrow-left"/></svg> 上一个</a>
                     <a href="/" class="pd-footer-back pd-footer-back--center">
                         <svg aria-hidden="true"><use href="#icon-arrow-up"/></svg>
                         返回首页
                     </a>
-                    <a href="/projects/a-share-anomaly-prober/index.html" class="pd-proj-nav__link pd-proj-nav__next">下一个 <svg aria-hidden="true"><use href="#icon-arrow-right"/></svg></a>
+                    <span class="pd-proj-nav__empty"></span>
                 </div>
             <p >
                 © <span id="footerYear">2026</span> Weki Lee.

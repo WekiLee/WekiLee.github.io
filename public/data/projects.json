@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-27",
+  "lastUpdated": "2026-10-03",
   "items": [
     {
       "id": "edumind",
@@ -224,6 +224,45 @@
           "backend": ["Python 3", "标准库直写 OOXML"],
           "frontend": ["SKILL.md", "Markdown 报告模板"],
           "infra": ["npm 安装器", "npx skills CLI", "smoke_test 回归"]
+        }
+      }
+    },
+    {
+      "id": "a-share-anomaly-prober",
+      "name": "A-Share Anomaly Prober",
+      "emoji": "📈",
+      "badge": "金融科技",
+      "tier": "secondary",
+      "description": "这只票今天为什么动、动了之后会怎样？异动探测 → 前因后果归因 → LLM 多视角研判，人审把关不自动下单。",
+      "tags": ["Python", "akshare", "SQLite / DuckDB", "LLM", "回测"],
+      "features": [
+        "五层架构：异动 → 归因 → 研判 → 人审 → 推送",
+        "事件档案归因，证据正反两栏、版本化留痕",
+        "历史日线回测复核，前向收益对照基线胜率"
+      ],
+      "github": "https://github.com/WekiLee/A-Share-Anomaly-Prober",
+      "detail": {
+        "subtitle": "A 股异动前因后果探测器",
+        "overview": "A-Share Anomaly Prober 是一个面向 A 股的开源辅助决策工具：自动探测大盘 / 个股 / 板块的异动信号，异动触发时归集结构化的「事件档案」——每条证据带支持 / 反证两栏、版本化留痕，再由 LLM 生成持有方 vs 旁观方多视角研判，结论产出模拟申请、必须经人工批准。轻量栈实现，无 MySQL / Redis / 通达信等重基建依赖，不自动下单，只做辅助研判。",
+        "architecture": {
+          "description": "五层单向依赖架构：数据层 → 异动规则引擎 → 归因引擎 → 研判层（含人审）→ 展示层 + 推送；akshare 为主源、腾讯 / 东财备用，本地 SQLite / DuckDB + TTL 缓存。",
+          "layers": [
+            { "name": "数据层", "items": ["akshare 主源", "腾讯 / 东财备用", "SQLite / DuckDB + TTL 缓存"] },
+            { "name": "异动规则引擎", "items": ["规则 + 元规则", "收盘裁决", "次日确认"] },
+            { "name": "归因引擎", "items": ["事件档案归集", "前因 / 后果 / 传导链", "相似案例检索"] },
+            { "name": "研判与展示", "items": ["LLM 多视角研判", "人工审批流", "移动端 HTML + 企微/飞书推送"] }
+          ]
+        },
+        "highlights": [
+          { "title": "归因引擎是核心差异点", "desc": "异动触发时自动归集结构化事件档案，每条证据带「支持 / 反证」两栏并版本化留痕，研判依据可追溯。" },
+          { "title": "回测复核，不做假验证", "desc": "用真实历史日线回放线上同一套规则类，统计 T+1/T+3/T+5/T+10 前向收益并对照无信号日基线；无法回放的规则如实列入 skipped_rules。" },
+          { "title": "轻量栈 + 移动端优先", "desc": "无 MySQL / Redis / 客户端依赖，一条命令生成红涨绿跌的自包含 HTML 看板，手机打开即是大盘总览。" }
+        ],
+        "status": "活跃开发中",
+        "techDetail": {
+          "backend": ["Python 3", "akshare（版本锁定）", "SQLite / DuckDB"],
+          "frontend": ["自包含单文件 HTML", "红涨绿跌移动端看板"],
+          "infra": ["Docker", "企业微信 / 飞书 webhook", "OpenAI 兼容 LLM 接口"]
         }
       }
     }
